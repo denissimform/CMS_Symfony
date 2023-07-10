@@ -17,8 +17,8 @@ class EmployeeSkills
     #[ORM\ManyToOne(inversedBy: 'employeeSkills')]
     private ?User $userId = null;
 
-    #[ORM\Column(type: Types::ARRAY)]
-    private array $level = [];
+    #[ORM\Column(type: Types::STRING)]
+    private ?string $level = null;
 
     #[ORM\ManyToOne(inversedBy: 'employeeSkills')]
     private ?Skills $skillId = null;
@@ -40,12 +40,12 @@ class EmployeeSkills
         return $this;
     }
 
-    public function getLevel(): array
+    public function getLevel(): ?string
     {
         return $this->level;
     }
 
-    public function setLevel(array $level): static
+    public function setLevel(string $level): static
     {
         $this->level = $level;
 

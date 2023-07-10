@@ -5,10 +5,13 @@ namespace App\Entity;
 use App\Repository\BillsRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Timestampable\Traits\TimestampableEntity;
 
 #[ORM\Entity(repositoryClass: BillsRepository::class)]
 class Bills
 {
+    use TimestampableEntity;
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -23,8 +26,8 @@ class Bills
     #[ORM\OneToOne(cascade: ['persist', 'remove'])]
     private ?Project $projectId = null;
 
-    #[ORM\Column(type: Types::ARRAY)]
-    private array $status = [];
+    #[ORM\Column(length: 20)]
+    private ?string $status = null;
 
     #[ORM\ManyToOne(inversedBy: 'bills')]
     private ?Currency $currency = null;
@@ -73,12 +76,12 @@ class Bills
         return $this;
     }
 
-    public function getStatus(): array
+    public function getStatus(): ?string
     {
         return $this->status;
     }
 
-    public function setStatus(array $status): static
+    public function setStatus(string $status): static
     {
         $this->status = $status;
 

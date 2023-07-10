@@ -5,10 +5,13 @@ namespace App\Entity;
 use App\Repository\ContactRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Timestampable\Traits\TimestampableEntity;
 
 #[ORM\Entity(repositoryClass: ContactRepository::class)]
 class Contact
 {
+    use TimestampableEntity;
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -35,11 +38,11 @@ class Contact
     #[ORM\Column]
     private ?bool $isDeleted = null;
 
-    #[ORM\Column(type: Types::ARRAY)]
-    private array $usertype = [];
+    #[ORM\Column(type: Types::STRING)]
+    private ?string $usertype = null;
 
     #[ORM\Column]
-    private ?int $ReferenceId = null;
+    private ?int $referenceId = null;
 
     public function getId(): ?int
     {
@@ -130,12 +133,12 @@ class Contact
         return $this;
     }
 
-    public function getUsertype(): array
+    public function getUsertype(): ?string
     {
         return $this->usertype;
     }
 
-    public function setUsertype(array $usertype): static
+    public function setUsertype(string $usertype): static
     {
         $this->usertype = $usertype;
 
@@ -144,12 +147,12 @@ class Contact
 
     public function getReferenceId(): ?int
     {
-        return $this->ReferenceId;
+        return $this->referenceId;
     }
 
-    public function setReferenceId(int $ReferenceId): static
+    public function setReferenceId(?int $ReferenceId): static
     {
-        $this->ReferenceId = $ReferenceId;
+        $this->referenceId = $ReferenceId;
 
         return $this;
     }
