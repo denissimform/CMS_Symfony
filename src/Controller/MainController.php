@@ -114,4 +114,10 @@ class MainController extends AbstractController
             'last_username' => $authenticationUtils->getLastUsername()
         ]);
     }
+
+    #[Route('/check', name: 'app_login_check')]
+    public function check(): Response
+    {
+        return $this->render('main/signin.html.twig');
+    }
 }
