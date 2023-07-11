@@ -25,11 +25,13 @@ class RegisterFormType extends AbstractType
             ->add('middleName')
             ->add('lastName')
             ->add('gender')
-            ->add('dob')
-            ->add('isVerified')
-            ->add('isActive')
-            ->add('createdAt')
-            ->add('updatedAt')
+            ->add('dob', options: [
+                'widget' => 'single_text',
+            ])
+            // ->add('isVerified')
+            // ->add('isActive')
+            // ->add('createdAt')
+            // ->add('updatedAt')
             // ->add('plainPassword', PasswordType::class, [
             //     // instead of being set onto the object directly,
             //     // this is read and encoded in the controller
