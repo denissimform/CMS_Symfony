@@ -1,22 +1,69 @@
-{% extends 'base.html.twig' %}
+{% extends "base.html.twig" %}
 
-{% block title %}Create a new User{% endblock %}
+{% block title %}Register User
+{% endblock %}
 
 {% block body %}
+	<br>
+	<div class="form-bg">
+		<div class="container">
+			<div class="row">
+				<div class="col-md-6">
+					<div class="form-container">
+						<h3 class="title">Register</h3>
+                        
+						{{ form_start(userForm, { 'attr' : {'class': 'form-horizontal'} }) }}
 
-<div class="example-wrapper container mt-4">
-    <div class="row">
-        <h3>Register:</h3>
-        <div class="login-form bg-light mt-4 p-4">
+						<div class="form-group">
+							{{ form_row(userForm.username, {'attr': {'class' : 'form-control'}}) }}
+						</div>
+						<div class="form-group">
+							{{ form_row(userForm.email, {'attr': {'class' : 'form-control'}}) }}
+						</div>
+						<div class="form-group">
+							{{ form_row(userForm.password.first, {'attr': {'class' : 'form-control'}}) }}
+						</div>
+						<div class="form-group">
+							{{ form_row(userForm.password.second, {'attr': {'class' : 'form-control'}}) }}
+						</div>
+						
 
-            {{ form_start(userForm, { 'attr' : {'novalidate': 'novalidate'} }) }}
-            {{ form_widget(userForm) }}
-            
-            <button type="submit" class="btn btn-primary mb-4">Create</button>
-            
-            {{ form_end(userForm) }}
-        </div>
-    </div>
+						<hr/>
+						<h4 class="sub-title">Personal Information</h4>
 
-</div>
+						<div class="form-group">
+							{{ form_row(userForm.firstName, {'attr': {'class' : 'form-control'}}) }}
+						</div>
+						<div class="form-group">
+							{{ form_row(userForm.lastName, {'attr': {'class' : 'form-control'}}) }}
+						</div>
+						<div class="form-group">
+							{{ form_row(userForm.dob, {'attr': {'class' : 'form-control'}}) }}
+						</div>
+						<br>
+						<div class="form-group">
+							<label>Gender</label>
+							{{ form_row(userForm.gender, {'attr': {'class' : 'form-control'}}) }}
+						</div>
+						<div class="form-group">
+							{{ form_row(userForm.company, {'attr': {'class' : 'form-control'}}) }}
+						</div>
+
+                        <br>
+						<div class="form-group">
+						    {{ form_row(userForm.agreeTerms) }}
+                        </div>
+
+						<span class="signin-link">Already have an account? Click here to
+							<a href="{{ path('app_login') }}">Login</a>
+						</span>
+
+						<button class="btn signup" type="submit">Create</button>
+
+						{{ form_end(userForm) }}
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
 {% endblock %}

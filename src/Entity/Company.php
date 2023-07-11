@@ -35,7 +35,7 @@ class Company
     #[ORM\ManyToOne(inversedBy: 'companies')]
     private ?User $createdBy = null;
 
-    #[ORM\OneToMany(mappedBy: 'comapnyId', targetEntity: Client::class)]
+    #[ORM\OneToMany(mappedBy: 'companyId', targetEntity: Client::class)]
     private Collection $clients;
 
     #[ORM\OneToMany(mappedBy: 'companyId', targetEntity: Department::class)]
@@ -47,12 +47,16 @@ class Company
     #[ORM\OneToMany(mappedBy: 'companyId', targetEntity: TimeLine::class)]
     private Collection $timeLines;
 
+    #[ORM\OneToMany(mappedBy: 'company', targetEntity: User::class)]
+    private Collection $users;
+
     public function __construct()
     {
         $this->clients = new ArrayCollection();
         $this->departments = new ArrayCollection();
         $this->requests = new ArrayCollection();
         $this->timeLines = new ArrayCollection();
+        $this->users = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -234,6 +238,36 @@ class Company
             // set the owning side to null (unless already changed)
             if ($timeLine->getCompanyId() === $this) {
                 $timeLine->setCompanyId(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, User>
+     */
+    public function getUsers(): Collection
+    {
+        return $this->users;
+    }
+
+    public function addUser(User $user): static
+    {
+        if (!$this->users->contains($user)) {
+            $this->users->add($user);
+            $user->setCompany($this);
+        }
+
+        return $this;
+    }
+
+    public function removeUser(User $user): static
+    {
+        if ($this->users->removeElement($user)) {
+            // set the owning side to null (unless already changed)
+            if ($user->getCompany() === $this) {
+                $user->setCompany(null);
             }
         }
 

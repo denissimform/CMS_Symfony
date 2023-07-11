@@ -1,12 +1,19 @@
 @import "~bootstrap";
 
-
-/* body {
-    background-color: lightgray;
-} */
+@import url('https://fonts.googleapis.com/css2?family=Lato&display=swap');
 
 
-/* Signin */
+
+
+
+
+body {
+    background-color: rgba(235, 235, 235, 0.644);
+    font-family: 'Lato', sans-serif;
+}
+
+
+/* Signin
 html,
 body {
   height: 100%;
@@ -31,4 +38,4 @@ body {
   margin-bottom: 10px;
   border-top-left-radius: 0;
   border-top-right-radius: 0;
-}
+} */
