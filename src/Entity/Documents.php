@@ -2,13 +2,17 @@
 
 namespace App\Entity;
 
-use App\Repository\DocumentsRepository;
+use App\Enum\ReferenceType;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\DocumentsRepository;
+use Gedmo\Timestampable\Traits\TimestampableEntity;
 
 #[ORM\Entity(repositoryClass: DocumentsRepository::class)]
 class Documents
 {
+    use TimestampableEntity;
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -20,8 +24,8 @@ class Documents
     #[ORM\Column(length: 255)]
     private ?string $path = null;
 
-    #[ORM\Column(type: Types::ARRAY)]
-    private array $referenceType = [];
+    #[ORM\Column(type: Types::STRING)]
+    private ?string $referenceType = null;
 
     #[ORM\Column]
     private ?int $referenceId = null;
@@ -58,12 +62,12 @@ class Documents
         return $this;
     }
 
-    public function getReferenceType(): array
+    public function getReferenceType(): ?string
     {
         return $this->referenceType;
     }
 
-    public function setReferenceType(array $referenceType): static
+    public function setReferenceType(ReferenceType $referenceType): static
     {
         $this->referenceType = $referenceType;
 

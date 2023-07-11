@@ -2,15 +2,20 @@
 
 namespace App\Entity;
 
-use App\Repository\ProjectRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
+use App\Enum\PaymentType;
+use App\Enum\ProjectStatus;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\ProjectRepository;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ArrayCollection;
+use Gedmo\Timestampable\Traits\TimestampableEntity;
 
 #[ORM\Entity(repositoryClass: ProjectRepository::class)]
 class Project
 {
+    use TimestampableEntity;
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -22,8 +27,8 @@ class Project
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $description = null;
 
-    #[ORM\Column(type: Types::ARRAY)]
-    private array $status = [];
+    #[ORM\Column(type: Types::STRING)]
+    private ?string $status = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     private ?\DateTimeInterface $startDate = null;
@@ -31,8 +36,8 @@ class Project
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     private ?\DateTimeInterface $expectedEndDate = null;
 
-    #[ORM\Column(type: Types::ARRAY)]
-    private array $paymentType = [];
+    #[ORM\Column(type: Types::STRING)]
+    private ?string $paymentType = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     private ?\DateTimeInterface $amc_support = null;
@@ -88,12 +93,12 @@ class Project
         return $this;
     }
 
-    public function getStatus(): array
+    public function getStatus(): ?string
     {
         return $this->status;
     }
 
-    public function setStatus(array $status): static
+    public function setStatus(ProjectStatus $status): static
     {
         $this->status = $status;
 
@@ -124,12 +129,12 @@ class Project
         return $this;
     }
 
-    public function getPaymentType(): array
+    public function getPaymentType(): ?string
     {
         return $this->paymentType;
     }
 
-    public function setPaymentType(array $paymentType): static
+    public function setPaymentType(PaymentType $paymentType): static
     {
         $this->paymentType = $paymentType;
 

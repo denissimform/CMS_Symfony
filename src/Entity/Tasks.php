@@ -2,28 +2,33 @@
 
 namespace App\Entity;
 
-use App\Repository\TasksRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
+use App\Enum\PriorityLevel;
+use App\Enum\SeverityLevel;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\TasksRepository;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ArrayCollection;
+use Gedmo\Timestampable\Traits\TimestampableEntity;
 
 #[ORM\Entity(repositoryClass: TasksRepository::class)]
 class Tasks
 {
+    use TimestampableEntity;
+    
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(type: Types::ARRAY)]
-    private array $type = [];
+    #[ORM\Column(type: Types::STRING)]
+    private ?string $type = null;
 
-    #[ORM\Column(type: Types::ARRAY)]
-    private array $priority = [];
+    #[ORM\Column(type: Types::STRING)]
+    private ?string $priority = null;
 
-    #[ORM\Column(type: Types::ARRAY)]
-    private array $severity = [];
+    #[ORM\Column(type: Types::STRING)]
+    private ?string $severity = null;
 
     #[ORM\Column(length: 90)]
     private ?string $title = null;
@@ -34,8 +39,8 @@ class Tasks
     #[ORM\Column(type: Types::TIME_MUTABLE)]
     private ?\DateTimeInterface $time = null;
 
-    #[ORM\Column(type: Types::ARRAY)]
-    private array $status = [];
+    #[ORM\Column(type: Types::STRING)]
+    private ?string $status = null;
 
     #[ORM\Column]
     private ?bool $isActive = null;
@@ -66,36 +71,36 @@ class Tasks
         return $this->id;
     }
 
-    public function getType(): array
+    public function getType(): ?string
     {
         return $this->type;
     }
 
-    public function setType(array $type): static
+    public function setType(string $type): static
     {
         $this->type = $type;
 
         return $this;
     }
 
-    public function getPriority(): array
+    public function getPriority(): ?string
     {
         return $this->priority;
     }
 
-    public function setPriority(array $priority): static
+    public function setPriority(PriorityLevel $priority): static
     {
         $this->priority = $priority;
 
         return $this;
     }
 
-    public function getSeverity(): array
+    public function getSeverity(): ?string
     {
         return $this->severity;
     }
 
-    public function setSeverity(array $severity): static
+    public function setSeverity(SeverityLevel $severity): static
     {
         $this->severity = $severity;
 
@@ -138,12 +143,12 @@ class Tasks
         return $this;
     }
 
-    public function getStatus(): array
+    public function getStatus(): ?string
     {
         return $this->status;
     }
 
-    public function setStatus(array $status): static
+    public function setStatus(string $status): static
     {
         $this->status = $status;
 

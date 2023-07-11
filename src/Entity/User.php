@@ -2,19 +2,23 @@
 
 namespace App\Entity;
 
-use App\Repository\UserRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
+use App\Enum\UserGender;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\UserRepository;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ArrayCollection;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
-use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
+#[UniqueEntity(fields: ['email'], message: 'There is already an account with this email')]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     use TimestampableEntity;
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -32,7 +36,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private ?string $password = null;
 
-    #[ORM\Column(type: Types::GUID)]
+    #[ORM\Column]
     private ?string $uuid = null;
 
     #[ORM\Column(length: 40)]
@@ -47,8 +51,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 40)]
     private ?string $lastName = null;
 
-    #[ORM\Column(type: Types::ARRAY)]
-    private array $gender = [];
+    #[ORM\Column(type: Types::STRING)]
+    private ?string $gender = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     private ?\DateTimeInterface $dob = null;
@@ -68,8 +72,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'createdBy', targetEntity: Department::class)]
     private Collection $departments;
 
-    #[ORM\OneToMany(mappedBy: 'referenceId', targetEntity: Contact::class)]
-    private Collection $contacts;
+    // #[ORM\OneToMany(mappedBy: 'referenceId', targetEntity: Contact::class)]
+    // private Collection $contacts;
 
     #[ORM\OneToMany(mappedBy: 'createdBy', targetEntity: Project::class)]
     private Collection $projects;
@@ -109,7 +113,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->companies = new ArrayCollection();
         $this->clients = new ArrayCollection();
         $this->departments = new ArrayCollection();
-        $this->contacts = new ArrayCollection();
+        // $this->contacts = new ArrayCollection();
         $this->projects = new ArrayCollection();
         $this->skills = new ArrayCollection();
         $this->employeeSkills = new ArrayCollection();
@@ -253,12 +257,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getGender(): array
+    public function getGender(): ?string
     {
         return $this->gender;
     }
 
-    public function setGender(array $gender): static
+    public function setGender(UserGender $gender): static
     {
         $this->gender = $gender;
 
@@ -391,35 +395,35 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    /**
-     * @return Collection<int, Contact>
-     */
-    public function getContacts(): Collection
-    {
-        return $this->contacts;
-    }
+    // /**
+    //  * @return Collection<int, Contact>
+    //  */
+    // public function getContacts(): Collection
+    // {
+    //     return $this->contacts;
+    // }
 
-    public function addContact(Contact $contact): static
-    {
-        if (!$this->contacts->contains($contact)) {
-            $this->contacts->add($contact);
-            $contact->setReferenceId($this);
-        }
+    // public function addContact(Contact $contact): static
+    // {
+    //     if (!$this->contacts->contains($contact)) {
+    //         $this->contacts->add($contact);
+    //         $contact->setReferenceId($this->getId());
+    //     }
 
-        return $this;
-    }
+    //     return $this;
+    // }
 
-    public function removeContact(Contact $contact): static
-    {
-        if ($this->contacts->removeElement($contact)) {
-            // set the owning side to null (unless already changed)
-            if ($contact->getReferenceId() === $this) {
-                $contact->setReferenceId(null);
-            }
-        }
+    // public function removeContact(Contact $contact): static
+    // {
+    //     if ($this->contacts->removeElement($contact)) {
+    //         // set the owning side to null (unless already changed)
+    //         if ($contact->getReferenceId() === $this) {
+    //             $contact->setReferenceId(null);
+    //         }
+    //     }
 
-        return $this;
-    }
+    //     return $this;
+    // }
 
     /**
      * @return Collection<int, Project>

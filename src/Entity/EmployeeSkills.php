@@ -2,9 +2,10 @@
 
 namespace App\Entity;
 
-use App\Repository\EmployeeSkillsRepository;
 use Doctrine\DBAL\Types\Types;
+use App\Enum\EmployeeSkillLevel;
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\EmployeeSkillsRepository;
 
 #[ORM\Entity(repositoryClass: EmployeeSkillsRepository::class)]
 class EmployeeSkills
@@ -17,8 +18,8 @@ class EmployeeSkills
     #[ORM\ManyToOne(inversedBy: 'employeeSkills')]
     private ?User $userId = null;
 
-    #[ORM\Column(type: Types::ARRAY)]
-    private array $level = [];
+    #[ORM\Column(type: Types::STRING)]
+    private ?string $level = null;
 
     #[ORM\ManyToOne(inversedBy: 'employeeSkills')]
     private ?Skills $skillId = null;
@@ -40,12 +41,12 @@ class EmployeeSkills
         return $this;
     }
 
-    public function getLevel(): array
+    public function getLevel(): ?string
     {
         return $this->level;
     }
 
-    public function setLevel(array $level): static
+    public function setLevel(EmployeeSkillLevel $level): static
     {
         $this->level = $level;
 

@@ -2,13 +2,16 @@
 
 namespace App\Entity;
 
-use App\Repository\TimesheetsRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\TimesheetsRepository;
+use Gedmo\Timestampable\Traits\TimestampableEntity;
 
 #[ORM\Entity(repositoryClass: TimesheetsRepository::class)]
 class Timesheets
 {
+    use TimestampableEntity;
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]

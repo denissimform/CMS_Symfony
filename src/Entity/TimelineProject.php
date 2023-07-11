@@ -2,8 +2,8 @@
 
 namespace App\Entity;
 
-use App\Repository\TimelineProjectRepository;
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\TimelineProjectRepository;
 
 #[ORM\Entity(repositoryClass: TimelineProjectRepository::class)]
 class TimelineProject
