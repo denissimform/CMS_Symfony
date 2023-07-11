@@ -2,7 +2,7 @@
 
 namespace App\Enum;
  
-enum RegerenceType: string
+enum ReferenceType: string
 {
     case TASK = 'Task';
     case TIMELINE = 'Timeline';

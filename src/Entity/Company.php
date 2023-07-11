@@ -3,13 +3,16 @@
 namespace App\Entity;
 
 use App\Repository\CompanyRepository;
+use App\Validator\Company as ValidatorCompany;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 #[ORM\Entity(repositoryClass: CompanyRepository::class)]
+#[UniqueEntity(fields: ['name', 'isActive'], message: "This name is already in used!!")]
 class Company
 {
     use TimestampableEntity;
@@ -20,6 +23,7 @@ class Company
     private ?int $id = null;
 
     #[ORM\Column(length: 40)]
+    #[ValidatorCompany()]
     private ?string $name = null;
 
     #[ORM\Column(type: Types::TEXT)]
@@ -29,7 +33,7 @@ class Company
     private ?\DateTimeInterface $establishedAt = null;
 
     #[ORM\Column]
-    private ?bool $isActive = null;
+    private ?bool $isActive = true;
 
     #[ORM\ManyToOne(inversedBy: 'companies')]
     private ?User $createdBy = null;
@@ -88,7 +92,7 @@ class Company
         return $this->establishedAt;
     }
 
-    public function setEstablishedAt(\DateTimeInterface $establishedAt): static
+    public function setEstablishedAt(?\DateTimeInterface $establishedAt): static
     {
         $this->establishedAt = $establishedAt;
 
