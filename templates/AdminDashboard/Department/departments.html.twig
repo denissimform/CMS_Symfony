@@ -1,0 +1,32 @@
+{% extends 'base.html.twig' %}
+{% block title %} Department {% endblock %}
+{% block body %}
+	<center><a class="btn btn-primary" href="{{ path('app_admin_department_create') }}">Create Department</a></center>
+	<div class="mx-auto col-10 col-md-8 col-lg-6">
+		<table class="table table-dark table-striped">
+			<thead>
+				<tr>
+					<th scope="col">#</th>
+					<th scope="col">Name</th>
+					<th scope="col">CreatedAt</th>
+					<th scope="col">UpdatedAt</th>
+					<th scope="col">Actions</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for department in departments %}
+					<tr>
+						<th scope="row">{{ department.id }}</th>
+						<td>{{ department.name }}</td>
+						<td>{{ department.createdAt|date }}</td>
+						<td>{{ department.UpdatedAt|date }}</td>
+						<td>
+							<a href="{{ path('app_admin_department_update',{id:department.id}) }}">EDIT</a>
+							&nbsp;&nbsp;<a href="{{ path('app_admin_department_delete',{id:department.id}) }}">DELETE</a>
+						</td>
+					</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+	</div>
+{% endblock body %}
