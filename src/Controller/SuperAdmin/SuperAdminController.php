@@ -11,7 +11,6 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Twig\Environment;
 
 #[Route("/superadmin")]
 class SuperAdminController extends AbstractController
@@ -23,7 +22,7 @@ class SuperAdminController extends AbstractController
         $companies = $companyRepository->findBy(["isActive" => true]);
 
         return $this->render(
-            "/super_admin/company/index.html.twig",
+            "/superadmin/company/index.html.twig",
             [
                 "companies" => $companies
             ]
@@ -49,7 +48,7 @@ class SuperAdminController extends AbstractController
         }
 
         return $this->render(
-            "super_admin/company/create.html.twig",
+            "/superadmin/company/create.html.twig",
             [
                 "form" => $form->createView()
             ],
@@ -75,7 +74,7 @@ class SuperAdminController extends AbstractController
         }
 
         return $this->render(
-            "super_admin/company/update.html.twig",
+            "/superadmin/company/update.html.twig",
             [
                 "form" => $form->createView()
             ],
@@ -96,5 +95,12 @@ class SuperAdminController extends AbstractController
         }
 
         return $this->redirectToRoute("app_sa_company_list");
+    }
+
+    // homepage route
+    #[Route("/", name: "app_sa_homepage")]
+    public function homepage(): Response
+    {
+        return $this->render("/superadmin/index.html.twig");
     }
 }

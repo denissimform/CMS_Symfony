@@ -283,6 +283,18 @@
     "symfony/ux-turbo": {
         "version": "v2.10.0"
     },
+    "symfony/uid": {
+        "version": "6.3",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "main",
+            "version": "6.2",
+            "ref": "d294ad4add3e15d7eb1bae0221588ca89b38e558"
+        },
+        "files": [
+            "config/packages/uid.yaml"
+        ]
+    },
     "symfony/validator": {
         "version": "6.3",
         "recipe": {
@@ -335,6 +347,9 @@
             "package.json",
             "webpack.config.js"
         ]
+    },
+    "symfonycasts/verify-email-bundle": {
+        "version": "v1.13.0"
     },
     "twig/extra-bundle": {
         "version": "v3.6.1"
