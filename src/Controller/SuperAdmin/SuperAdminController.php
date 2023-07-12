@@ -31,7 +31,7 @@ class SuperAdminController extends AbstractController
     }
 
     // register company 
-    #[Route("/company/register", name: "app_sa_company_create")]
+    #[Route("/company/create", name: "app_sa_company_create")]
     public function registerCompany(Request $request, EntityManagerInterface $entityManager): Response
     {
         $form = $this->createForm(CompanyType::class);
