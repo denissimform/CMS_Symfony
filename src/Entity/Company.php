@@ -3,7 +3,6 @@
 namespace App\Entity;
 
 use App\Repository\CompanyRepository;
-use App\Validator\Company as ValidatorCompany;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
@@ -23,7 +22,6 @@ class Company
     private ?int $id = null;
 
     #[ORM\Column(length: 40)]
-    #[ValidatorCompany()]
     private ?string $name = null;
 
     #[ORM\Column(type: Types::TEXT)]
@@ -68,7 +66,7 @@ class Company
         return $this->name;
     }
 
-    public function setName(string $name): static
+    public function setName(?string $name): static
     {
         $this->name = $name;
 
@@ -80,7 +78,7 @@ class Company
         return $this->about;
     }
 
-    public function setAbout(string $about): static
+    public function setAbout(?string $about): static
     {
         $this->about = $about;
 
@@ -104,7 +102,7 @@ class Company
         return $this->isActive;
     }
 
-    public function setIsActive(bool $isActive): static
+    public function setIsActive(?bool $isActive): static
     {
         $this->isActive = $isActive;
 
