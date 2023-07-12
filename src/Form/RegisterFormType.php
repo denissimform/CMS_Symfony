@@ -63,7 +63,7 @@ class RegisterFormType extends AbstractType
                 'constraints' => [new NotBlank(message: 'LastName cannot be blank.'), new Regex(
                     pattern: '/\d/',
                     match: false,
-                    message: 'First name cannot contain a number',
+                    message: 'Last name cannot contain a number',
                 )],
             ])
             ->add('gender', ChoiceType::class, [
@@ -89,10 +89,8 @@ class RegisterFormType extends AbstractType
                     new IsTrue(message: 'Please agree to Terms & Conditions to move further.')
                 ]
             ])
-            ->add('company', EntityType::class, [
-                'class' => Company::class,
-                'choice_label' => 'name',
-                'placeholder' => 'Select Company'
+            ->add('company', CompanyAutocompleteField::class, [
+                'placeholder' => 'Select Company',
             ])
             ;
     }

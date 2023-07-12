@@ -70,7 +70,7 @@ class MainController extends AbstractController
 
         return $this->render('main/register.html.twig', [
             'userForm' => $form->createView(),
-        ]);
+        ], new Response(null, $form->isSubmitted() ? ($form->isValid() ? 200 : 422) : 200));
     }
 
     // Login
