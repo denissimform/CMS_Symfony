@@ -1,0 +1,35 @@
+/* @import url('https:onts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200;300;400;500;600;700;800&display=swap'); */
+
+@import "./variables/variables.scss";
+
+/* Import Bootstrap source files (Required file) */
+@import "../libs/bootstrap/scss/bootstrap.scss";
+
+
+@import "./variables/theme-variables.scss";
+
+
+/* Scrollbar style (Required file) */
+@import "../libs/simplebar/dist/simplebar.css";
+
+/* Tabler Icons style */
+@import "../styles/icons/tabler-icons/tabler-icons.css";
+
+
+/* Theme Layouts style (Required file) */
+@import "./layouts/sidebar.scss";
+@import "./layouts/header.scss";
+@import "./layouts/layouts.scss";
+
+/* Component style (Required file) */
+
+@import "./component/reboot.scss";
+@import "./component/card.scss";
+
+/* Utilities style (Required file) */
+@import "./utilities/icon-size.scss";
+@import "./utilities/background.scss";
+
+
+/* Pages style (Required file) */
+@import "./pages/dashboard1.scss";
