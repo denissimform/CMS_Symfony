@@ -4,8 +4,11 @@ namespace App\Controller;
 
 use App\Entity\User;
 use App\Form\RegisterFormType;
-use App\Form\RegistrationFormType;
+use App\Repository\UserRepository;
+// use App\Form\RegistrationFormType;
 use Doctrine\ORM\EntityManagerInterface;
+use Exception;
+use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -13,6 +16,7 @@ use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
+use SymfonyCasts\Bundle\VerifyEmail\Exception\VerifyEmailExceptionInterface;
 use SymfonyCasts\Bundle\VerifyEmail\VerifyEmailHelperInterface;
 
 class MainController extends AbstractController
@@ -113,5 +117,59 @@ class MainController extends AbstractController
             'error' => $authenticationUtils->getLastAuthenticationError(),
             'last_username' => $authenticationUtils->getLastUsername()
         ]);
+    }
+
+    // User Verification
+    #[Route('/verify', name: 'app_verify_email')]
+    public function verifyUserEmail(Request $request, VerifyEmailHelperInterface $verifyEmailHelperInterface, UserRepository $userRepo, EntityManagerInterface $em)
+    {
+        $user = $userRepo->find($request->query->get('id'));
+
+        if (!$user) {
+            throw $this->createNotFoundException('User not found');
+        }
+
+        try {
+            $verifyEmailHelperInterface->validateEmailConfirmation(
+                $request->getUri(),
+                $user->getId(),
+                $user->getEmail()
+            );
+        } catch (VerifyEmailExceptionInterface $e) {
+            $this->addFlash('error', $e->getReason());
+            return $this->redirectToRoute('app_login');
+        }
+
+        $user->setIsVerified(true);
+        $em->flush();
+
+        $this->addFlash('success', 'Account Verified!! Now you can successfully log in.');
+        return $this->redirectToRoute('app_login');
+    }
+
+    // Send Verification Mail
+    #[Route('/sendmail', name: 'app_send_email')]
+    public function sendEmail(MailerInterface $mailerInterface, string $email, string $url, string $username)
+    {
+
+        try {
+            
+            $email = (new TemplatedEmail())
+                ->from('denisshingala@gmail.com')
+                ->to($email)
+                ->subject('Email Verification')
+                ->htmlTemplate('email/verify.html.twig')
+                ->context([
+                    'confirmUrl' => $url,
+                    'username' => $username
+                ]);
+
+            $mailerInterface->send($email);
+
+        } catch (Exception $e) {
+            return 0;
+        }
+
+        return 1;
     }
 }

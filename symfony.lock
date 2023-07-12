@@ -35,6 +35,9 @@
             "migrations/.gitignore"
         ]
     },
+    "knplabs/knp-time-bundle": {
+        "version": "v1.20.0"
+    },
     "phpunit/phpunit": {
         "version": "9.6",
         "recipe": {
@@ -265,6 +268,9 @@
             "config/packages/uid.yaml"
         ]
     },
+    "symfony/ux-turbo": {
+        "version": "v2.10.0"
+    },
     "symfony/validator": {
         "version": "6.3",
         "recipe": {
@@ -317,9 +323,6 @@
             "package.json",
             "webpack.config.js"
         ]
-    },
-    "symfonycasts/verify-email-bundle": {
-        "version": "v1.13.0"
     },
     "twig/extra-bundle": {
         "version": "v3.6.1"
