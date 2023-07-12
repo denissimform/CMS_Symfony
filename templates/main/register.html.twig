@@ -1,66 +1,64 @@
-{% extends "base.html.twig" %}
+{% extends 'main/base.html.twig' %}
 
-{% block title %}Register User
+{% block title %}Login User
 {% endblock %}
 
 {% block body %}
-	<br>
-	<div class="form-bg">
-		<div class="container">
-			<div class="row">
-				<div class="col-md-6">
-					<div class="form-container">
-						<h3 class="title">Register</h3>
-                        
-						{{ form_start(userForm, { 'attr' : {'class': 'form-horizontal'} }) }}
+	<div class="page-wrapper" id="main-wrapper" data-layout="vertical" data-navbarbg="skin6" data-sidebartype="full" data-sidebar-position="fixed" data-header-position="fixed">
+		<div class="position-relative overflow-hidden radial-gradient min-vh-100 d-flex align-items-center justify-content-center">
+			<div class="d-flex align-items-center justify-content-center w-100">
+				<div class="row justify-content-center w-100">
+					<div class="col-md-8 col-lg-6 col-xxl-3">
+						<div class="card mb-0">
+							<div class="card-body">
+								<a href="#" class="text-nowrap logo-img text-center d-block py-3 w-100">
+									<img src="{{ asset('logo.png') }}" width="180" alt="Logo">
+								</a>
+								{{ form_start(userForm) }}
+								<div class="mb-3">
+									{{ form_row(userForm.username, {'attr': {'class' : 'form-control'}}) }}
+								</div>
+								<div class="mb-3">
+									{{ form_row(userForm.email, {'attr': {'class' : 'form-control'}}) }}
+								</div>
+								<div class="mb-3">
+									{{ form_row(userForm.password.first, {'attr': {'class' : 'form-control'}}) }}
+								</div>
+								<div class="mb-3">
+									{{ form_row(userForm.password.second, {'attr': {'class' : 'form-control'}}) }}
+								</div>
+								<hr/>
+								<h5>Personal Information</h5>
+								<div class="mb-3">
+									{{ form_row(userForm.firstName, {'attr': {'class' : 'form-control'}}) }}
+								</div>
+								<div class="mb-3">
+									{{ form_row(userForm.lastName, {'attr': {'class' : 'form-control'}}) }}
+								</div>
+								<div class="mb-3">
+									{{ form_row(userForm.dob, {'attr': {'class' : 'form-control'}}) }}
+								</div>
+								<div class="mb-3">
+									{{ form_row(userForm.gender, {'attr': {'class' : 'form-control'}}) }}
+								</div>
+								<div class="mb-3">
+									{{ form_row(userForm.company, {'attr': {'class' : 'form-control'}}) }}
+								</div>
+								<br>
+								<div class="mb-3">
+									{{ form_row(userForm.agreeTerms) }}
+								</div>
 
-						<div class="form-group">
-							{{ form_row(userForm.username, {'attr': {'class' : 'form-control'}}) }}
-						</div>
-						<div class="form-group">
-							{{ form_row(userForm.email, {'attr': {'class' : 'form-control'}}) }}
-						</div>
-						<div class="form-group">
-							{{ form_row(userForm.password.first, {'attr': {'class' : 'form-control'}}) }}
-						</div>
-						<div class="form-group">
-							{{ form_row(userForm.password.second, {'attr': {'class' : 'form-control'}}) }}
-						</div>
-						
+								<button class="btn btn-primary w-100 py-8 fs-4 mb-4 rounded-2" type="submit">Create</button>
 
-						<hr/>
-						<h4 class="sub-title">Personal Information</h4>
+								<div class="d-flex align-items-center justify-content-center">
+									<p class="fs-4 mb-0 fw-bold">Already have an Account?</p>
+									<a class="text-primary fw-bold ms-2" href="{{ path('app_login') }}">Sign In</a>
+								</div>
 
-						<div class="form-group">
-							{{ form_row(userForm.firstName, {'attr': {'class' : 'form-control'}}) }}
+								{{ form_end(userForm) }}
+							</div>
 						</div>
-						<div class="form-group">
-							{{ form_row(userForm.lastName, {'attr': {'class' : 'form-control'}}) }}
-						</div>
-						<div class="form-group">
-							{{ form_row(userForm.dob, {'attr': {'class' : 'form-control'}}) }}
-						</div>
-						<br>
-						<div class="form-group">
-							<label>Gender</label>
-							{{ form_row(userForm.gender, {'attr': {'class' : 'form-control'}}) }}
-						</div>
-						<div class="form-group">
-							{{ form_row(userForm.company, {'attr': {'class' : 'form-control'}}) }}
-						</div>
-
-                        <br>
-						<div class="form-group">
-						    {{ form_row(userForm.agreeTerms) }}
-                        </div>
-
-						<span class="signin-link">Already have an account? Click here to
-							<a href="{{ path('app_login') }}">Login</a>
-						</span>
-
-						<button class="btn signup" type="submit">Create</button>
-
-						{{ form_end(userForm) }}
 					</div>
 				</div>
 			</div>

@@ -2,11 +2,13 @@
 
 namespace App\Entity;
 
-use App\Repository\ProjectRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
+use App\Enum\PaymentType;
+use App\Enum\ProjectStatus;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\ProjectRepository;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ArrayCollection;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 
 #[ORM\Entity(repositoryClass: ProjectRepository::class)]
@@ -96,7 +98,7 @@ class Project
         return $this->status;
     }
 
-    public function setStatus(string $status): static
+    public function setStatus(ProjectStatus $status): static
     {
         $this->status = $status;
 
@@ -132,7 +134,7 @@ class Project
         return $this->paymentType;
     }
 
-    public function setPaymentType(string $paymentType): static
+    public function setPaymentType(PaymentType $paymentType): static
     {
         $this->paymentType = $paymentType;
 
