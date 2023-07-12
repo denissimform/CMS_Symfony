@@ -18,10 +18,11 @@
 					<tr>
 						<th scope="row">{{ department.id }}</th>
 						<td>{{ department.name }}</td>
-						<td>{{ department.createdAt|date }}</td>
+						<td>{{ department.createdAt|ago }}</td>
 						<td>{{ department.UpdatedAt|date }}</td>
 						<td>
-							<a href="{{ path('app_admin_department_update',{id:department.id}) }}">EDIT</a>
+							<a href="{{ path('app_admin_department_update',{id:department.id, flag:0}) }}">{{ department.isActive ? 'ACTIVE':'INACTIVE' }}</a>
+							&nbsp;&nbsp;<a href="{{ path('app_admin_department_update',{id:department.id, flag:1}) }}">EDIT</a>
 							&nbsp;&nbsp;<a href="{{ path('app_admin_department_delete',{id:department.id}) }}">DELETE</a>
 						</td>
 					</tr>

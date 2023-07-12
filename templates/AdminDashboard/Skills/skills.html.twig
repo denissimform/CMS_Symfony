@@ -18,10 +18,11 @@
 					<tr>
 						<th scope="row">{{ skill.id }}</th>
 						<td>{{ skill.name }}</td>
-						<td>{{ skill.createdAt|date }}</td>
+						<td>{{ skill.createdAt|ago }}</td>
 						<td>{{ skill.UpdatedAt|date }}</td>
 						<td>
-							<a href="{{ path('app_admin_skills_update',{id:skill.id}) }}">EDIT</a>
+							<a href="{{ path('app_admin_skills_update',{id:skill.id, flag:0}) }}">{{ skill.isActive ? 'ACTIVE':'INACTIVE' }}</a>
+							&nbsp;&nbsp;<a href="{{ path('app_admin_skills_update',{id:skill.id, flag:1}) }}">EDIT</a>
 							&nbsp;&nbsp;<a href="{{ path('app_admin_skills_delete',{id:skill.id}) }}">DELETE</a>
 						</td>
 					</tr>
