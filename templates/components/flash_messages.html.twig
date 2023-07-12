@@ -1,0 +1,16 @@
+{% block flash %}
+	{% for error in app.flashes("error") %}
+		<div class="alert alert-danger alert-dismissible rounded-0">
+			<strong>Error!</strong>
+			{{ error }}
+			<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+		</div>
+	{% endfor %}
+	{% for success in app.flashes("success") %}
+		<div class="alert alert-primary alert-dismissible rounded-0">
+			<strong>Success!</strong>
+			{{ success }}
+			<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+		</div>
+	{% endfor %}
+{% endblock %}
