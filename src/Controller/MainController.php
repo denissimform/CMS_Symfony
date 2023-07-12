@@ -117,7 +117,7 @@ class MainController extends AbstractController
     {
 
         $email = (new TemplatedEmail())
-            ->from('htest6236@gmail.com')
+            ->from('denisshingala@gmail.com')
             ->to($email)
             ->subject('Email Verification')
             ->htmlTemplate('email/verify.html.twig')
