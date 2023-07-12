@@ -16,11 +16,13 @@ class CompanyAutocompleteField extends AbstractType
     {
         $resolver->setDefaults([
             'class' => Company::class,
+            'min_characters' => 2,
             'placeholder' => 'Choose a Company',
             'choice_label' => 'name',
             'query_builder' => function (CompanyRepository $companyRepository) {
                 return $companyRepository->createQueryBuilder('company');
             },
+            'autocomplete' =>true,
             // 'security' => 'ROLE_SOMETHING',
         ]);
     }

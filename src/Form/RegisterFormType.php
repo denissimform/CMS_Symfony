@@ -72,7 +72,7 @@ class RegisterFormType extends AbstractType
                     'Female' => 'Female',
                     'Others' => 'Others'
                 ),
-                'expanded' => true,
+                'expanded' => false,
                 'constraints' => [new NotBlank(message: 'Please select gender.')],
             ])
             ->add('dob', BirthdayType::class, [
@@ -89,10 +89,7 @@ class RegisterFormType extends AbstractType
                     new IsTrue(message: 'Please agree to Terms & Conditions to move further.')
                 ]
             ])
-            ->add('company', CompanyAutocompleteField::class, [
-                'placeholder' => 'Select Company',
-            ])
-            ;
+            ->add('company', CompanyAutocompleteField::class);
     }
 
     public function configureOptions(OptionsResolver $resolver): void

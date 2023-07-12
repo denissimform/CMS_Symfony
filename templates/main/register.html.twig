@@ -4,66 +4,73 @@
 {% endblock %}
 
 {% block body %}
-	<div class="page-wrapper" id="main-wrapper" data-layout="vertical" data-navbarbg="skin6" data-sidebartype="full" data-sidebar-position="fixed" data-header-position="fixed">
-		<div class="position-relative overflow-hidden radial-gradient min-vh-100 d-flex align-items-center justify-content-center">
-			<div class="d-flex align-items-center justify-content-center w-100">
-				<div class="row justify-content-center w-100">
-					<div class="col-6">
-						<div class="card mb-0">
-							<div class="card-body">
-								<a href="#" class="text-nowrap logo-img text-center d-block py-3 w-100">
-									<img src="{{ asset('logo.png') }}" width="180" alt="Logo">
-								</a>
-								{{ form_start(userForm) }}
-								<div class="d-flex justify-content-center flex-wrap">
-									<div class="mt-2 p-3">
+<div class="page-wrapper" id="main-wrapper" data-layout="vertical" data-navbarbg="skin6" data-sidebartype="full"
+	data-sidebar-position="fixed" data-header-position="fixed">
+	<div
+		class="position-relative overflow-hidden radial-gradient min-vh-100 d-flex align-items-center justify-content-center">
+		<div class="d-flex align-items-center justify-content-center w-100">
+			<div class="row justify-content-center w-100">
+				<div class="col-6">
+					<div class="card mb-0">
+						<div class="card-body">
+							<a href="#" class="text-nowrap logo-img text-center d-block py-3 w-100">
+								<img src="{{ asset('logo.png') }}" width="180" alt="Logo">
+							</a>
+							{{ form_start(userForm) }}
+							<div class="d-flex justify-content-center flex-wrap">
+								<div class="mt-2 p-3 row">
+									<div class="col">
 										<div class="mb-3">
-											{{ form_row(userForm.username, {'attr': {'class' : 'form-control'}}) }}
+											{{ form_row(userForm.username) }}
 										</div>
 										<div class="mb-3">
-											{{ form_row(userForm.email, {'attr': {'class' : 'form-control'}}) }}
+											{{ form_row(userForm.email) }}
 										</div>
 										<div class="mb-3">
-											{{ form_row(userForm.password.first, {'attr': {'class' : 'form-control'}}) }}
+											{{ form_row(userForm.password.first) }}
 										</div>
 										<div class="mb-3">
-											{{ form_row(userForm.password.second, {'attr': {'class' : 'form-control'}}) }}
-										</div>
-									</div>
-									<div class="mt-2 p-3">
-										<div class="mb-3">
-											{{ form_row(userForm.firstName, {'attr': {'class' : 'form-control'}}) }}
-										</div>
-										<div class="mb-3">
-											{{ form_row(userForm.lastName, {'attr': {'class' : 'form-control'}}) }}
-										</div>
-										<div class="mb-3">
-											{{ form_row(userForm.dob, {'attr': {'class' : 'form-control'}}) }}
-										</div>
-										<div class="mb-3">
-											{{ form_row(userForm.gender, {'attr': {'class' : 'form-control'}}) }}
-										</div>
-										<div class="mb-3">
-											{{ form_row(userForm.company, {'attr': {'class' : 'form-control'}}) }}
-										</div>
-										<br>
-										<div class="mb-3">
-											{{ form_row(userForm.agreeTerms) }}
+											{{ form_row(userForm.password.second) }}
 										</div>
 									</div>
+									<div class="col">
+										<div class="mb-3">
+											{{ form_row(userForm.firstName) }}
+										</div>
+										<div class="mb-3">
+											{{ form_row(userForm.lastName) }}
+										</div>
+										<div class="mb-3">
+											{{ form_row(userForm.dob) }}
+										</div>
+										<div class="mb-3">
+											{{ form_row(userForm.gender) }}
+										</div>
+									</div>
+									<div>
+										{{ form_row(userForm.company) }}
+									</div>
+									<br>
+									<div class="mb-3 col-md-12">
+										{{ form_row(userForm.agreeTerms) }}
+									</div>
 								</div>
-								<button class="btn btn-primary w-100 py-8 fs-4 mb-4 rounded-2" type="submit">Create</button>
-
-								<div class="d-flex align-items-center justify-content-center">
-									<p class="fs-4 mb-0 fw-bold">Already have an Account?</p>
-									<a class="text-primary fw-bold ms-2" href="{{ path('app_login') }}">Sign In</a>
+								<div class="col ms-3">
+									<button class="btn btn-primary align-start py-8 fs-4 mb-4 rounded-2"
+										type="submit">Create</button>
 								</div>
-								{{ form_end(userForm) }}
 							</div>
+
+							<div class="d-flex align-items-center justify-content-center">
+								<p class="fs-4 mb-0 fw-bold">Already have an Account?</p>
+								<a class="text-primary fw-bold ms-2" href="{{ path('app_login') }}">Sign In</a>
+							</div>
+							{{ form_end(userForm) }}
 						</div>
 					</div>
 				</div>
 			</div>
 		</div>
 	</div>
+</div>
 {% endblock %}

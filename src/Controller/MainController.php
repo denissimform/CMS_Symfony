@@ -7,6 +7,7 @@ use App\Form\RegisterFormType;
 use App\Form\RegistrationFormType;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Exception;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -61,7 +62,12 @@ class MainController extends AbstractController
             $name = $user->getFirstname() . ' ' . $user->getLastName();
 
             // Send Email
-            $this->sendEmail($mailerInterface, $user->getEmail(), $signatureComponents->getSignedUrl(), $name);
+            $flag = $this->sendEmail($mailerInterface, $user->getEmail(), $signatureComponents->getSignedUrl(), $name);
+
+            if (!$flag) {
+                $this->addFlash('error', 'Mail is not sent.');
+                return $this->redirectToRoute('app_login');
+            }
 
             $this->addFlash('success', 'Confirm your email at : ' . $user->getEmail());
 
@@ -116,17 +122,23 @@ class MainController extends AbstractController
     public function sendEmail(MailerInterface $mailerInterface, string $email, string $url, string $username)
     {
 
-        $email = (new TemplatedEmail())
-            ->from('denisshingala@gmail.com')
-            ->to($email)
-            ->subject('Email Verification')
-            ->htmlTemplate('email/verify.html.twig')
-            ->context([
-                'confirmUrl' => $url,
-                'username' => $username
-            ]);
+        try {
+            
+            $email = (new TemplatedEmail())
+                ->from('denisshingala@gmail.com')
+                ->to($email)
+                ->subject('Email Verification')
+                ->htmlTemplate('email/verify.html.twig')
+                ->context([
+                    'confirmUrl' => $url,
+                    'username' => $username
+                ]);
 
-        $mailerInterface->send($email);
+            $mailerInterface->send($email);
+
+        } catch (Exception $e) {
+            return 0;
+        }
 
         return 1;
     }
