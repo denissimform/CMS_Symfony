@@ -2,9 +2,10 @@
 
 namespace App\Entity;
 
-use App\Repository\EmployeeSkillsRepository;
 use Doctrine\DBAL\Types\Types;
+use App\Enum\EmployeeSkillLevel;
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\EmployeeSkillsRepository;
 
 #[ORM\Entity(repositoryClass: EmployeeSkillsRepository::class)]
 class EmployeeSkills
@@ -45,7 +46,7 @@ class EmployeeSkills
         return $this->level;
     }
 
-    public function setLevel(string $level): static
+    public function setLevel(EmployeeSkillLevel $level): static
     {
         $this->level = $level;
 

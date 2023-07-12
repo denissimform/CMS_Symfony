@@ -28,7 +28,6 @@ class Company
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     private ?\DateTimeInterface $establishedAt = null;
 
-
     #[ORM\Column]
     private ?bool $isActive = null;
 

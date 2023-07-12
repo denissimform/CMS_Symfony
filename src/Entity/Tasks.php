@@ -2,11 +2,13 @@
 
 namespace App\Entity;
 
-use App\Repository\TasksRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
+use App\Enum\PriorityLevel;
+use App\Enum\SeverityLevel;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\TasksRepository;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ArrayCollection;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 
 #[ORM\Entity(repositoryClass: TasksRepository::class)]
@@ -86,7 +88,7 @@ class Tasks
         return $this->priority;
     }
 
-    public function setPriority(string $priority): static
+    public function setPriority(PriorityLevel $priority): static
     {
         $this->priority = $priority;
 
@@ -98,7 +100,7 @@ class Tasks
         return $this->severity;
     }
 
-    public function setSeverity(string $severity): static
+    public function setSeverity(SeverityLevel $severity): static
     {
         $this->severity = $severity;
 

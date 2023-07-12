@@ -2,9 +2,10 @@
 
 namespace App\Entity;
 
-use App\Repository\DocumentsRepository;
+use App\Enum\ReferenceType;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\DocumentsRepository;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 
 #[ORM\Entity(repositoryClass: DocumentsRepository::class)]
@@ -66,7 +67,7 @@ class Documents
         return $this->referenceType;
     }
 
-    public function setReferenceType(string $referenceType): static
+    public function setReferenceType(ReferenceType $referenceType): static
     {
         $this->referenceType = $referenceType;
 

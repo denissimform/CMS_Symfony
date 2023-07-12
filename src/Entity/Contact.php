@@ -2,9 +2,10 @@
 
 namespace App\Entity;
 
-use App\Repository\ContactRepository;
+use App\Enum\UserType;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\ContactRepository;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 
 #[ORM\Entity(repositoryClass: ContactRepository::class)]
@@ -138,7 +139,7 @@ class Contact
         return $this->usertype;
     }
 
-    public function setUsertype(string $usertype): static
+    public function setUsertype(UserType $usertype): static
     {
         $this->usertype = $usertype;
 

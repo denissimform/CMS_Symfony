@@ -2,8 +2,8 @@
 
 namespace App\Entity;
 
-use App\Repository\PasswordResetRequestRepository;
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\PasswordResetRequestRepository;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 
 #[ORM\Entity(repositoryClass: PasswordResetRequestRepository::class)]
