@@ -1,15 +1,11 @@
-<<<<<<< HEAD
 @import url('https://fonts.googleapis.com/css2?family=Poppins&display=swap');
 @import '~bootstrap';
 
 body {
     font-family: 'Poppins', sans-serif !important;
 }
-=======
-@import "~bootstrap";
 
 .ts-control
 {
     border: none;
 }
->>>>>>> Login/Register
