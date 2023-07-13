@@ -2,12 +2,10 @@
 
 namespace App\Controller;
 
-use App\Entity\User;
 use App\Form\RegisterFormType;
-use App\Repository\UserRepository;
-// use App\Form\RegistrationFormType;
-use Doctrine\ORM\EntityManagerInterface;
 use Exception;
+use App\Repository\UserRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -27,87 +25,52 @@ class MainController extends AbstractController
         return $this->render('main/index.html.twig');
     }
 
-    // #[Route('/register', name: 'app_register')]
-    // public function register(Request $request, UserPasswordHasherInterface $userPasswordHasher, EntityManagerInterface $entityManager, VerifyEmailHelperInterface $verifyEmailHelperInterface, MailerInterface $mailerInterface): Response
-    // {
-    //     $user = new User();
-    //     $form = $this->createForm(RegistrationFormType::class, $user);
-    //     $form->handleRequest($request);
-
-    //     if ($form->isSubmitted() && $form->isValid()) {
-
-    //         // encode the plain password
-    //         $user->setPassword(
-    //             $userPasswordHasher->hashPassword(
-    //                 $user,
-    //                 $form->get('plainPassword')->getData()
-    //             )
-    //         );
-
-    //         $user->setUuid('hghg');
-
-    //         $entityManager->persist($user);
-    //         $entityManager->flush();
-    //         // do anything else you need here, like send an email
-
-    //         // return $userAuthenticator->authenticateUser(
-    //         //     $user,
-    //         //     $formLoginAuthenticator,
-    //         //     $request
-    //         // );
-
-    //         // $signatureComponents = $verifyEmailHelperInterface->generateSignature(
-    //         //     'app_verify_email',
-    //         //     $user->getId(),
-    //         //     $user->getEmail(),
-    //         //     ['id' => $user->getId()]
-    //         // );
-
-    //         // dd($signatureComponents->getSignedUrl());
-
-    //         // $this->sendEmail($mailerInterface, $user->getEmail(), $signatureComponents->getSignedUrl(), $user->getName());
-
-    //         // $this->addFlash('success', 'Confirm your email at : ' . $user->getEmail());
-
-    //         return $this->redirectToRoute('app_main');
-    //     }
-
-    //     return $this->render('main/register.html.twig', [
-    //         'registrationForm' => $form->createView(),
-    //     ]);
-    // }
-
-
+    // Registration
     #[Route('/register', name: 'app_register')]
-    public function register(Request $request, UserPasswordHasherInterface $userPasswordHasher, EntityManagerInterface $entityManager): Response
+    public function register(Request $request, UserPasswordHasherInterface $userPasswordHasher, EntityManagerInterface $entityManager, VerifyEmailHelperInterface $verifyEmailHelperInterface, MailerInterface $mailerInterface): Response
     {
-        $user = new User();
-        $form = $this->createForm(RegisterFormType::class, $user);
+
+        $form = $this->createForm(RegisterFormType::class);
         $form->handleRequest($request);
 
-        // dd($form);
         if ($form->isSubmitted() && $form->isValid()) {
-            // encode the plain password
-            // dd($user);
-            // $user->setPassword(
-            //     $userPasswordHasher->hashPassword(
-            //         $user,
-            //         $form->get('plainPassword')->getData()
-            //     )
-            // );
 
+            $user = $form->getData();
+            $user->setPassword(
+                $userPasswordHasher->hashPassword(
+                    $user,
+                    $form->get('password')->getData()
+                )
+            );
+
+            // dd($user);
             $entityManager->persist($user);
             $entityManager->flush();
-            // do anything else you need here, like send an email
 
-            return $this->redirectToRoute('app_main');
+            // Create Signature
+            $signatureComponents = $verifyEmailHelperInterface->generateSignature(
+                'app_verify_email',
+                $user->getId(),
+                $user->getEmail(),
+                ['id' => $user->getId()]
+            );
+
+            $name = $user->getFirstname() . ' ' . $user->getLastName();
+
+            // Send Email
+            $this->sendEmail($mailerInterface, $user->getEmail(), $signatureComponents->getSignedUrl(), $name);
+
+            $this->addFlash('success', 'Confirm your email at : ' . $user->getEmail());
+
+            return $this->redirectToRoute('app_login');
         }
 
         return $this->render('main/register.html.twig', [
             'userForm' => $form->createView(),
-        ]);
+        ], new Response(null, $form->isSubmitted() ? ($form->isValid() ? 200 : 422) : 200));
     }
 
+    // Login
     #[Route('/login', name: 'app_login')]
     public function login(AuthenticationUtils $authenticationUtils): Response
     {
@@ -151,7 +114,7 @@ class MainController extends AbstractController
     {
 
         try {
-            
+
             $email = (new TemplatedEmail())
                 ->from('denisshingala@gmail.com')
                 ->to($email)
@@ -163,7 +126,6 @@ class MainController extends AbstractController
                 ]);
 
             $mailerInterface->send($email);
-
         } catch (Exception $e) {
             return 0;
         }

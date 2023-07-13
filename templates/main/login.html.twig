@@ -1,42 +1,64 @@
-{% extends 'base.html.twig' %}
+{% extends 'main/base.html.twig' %}
 
-{% block title %}Login
+{% block title %}Login User
 {% endblock %}
 
 {% block body %}
-<div class="container">
-	<div class="row">
-		<div class="login-form bg-light mt-4 p-4">
-			<form method="post" class="row g-3">
-				<h1 class="h3 mb-3 font-weight-normal">Please sign in</h1>
+	<div class="page-wrapper" id="main-wrapper" data-layout="vertical" data-navbarbg="skin6" data-sidebartype="full" data-sidebar-position="fixed" data-header-position="fixed">
+		<div class="position-relative overflow-hidden radial-gradient min-vh-100 d-flex align-items-center justify-content-center">
+			<div class="d-flex align-items-center justify-content-center w-100">
+				<div class="row justify-content-center w-100">
+					<div class="col-md-8 col-lg-6 col-xxl-3">
+						<div class="card mb-0">
+							<div class="card-body">
+								<a href="#" class="text-nowrap logo-img text-center d-block py-3 w-100">
+									<img src="{{ asset('logo.png') }}" width="180" alt="Logo">
+								</a>
+								<form method="post">
+									{% if error %}
+										<div class="alert alert-danger">{{ error.messageKey | trans(error.messageData, 'security') }}</div>
+									{% endif %}
 
-				{% if error %}
-					<div class="alert alert-danger">{{ error.messageKey | trans(error.messageData, 'security') }}</div>
-				{% endif %}
+									{% for flash in app.flashes('success') %}
+										<div class="alert alert-success">{{ flash }}</div>
+									{% endfor %}
 
+									{% for flash in app.flashes('error') %}
+										<div class="alert alert-danger">{{ flash }}</div>
+									{% endfor %}
 
-				<div class="col-12">
-					<label for="inputEmail">Email</label>
-					<input type="email" name="email" id="inputEmail" class="form-control" value="{{ last_username }}" required autofocus>
+									<div class="mb-3">
+										<label for="inputEmail" class="form-label">Email</label>
+										<input type="email" name="email" id="inputEmail" class="form-control" value="{{ last_username }}" required autofocus>
 
-					<input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}"/>
+										<input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}"/>
+									</div>
+									<div class="mb-4">
+										<label for="inputPassword" class="form-label">Password</label>
+										<input type="password" name="password" id="inputPassword" class="form-control" required>
+									</div>
+									<div class="d-flex align-items-center justify-content-between mb-4">
+										<div class="form-check">
+											<input class="form-check-input primary" type="checkbox" name="_remember_me" id="rememberMe"/>
+											<label class="form-check-label text-dark" for="rememberMe">
+												Remeber Me
+											</label>
+										</div>
+										<a class="text-primary fw-bold" href="#">Forgot Password ?</a>
+									</div>
+
+									<button class="btn btn-primary w-100 py-8 fs-4 mb-4 rounded-2" type="submit">Login</button>
+
+									<div class="d-flex align-items-center justify-content-center">
+										<p class="fs-4 mb-0 fw-bold">New to Managex?</p>
+										<a class="text-primary fw-bold ms-2" href="{{ path('app_register') }}">Create an account</a>
+									</div>
+								</form>
+							</div>
+						</div>
+					</div>
 				</div>
-				<div class="col-12">
-					<label for="inputPassword">Password</label>
-					<input type="password" name="password" id="inputPassword" class="form-control" required>
-				</div>
-
-				<div class="col-12">
-					<input type="checkbox" name="_remember_me" id="rememberMe" />   <label for="rememberMe">Remember Me</label>
-				</div>
-
-				<div class="col-12">
-					<button class="btn btn-lg btn-primary float-end" type="submit">
-						Sign in
-					</button>
-				</div>
-			</form>
+			</div>
 		</div>
 	</div>
-</div>
 {% endblock %}
