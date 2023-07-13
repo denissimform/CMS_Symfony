@@ -9,7 +9,13 @@
         <link rel="icon" href="{{ asset('favicon.png') }}">
 		{% block stylesheets %}
 			{{ encore_entry_link_tags('app') }}
+			<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fomantic-ui/2.9.2/semantic.min.css">
 		{% endblock %}
+		<!-- Javascript start -->
+		{% block javascripts %}
+			{{ encore_entry_script_tags('app') }}
+		{% endblock %}
+		<!-- Javascript end -->
 	</head>
 	<body>
 		<!--  Body Wrapper -->
@@ -43,13 +49,6 @@
 			</div>
 			<!--  Main End -->
 		</div>
-		{% block body %}{% endblock %}
 		<!--  Body End -->
-
-		<!-- Javascript start -->
-		{% block javascripts %}
-			{{ encore_entry_script_tags('app') }}
-		{% endblock %}
-		<!-- Javascript end -->
 	</body>
 </html>

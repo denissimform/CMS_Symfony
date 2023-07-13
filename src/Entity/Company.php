@@ -9,6 +9,7 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: CompanyRepository::class)]
 #[UniqueEntity(fields: ['name', 'isActive'], message: "This name is already in used!!")]
@@ -19,18 +20,23 @@ class Company
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups('company:dt:read')]
     private ?int $id = null;
 
     #[ORM\Column(length: 40)]
+    #[Groups('company:dt:read')]
     private ?string $name = null;
 
     #[ORM\Column(type: Types::TEXT)]
+    #[Groups('company:dt:read')]
     private ?string $about = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
+    #[Groups('company:dt:read')]
     private ?\DateTimeInterface $establishedAt = null;
 
     #[ORM\Column]
+    #[Groups('company:dt:read')]
     private ?bool $isActive = true;
 
     #[ORM\ManyToOne(inversedBy: 'companies')]

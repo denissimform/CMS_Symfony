@@ -1,0 +1,35 @@
+{% extends 'superadmin/index.html.twig' %}
+
+{% block stylesheets %}
+	{{ parent() }}
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fomantic-ui/2.9.2/semantic.min.css">
+{% endblock %}
+
+{% block title %}
+	Super Admin | Company
+{% endblock %}
+
+{% block layout %}
+	<div class="row">
+		<div class="col-12">
+			<h2>Company</h2>
+			<br>
+		</div>
+		<div class="col-lg-12">
+			<table id="company_dt" class="ui celled table text-center align-middle w-100" {{ stimulus_controller('companyTable', { url: path('app_sa_company_dt') } ) }}>
+				<thead>
+					<tr>
+						<th>ID</th>
+						<th>Name</th>
+						<th>About</th>
+						<th>Established At</th>
+						<th>Status</th>
+						<th>Actions</th>
+					</tr>
+				</thead>
+				<tbody></tbody>
+			</table>
+		</div>
+	</div>
+	<br>
+{% endblock %}

@@ -72,4 +72,32 @@ class CompanyRepository extends ServiceEntityRepository
     //            ->getOneOrNullResult()
     //        ;
     //    }
+
+
+    public function dynamicDataAjaxVise(int $limit, int $start, string $orderByField, string $orderDirection, string $searchBy): array
+    {
+        $queryBuilder = $this->createQueryBuilder('u')
+            ->orderBy("u.$orderByField", $orderDirection);
+
+        if ($searchBy){
+            return $queryBuilder->andWhere('u.name LIKE ?1 OR u.about LIKE ?1 OR u.establishedAt LIKE ?1 OR u.isActive LIKE ?1')
+            ->setParameter(1, '%' . $searchBy . '%')
+            ->getQuery()
+            ->getResult();
+        }
+
+        return $queryBuilder->setMaxResults($limit)
+            ->setFirstResult($start)
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function getTotalUsersCount(): int
+    {
+        return count(
+            $this->createQueryBuilder('u')
+                ->getQuery()
+                ->getResult()
+        );
+    }
 }

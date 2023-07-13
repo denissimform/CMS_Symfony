@@ -31,19 +31,20 @@ class SuperAdminController extends AbstractController
     #[Route("/", name: "app_sa_homepage")]
     public function homepage(): Response
     {
-        $result = $this->CallProcedure('chartData');
+        $result = $this->CallProcedure('chartData', ['userGrowthData', 'pieChartData'], [-1]);
+        // dd($result['pieChartData'][0]);
 
-        $userGrowthData = $result[0];
-        $pieChartData = $result[1][0];
+        $userGrowthData = $result['userGrowthData'];
+        $pieChartData = $result['pieChartData'][0];
 
         foreach ($userGrowthData as $data) {
             $year[] = $data->{'Year'};
             $count[] = $data->{'Count'};
         }
 
-        $companyChart = $this->createPieChart(['isActive', 'InActive'], [$pieChartData->{'companyActive'}, $pieChartData->{'companyInactive'}]);
+        $companyChart = $this->createPieChart(['isActive', 'InActive'], [$pieChartData->{'@companyActive'}, $pieChartData->{'@companyInactive'}]);
 
-        $userChart = $this->createPieChart(['Admin', 'BDA', 'Employees'], [$pieChartData->{'cntAdmin'}, $pieChartData->{'cntBda'},  ($pieChartData->{'total'} - $pieChartData->{'cntAdmin'} - $pieChartData->{'cntBda'})]);
+        $userChart = $this->createPieChart(['Admin', 'BDA', 'Employees'], [$pieChartData->{'@cntAdmin'}, $pieChartData->{'@cntBda'},  ($pieChartData->{'@total'} - $pieChartData->{'@cntAdmin'} - $pieChartData->{'@cntBda'})]);
 
 
         $subscriptionChart = $this->createBarChart();
@@ -53,7 +54,8 @@ class SuperAdminController extends AbstractController
             'companyChart' => $companyChart,
             'userChart' => $userChart,
             'subscriptionChart' => $subscriptionChart,
-            'userGrowthChart' => $userGrowthChart
+            'userGrowthChart' => $userGrowthChart,
+            "flag" => 'Super Admin'
         ]);
     }
 
@@ -117,7 +119,7 @@ class SuperAdminController extends AbstractController
             'labels' => $labels,
             'datasets' => [
                 [
-                    'label' => 'Growth Chart',
+                    'label' => 'User',
                     'data' => $data,
                     'fill' => false,
                     'borderColor' => 'rgb(75, 192, 192)',
@@ -190,9 +192,57 @@ class SuperAdminController extends AbstractController
         $companies = $companyRepository->findBy(["isActive" => true]);
 
         return $this->render(
-            "/superadmin/company/index.html.twig",
+            "/superadmin/company/list.html.twig",
             [
                 "companies" => $companies
+            ]
+        );
+    }
+
+    #[Route('/company/datatable', name: 'app_sa_company_dt')]
+    public function companyDatatable(Request $request, CompanyRepository $companyRepository): Response
+    {
+        $requestData = $request->query->all();
+        $orderByField = $requestData['columns'][$requestData['order'][0]['column']]['data'];
+        $orderDirection = $requestData['order'][0]['dir'];
+        $searchBy = $requestData['search']['value'] ?? null;
+
+        $users = $companyRepository->dynamicDataAjaxVise($requestData['length'], $requestData['start'], $orderByField, $orderDirection, $searchBy);
+        $totalUsers = $companyRepository->getTotalUsersCount();
+
+        $response = [
+            "data" => $users,
+            "recordsTotal" => $totalUsers,
+            "recordsFiltered" => $totalUsers
+        ];
+
+        return $this->json($response, context: ['groups' => 'company:dt:read']);
+    }
+
+    #[Route('/company/delete/{id}', name: 'app_sa_company_delete')]
+    public function toggleCompanyStatus(Company $company): Response
+    {
+        try {
+            $company->setIsActive(!$company->isIsActive());
+            $this->em->flush();
+        } catch (Exception $err) {
+            $this->addFlash("error", $err->getMessage());
+        }
+
+        $this->addFlash('success', 'Company status changed successfully!');
+
+        return $this->redirectToRoute('app_sa_company_list');
+    }
+
+    // Single Company
+    #[Route('/company/{id}', name: 'app_sa_company_single')]
+    public function singleCompany(Company $company): Response
+    {
+        // dd($company);
+        return $this->render(
+            "/superadmin/company/single.html.twig",
+            [
+                'company' => $company
             ]
         );
     }
@@ -206,11 +256,15 @@ class SuperAdminController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            /** @var Company $company */
-            $company = $form->getData();
+            $formData = $form->getData();
+            $formData->setRoles(['ROLE_ADMIN']);
 
-            $entityManager->persist($company);
-            $entityManager->flush();
+            try {
+                $this->em->persist($formData);
+                $this->em->flush();
+            } catch (Exception $e) {
+                $this->addFlash('error', $e->getMessage());
+            }
 
             return $this->redirectToRoute("app_sa_company_list");
         }
@@ -250,18 +304,40 @@ class SuperAdminController extends AbstractController
         );
     }
 
-    // delete company 
-    #[Route("/company/{id}/delete", name: "app_sa_company_delete")]
-    public function deleteCompany(Company $company, EntityManagerInterface $entityManager): Response
-    {
-        try {
-            $company->setIsActive(false);
-            $entityManager->flush();
-            $this->addFlash("success", "Company deleted successfully!");
-        } catch (Exception $err) {
-            $this->addFlash("error", $err->getMessage());
-        }
+    // #[Route('/admin/delete/{id}', name: 'app_sa_admin_delete')]
+    // public function toggleAdminStatus(User $user): Response
+    // {
+    //     try {
+    //         $company->setIsActive(false);
+    //         $entityManager->flush();
+    //         $this->addFlash("success", "Company deleted successfully!");
+    //     } catch (Exception $err) {
+    //         $this->addFlash("error", $err->getMessage());
+    //     }
 
-        return $this->redirectToRoute("app_sa_company_list");
-    }
+    //     $this->addFlash('success', 'User status changed successfully!');
+
+    //     return $this->redirectToRoute('app_sa_admin_homepage');
+    // }
+
+    // #[Route('/admin/datatable', name: 'app_sa_admin_dt')]
+    // public function adminDatatable(Request $request): Response
+    // {
+    //     $requestData = $request->query->all();
+
+    //     $orderByField = $requestData['columns'][$requestData['order'][0]['column']]['data'];
+    //     $orderDirection = $requestData['order'][0]['dir'];
+    //     $searchBy = $requestData['search']['value'] ?? null;
+
+    //     $users = $this->userRepository->dynamicDataAjaxVise($requestData['length'], $requestData['start'], $orderByField, $orderDirection, $searchBy);
+    //     $totalUsers = $this->userRepository->getTotalUsersCount();
+
+    //     $response = [
+    //         "data" => $users,
+    //         "recordsTotal" => $totalUsers,
+    //         "recordsFiltered" => $totalUsers
+    //     ];
+
+    //     return $this->json($response, context: ['groups' => 'user:dt:read']);
+    // }
 }

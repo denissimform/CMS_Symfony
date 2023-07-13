@@ -69,6 +69,64 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
     //         ->getResult();
     // }
 
+    public function dynamicDataAjaxVise(int $limit, int $start, string $orderByField, string $orderDirection, string $searchBy): array
+    {
+        $queryBuilder = $this->createQueryBuilder('u')
+            ->orderBy("u.$orderByField", $orderDirection);
+
+        if ($searchBy){
+            return $queryBuilder->andWhere('u.username LIKE ?1 OR u.gender LIKE ?1 OR u.dob LIKE ?1 OR u.isVerified LIKE ?1 OR u.isActive LIKE ?1')
+            ->setParameter(1, '%' . $searchBy . '%')
+            ->getQuery()
+            ->getResult();
+        }
+
+        if ($orderByField === 'company.name') {
+            $queryBuilder->innerJoin('u.company', 'company')
+                ->orderBy($orderByField, $orderDirection)
+                ->addSelect('company');
+        }
+
+        return $queryBuilder->setMaxResults($limit)
+            ->setFirstResult($start)
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function getTotalUsersCount(): int
+    {
+        return count(
+            $this->createQueryBuilder('u')
+                ->getQuery()
+                ->getResult()
+        );
+    }
+    // public function blockUser($id)
+    // {
+    //     return $this->createQueryBuilder('u')
+    //     ->update('u.isActive', true)
+    //     ->where('u.id = :id')
+    //     ->setParameter('id', $id)
+    //     ->getQuery()
+    //     ->getResult()
+    //     ;
+    // }
+
+    //    /**
+    //     * @return User[] Returns an array of User objects
+    //     */
+    //    public function findByExampleField($value): array
+    //    {
+    //        return $this->createQueryBuilder('u')
+    //            ->andWhere('u.exampleField = :val')
+    //            ->setParameter('val', $value)
+    //            ->orderBy('u.id', 'ASC')
+    //            ->setMaxResults(10)
+    //            ->getQuery()
+    //            ->getResult()
+    //        ;
+    //    }
+
     //    public function findOneBySomeField($value): ?User
     //    {
     //        return $this->createQueryBuilder('u')
