@@ -21,9 +21,11 @@
 						<td>{{ skill.createdAt|ago }}</td>
 						<td>{{ skill.UpdatedAt|date }}</td>
 						<td>
-							<a href="{{ path('app_admin_skills_update',{id:skill.id, flag:0}) }}">{{ skill.isActive ? 'ACTIVE':'INACTIVE' }}</a>
-							&nbsp;&nbsp;<a href="{{ path('app_admin_skills_update',{id:skill.id, flag:1}) }}">EDIT</a>
-							&nbsp;&nbsp;<a href="{{ path('app_admin_skills_delete',{id:skill.id}) }}">DELETE</a>
+							<a href="{{ path('app_admin_skills_update_status',{id:skill.id}) }}">{{ skill.isActive ? 'INACTIVE':'ACTIVE' }}</a>
+							{% if skill.isActive  %}
+								&nbsp;&nbsp;<a href="{{ path('app_admin_skills_update',{id:skill.id}) }}">EDIT</a>
+								&nbsp;&nbsp;<a href="{{ path('app_admin_skills_delete',{id:skill.id}) }}">DELETE</a>
+							{% endif %}
 						</td>
 					</tr>
 				{% endfor %}

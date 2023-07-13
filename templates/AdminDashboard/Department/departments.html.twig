@@ -1,7 +1,11 @@
 {% extends 'base.html.twig' %}
-{% block title %} Department {% endblock %}
+{% block title %}
+	Department
+{% endblock %}
 {% block body %}
-	<center><a class="btn btn-primary" href="{{ path('app_admin_department_create') }}">Create Department</a></center>
+	<center>
+		<a class="btn btn-primary" href="{{ path('app_admin_department_create') }}">Create Department</a>
+	</center>
 	<div class="mx-auto col-10 col-md-8 col-lg-6">
 		<table class="table table-dark table-striped">
 			<thead>
@@ -21,9 +25,11 @@
 						<td>{{ department.createdAt|ago }}</td>
 						<td>{{ department.UpdatedAt|date }}</td>
 						<td>
-							<a href="{{ path('app_admin_department_update',{id:department.id, flag:0}) }}">{{ department.isActive ? 'ACTIVE':'INACTIVE' }}</a>
-							&nbsp;&nbsp;<a href="{{ path('app_admin_department_update',{id:department.id, flag:1}) }}">EDIT</a>
-							&nbsp;&nbsp;<a href="{{ path('app_admin_department_delete',{id:department.id}) }}">DELETE</a>
+							<a href="{{ path('app_admin_department_update_status',{id:department.id}) }}">{{ department.isActive ? 'INACTIVE':'ACTIVE' }}</a>
+							{% if department.isActive %}
+								&nbsp;&nbsp;<a href="{{ path('app_admin_department_update',{id:department.id, flag:1}) }}">EDIT</a>
+								&nbsp;&nbsp;<a href="{{ path('app_admin_department_delete',{id:department.id}) }}">DELETE</a>
+							{% endif %}
 						</td>
 					</tr>
 				{% endfor %}
