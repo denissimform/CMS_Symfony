@@ -5,6 +5,10 @@ body {
     font-family: 'Poppins', sans-serif !important;
 }
 
+table td {
+    cursor: default !important;
+}
+
 .ts-control
 {
     border: none;

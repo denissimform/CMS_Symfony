@@ -28,6 +28,10 @@
 
 				<div
 					class="container-fluid">
+					<!-- Flash messages Start -->
+					{% block flash %}{% endblock %}
+					<!-- Flash messages end -->
+
 					<!-- Layout Start -->
 					{% block layout %}{% endblock %}
 					<!-- Layout end -->
@@ -40,8 +44,11 @@
 			<!--  Main End -->
 		</div>
 		<!--  Body End -->
+
+		<!-- Javascript start -->
 		{% block javascripts %}
 			{{ encore_entry_script_tags('app') }}
 		{% endblock %}
+		<!-- Javascript end -->
 	</body>
 </html>

@@ -74,10 +74,21 @@ class MainController extends AbstractController
     #[Route('/login', name: 'app_login')]
     public function login(AuthenticationUtils $authenticationUtils): Response
     {
+        if ($this->getUser()) {
+            return $this->redirectToRoute("app_sa_homepage");
+        }
+
         return $this->render('main/login.html.twig', [
             'error' => $authenticationUtils->getLastAuthenticationError(),
             'last_username' => $authenticationUtils->getLastUsername()
         ]);
+    }
+
+    // Logout
+    #[Route('/logout', name: 'app_logout')]
+    public function logout(): Response
+    {
+        throw new \Exception("You can't login again!");
     }
 
     // User Verification

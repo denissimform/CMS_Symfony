@@ -4,6 +4,7 @@ namespace App\Factory;
 
 use App\Entity\Company;
 use App\Repository\CompanyRepository;
+use DateTimeImmutable;
 use Zenstruck\Foundry\ModelFactory;
 use Zenstruck\Foundry\Proxy;
 use Zenstruck\Foundry\RepositoryProxy;
@@ -11,21 +12,21 @@ use Zenstruck\Foundry\RepositoryProxy;
 /**
  * @extends ModelFactory<Company>
  *
- * @method        Company|Proxy                     create(array|callable $attributes = [])
- * @method static Company|Proxy                     createOne(array $attributes = [])
- * @method static Company|Proxy                     find(object|array|mixed $criteria)
- * @method static Company|Proxy                     findOrCreate(array $attributes)
- * @method static Company|Proxy                     first(string $sortedField = 'id')
- * @method static Company|Proxy                     last(string $sortedField = 'id')
- * @method static Company|Proxy                     random(array $attributes = [])
- * @method static Company|Proxy                     randomOrCreate(array $attributes = [])
+ * @method        Company|Proxy create(array|callable $attributes = [])
+ * @method static Company|Proxy createOne(array $attributes = [])
+ * @method static Company|Proxy find(object|array|mixed $criteria)
+ * @method static Company|Proxy findOrCreate(array $attributes)
+ * @method static Company|Proxy first(string $sortedField = 'id')
+ * @method static Company|Proxy last(string $sortedField = 'id')
+ * @method static Company|Proxy random(array $attributes = [])
+ * @method static Company|Proxy randomOrCreate(array $attributes = [])
  * @method static CompanyRepository|RepositoryProxy repository()
- * @method static Company[]|Proxy[]                 all()
- * @method static Company[]|Proxy[]                 createMany(int $number, array|callable $attributes = [])
- * @method static Company[]|Proxy[]                 createSequence(iterable|callable $sequence)
- * @method static Company[]|Proxy[]                 findBy(array $attributes)
- * @method static Company[]|Proxy[]                 randomRange(int $min, int $max, array $attributes = [])
- * @method static Company[]|Proxy[]                 randomSet(int $number, array $attributes = [])
+ * @method static Company[]|Proxy[] all()
+ * @method static Company[]|Proxy[] createMany(int $number, array|callable $attributes = [])
+ * @method static Company[]|Proxy[] createSequence(iterable|callable $sequence)
+ * @method static Company[]|Proxy[] findBy(array $attributes)
+ * @method static Company[]|Proxy[] randomRange(int $min, int $max, array $attributes = [])
+ * @method static Company[]|Proxy[] randomSet(int $number, array $attributes = [])
  */
 final class CompanyFactory extends ModelFactory
 {
@@ -47,12 +48,9 @@ final class CompanyFactory extends ModelFactory
     protected function getDefaults(): array
     {
         return [
-            'about' => self::faker()->text(),
-            'createdAt' => self::faker()->dateTime(),
-            'establishedAt' => self::faker()->dateTime(),
-            'isActive' => self::faker()->boolean(),
-            'name' => self::faker()->text(40),
-            'updatedAt' => self::faker()->dateTime(),
+            'name' => self::faker()->word(),
+            'about' => self::faker()->text(1000),
+            'establishedAt' => \DateTimeImmutable::createFromMutable(self::faker()->dateTime())
         ];
     }
 

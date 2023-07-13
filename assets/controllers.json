@@ -1,7 +1,5 @@
 {
     "controllers": {
-<<<<<<< HEAD
-=======
         "@symfony/ux-autocomplete": {
             "autocomplete": {
                 "enabled": true,
@@ -12,7 +10,6 @@
                 }
             }
         },
->>>>>>> Login/Register
         "@symfony/ux-turbo": {
             "turbo-core": {
                 "enabled": true,

@@ -8,8 +8,10 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 #[ORM\Entity(repositoryClass: CompanyRepository::class)]
+#[UniqueEntity(fields: ['name', 'isActive'], message: "This name is already in used!!")]
 class Company
 {
     use TimestampableEntity;
@@ -29,7 +31,7 @@ class Company
     private ?\DateTimeInterface $establishedAt = null;
 
     #[ORM\Column]
-    private ?bool $isActive = null;
+    private ?bool $isActive = true;
 
     #[ORM\ManyToOne(inversedBy: 'companies')]
     private ?User $createdBy = null;
@@ -68,7 +70,7 @@ class Company
         return $this->name;
     }
 
-    public function setName(string $name): static
+    public function setName(?string $name): static
     {
         $this->name = $name;
 
@@ -80,7 +82,7 @@ class Company
         return $this->about;
     }
 
-    public function setAbout(string $about): static
+    public function setAbout(?string $about): static
     {
         $this->about = $about;
 
@@ -92,7 +94,7 @@ class Company
         return $this->establishedAt;
     }
 
-    public function setEstablishedAt(\DateTimeInterface $establishedAt): static
+    public function setEstablishedAt(?\DateTimeInterface $establishedAt): static
     {
         $this->establishedAt = $establishedAt;
 
@@ -104,7 +106,7 @@ class Company
         return $this->isActive;
     }
 
-    public function setIsActive(bool $isActive): static
+    public function setIsActive(?bool $isActive): static
     {
         $this->isActive = $isActive;
 
