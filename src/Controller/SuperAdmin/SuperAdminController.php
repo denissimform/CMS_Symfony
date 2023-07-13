@@ -39,7 +39,7 @@ class SuperAdminController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $formData = $form->getData();
             $formData->setRoles(['ROLE_ADMIN']);
-            
+
             try {
                 $this->em->persist($formData);
                 $this->em->flush();
@@ -81,7 +81,7 @@ class SuperAdminController extends AbstractController
             'form' => $form->createView(),
         ], new Response(null, $form->isSubmitted() ? ($form->isValid() ? 200 : 422) : 200));
     }
-    
+
     #[Route('/admin/delete/{id}', name: 'app_sa_admin_delete')]
     public function toggleAdminStatus(User $user): Response
     {
@@ -91,9 +91,30 @@ class SuperAdminController extends AbstractController
         } catch (Exception $e) {
             $this->addFlash('error', $e->getMessage());
         }
-        
+
         $this->addFlash('success', 'User status changed successfully!');
-        
+
         return $this->redirectToRoute('app_sa_admin_homepage');
+    }
+
+    #[Route('/admin/datatable', name: 'app_sa_admin_dt')]
+    public function adminDatatable(Request $request): Response
+    {
+        $requestData = $request->query->all();
+
+        $orderByField = $requestData['columns'][$requestData['order'][0]['column']]['data'];
+        $orderDirection = $requestData['order'][0]['dir'];
+        $searchBy = $requestData['search']['value'] ?? null;
+
+        $users = $this->userRepository->dynamicDataAjaxVise($requestData['length'], $requestData['start'], $orderByField, $orderDirection, $searchBy);
+        $totalUsers = $this->userRepository->getTotalUsersCount();
+        
+        $response = [
+            "data" => $users,
+            "recordsTotal" => $totalUsers,
+            "recordsFiltered" => $totalUsers
+        ];
+
+        return $this->json($response, context: ['groups' => 'user:dt:read']);
     }
 }
