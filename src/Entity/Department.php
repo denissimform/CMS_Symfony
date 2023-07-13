@@ -24,10 +24,10 @@ class Department
     private ?string $description = null;
 
     #[ORM\Column]
-    private ?bool $isDeleted = null;
+    private ?bool $isDeleted = false;
 
     #[ORM\Column]
-    private ?bool $isActive = null;
+    private ?bool $isActive = false;
 
     #[ORM\ManyToOne(inversedBy: 'departments')]
     private ?Company $companyId = null;

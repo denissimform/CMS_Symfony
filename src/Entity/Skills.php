@@ -22,10 +22,10 @@ class Skills
     private ?string $name = null;
 
     #[ORM\Column]
-    private ?bool $isActive = null;
+    private ?bool $isActive = false;
 
     #[ORM\Column]
-    private ?bool $isDeleted = null;
+    private ?bool $isDeleted = false;
 
     #[ORM\ManyToOne(inversedBy: 'skills')]
     private ?User $createdBy = null;

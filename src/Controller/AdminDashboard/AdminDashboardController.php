@@ -30,10 +30,6 @@ class AdminDashboardController extends AbstractDashboardController
         if($form->isSubmitted() && $form->isValid()){
             $skill = new Skills();
             $skill = $form->getData();
-            $skill->setIsActive(false);
-            $skill->setIsDeleted(false);
-            $skill->setCreatedAt(new \DateTime());
-            $skill->setUpdatedAt(new \DateTime());
             $entityManagerInterface->persist($skill);
             $entityManagerInterface->flush();
             
@@ -76,9 +72,8 @@ class AdminDashboardController extends AbstractDashboardController
             $entityManagerInterface->flush();
             return $this->redirectToRoute('app_admin_skills');
         }
-        
     }
-
+//make route for inactie active
     #[Route('/admin/dashboard/skills/delete/{id}', name: 'app_admin_skills_delete')]
     public function Delete_Skill(EntityManagerInterface $entityManagerInterface, Skills $skill): Response
     {
@@ -97,10 +92,6 @@ class AdminDashboardController extends AbstractDashboardController
         if($form->isSubmitted() && $form->isValid()){
             $department = new Department();
             $department = $form->getData();
-            $department->setIsActive(false);
-            $department->setIsDeleted(false);
-            $department->setCreatedAt(new \DateTime());
-            $department->setUpdatedAt(new \DateTime());
             $entityManagerInterface->persist($department);
             $entityManagerInterface->flush();
 
