@@ -50,7 +50,7 @@ final class SkillsFactory extends ModelFactory
             'createdAt' => self::faker()->dateTime(),
             'isActive' => self::faker()->boolean(),
             'isDeleted' => self::faker()->boolean(),
-            'name' => self::faker()->name(),
+            'name' => self::faker()->text(40),
             'updatedAt' => self::faker()->dateTime(),
         ];
     }

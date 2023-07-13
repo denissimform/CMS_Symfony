@@ -51,7 +51,7 @@ final class DepartmentFactory extends ModelFactory
             'description' => self::faker()->text(),
             'isActive' => self::faker()->boolean(),
             'isDeleted' => self::faker()->boolean(),
-            'name' => self::faker()->text(10),
+            'name' => self::faker()->text(20),
             'updatedAt' => self::faker()->dateTime(),
         ];
     }

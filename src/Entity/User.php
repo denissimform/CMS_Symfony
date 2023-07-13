@@ -2,13 +2,13 @@
 
 namespace App\Entity;
 
-use App\Enum\UserGender;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\UserRepository;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\ArrayCollection;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
+use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -19,52 +19,67 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     use TimestampableEntity;
 
-    public const USER_GENDER = ["Male", "Female", "Other"];
-
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups('user:dt:read')]
     private ?int $id = null;
 
     #[ORM\Column(length: 180, unique: true)]
+    #[Assert\NotBlank(message: 'You must provide a valid email address')]
     private ?string $email = null;
-
+    
     #[ORM\Column]
     private array $roles = [];
-
+    
     /**
      * @var string The hashed password
      */
     #[ORM\Column]
+    #[Assert\NotBlank(message: 'You must provide a password')]
+    #[Assert\Length(min: 5, minMessage: 'Minimum password length must be at least 5 characters')]
     private ?string $password = null;
-
+    
     #[ORM\Column]
-    private ?string $uuid = null;
-
+    private ?string $uuid = "null";
+    
     #[ORM\Column(length: 40)]
+    #[Assert\NotBlank(message: 'You must provide a username')]
+    #[Groups('user:dt:read')]
     private ?string $username = null;
-
+    
     #[ORM\Column(length: 40)]
+    #[Assert\NotBlank(message: 'You must provide a first name')]
+    #[Groups('user:dt:read')]
     private ?string $firstName = null;
-
+    
     #[ORM\Column(length: 40, nullable: true)]
+    #[Assert\NotBlank(message: 'You must provide a middle name')]
     private ?string $middleName = null;
-
+    
     #[ORM\Column(length: 40)]
+    #[Assert\NotBlank(message: 'You must provide a last name')]
+    #[Groups('user:dt:read')]
     private ?string $lastName = null;
-
-    #[ORM\Column(type: Types::STRING)]
+    
+    #[ORM\Column(type: 'string')]
+    #[Assert\NotBlank(message: 'You must select a gender')]
+    #[Groups('user:dt:read')]
     private ?string $gender = null;
-
+    
     #[ORM\Column(type: Types::DATE_MUTABLE)]
+    #[Assert\NotBlank(message: 'You must provide your date of birth')]
+    #[Groups('user:dt:read')]
     private ?\DateTimeInterface $dob = null;
-
+    
     #[ORM\Column]
-    private ?bool $isVerified = null;
-
+    #[Groups('user:dt:read')]
+    private ?bool $isVerified = false;
+    
     #[ORM\Column]
-    private ?bool $isActive = null;
-
+    #[Groups('user:dt:read')]
+    private ?bool $isActive = true;
+    
     #[ORM\OneToMany(mappedBy: 'createdBy', targetEntity: Company::class)]
     private Collection $companies;
 
@@ -109,6 +124,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\OneToMany(mappedBy: 'createdBy', targetEntity: Bills::class)]
     private Collection $bills;
+
+    #[ORM\ManyToOne(inversedBy: 'employees')]
+    #[ORM\JoinColumn(nullable: false)]
+    #[Assert\NotBlank(message: 'You must specify the company name')]
+    #[Groups('user:dt:read')]
+    private ?Company $company = null;
 
     public function __construct()
     {
@@ -264,11 +285,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->gender;
     }
 
-    public function setGender(?string $gender): static
+    public function setGender(UserGender $gender): static
     {
-        if (!in_array($gender, self::USER_GENDER))
-            throw new \InvalidArgumentException("Invalid value passed!");
-
         $this->gender = $gender;
 
         return $this;
@@ -279,7 +297,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->dob;
     }
 
-    public function setDob(\DateTimeInterface $dob): static
+    public function setDob(?\DateTimeInterface $dob): static
     {
         $this->dob = $dob;
 
@@ -298,7 +316,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function isIsActive(): ?bool
+    public function getIsActive(): ?bool
     {
         return $this->isActive;
     }
@@ -756,6 +774,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
                 $bill->setCreatedBy(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getCompany(): ?Company
+    {
+        return $this->company;
+    }
+
+    public function setCompany(?Company $company): static
+    {
+        $this->company = $company;
 
         return $this;
     }
