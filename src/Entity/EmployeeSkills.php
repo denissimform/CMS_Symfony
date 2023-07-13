@@ -10,6 +10,8 @@ use App\Repository\EmployeeSkillsRepository;
 #[ORM\Entity(repositoryClass: EmployeeSkillsRepository::class)]
 class EmployeeSkills
 {
+    public const SKILL_LEVEL = ['Expert', 'Intermediate', 'Basic'];
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -46,8 +48,11 @@ class EmployeeSkills
         return $this->level;
     }
 
-    public function setLevel(EmployeeSkillLevel $level): static
+    public function setLevel(?string $level): static
     {
+        if (!in_array($level, self::SKILL_LEVEL))
+            throw new \InvalidArgumentException("Invalid value passed!");
+
         $this->level = $level;
 
         return $this;

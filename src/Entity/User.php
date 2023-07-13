@@ -19,6 +19,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     use TimestampableEntity;
 
+    public const USER_GENDER = ["Male", "Female", "Other"];
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -262,8 +264,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->gender;
     }
 
-    public function setGender(UserGender $gender): static
+    public function setGender(?string $gender): static
     {
+        if (!in_array($gender, self::USER_GENDER))
+            throw new \InvalidArgumentException("Invalid value passed!");
+
         $this->gender = $gender;
 
         return $this;

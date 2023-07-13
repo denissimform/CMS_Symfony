@@ -10,11 +10,15 @@ use App\Repository\ProjectRepository;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\ArrayCollection;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
+use InvalidArgumentException;
 
 #[ORM\Entity(repositoryClass: ProjectRepository::class)]
 class Project
 {
     use TimestampableEntity;
+
+    public const PAYMENT_TYPE = ['Fixed Cost', 'Hourly'];
+    public const PROJECT_STATUS = ["In Communication", "Accepted", "Rejected", "Initialized", "Completed"];
 
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -98,8 +102,11 @@ class Project
         return $this->status;
     }
 
-    public function setStatus(ProjectStatus $status): static
+    public function setStatus(?string $status): static
     {
+        if (!in_array($status, self::PROJECT_STATUS))
+            throw new InvalidArgumentException("Invalid payment type");
+
         $this->status = $status;
 
         return $this;
@@ -134,8 +141,11 @@ class Project
         return $this->paymentType;
     }
 
-    public function setPaymentType(PaymentType $paymentType): static
+    public function setPaymentType(?string $paymentType): static
     {
+        if (!in_array($paymentType, self::PAYMENT_TYPE))
+            throw new InvalidArgumentException("Invalid payment type");
+
         $this->paymentType = $paymentType;
 
         return $this;

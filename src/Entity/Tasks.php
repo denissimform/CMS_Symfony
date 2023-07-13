@@ -2,8 +2,6 @@
 
 namespace App\Entity;
 
-use App\Enum\PriorityLevel;
-use App\Enum\SeverityLevel;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\TasksRepository;
@@ -15,7 +13,12 @@ use Gedmo\Timestampable\Traits\TimestampableEntity;
 class Tasks
 {
     use TimestampableEntity;
-    
+
+    public const PRIORITY_LEVEL = ['Low', 'Medium', 'High'];
+    public const SEVERITY_LEVEL = ['Severity 1', 'Severity 2', 'Severity 3', 'Severity 4', 'Severity 5'];
+    public const TASK_STATUS = ['Open', 'In Progress', 'To Be Tested', 'QA Approved', 'On Hold', 'Ready To Deploy', 'Completed'];
+    public const TASK_TYPE = ['Task', 'Bug'];
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -76,8 +79,11 @@ class Tasks
         return $this->type;
     }
 
-    public function setType(string $type): static
+    public function setType(?string $type): static
     {
+        if (!in_array($type, self::TASK_TYPE))
+            throw new \InvalidArgumentException("Invalid value passed!");
+
         $this->type = $type;
 
         return $this;
@@ -88,8 +94,11 @@ class Tasks
         return $this->priority;
     }
 
-    public function setPriority(PriorityLevel $priority): static
+    public function setPriority(?string $priority): static
     {
+        if (!in_array($priority, self::PRIORITY_LEVEL))
+            throw new \InvalidArgumentException("Invalid value passed!");
+
         $this->priority = $priority;
 
         return $this;
@@ -100,8 +109,11 @@ class Tasks
         return $this->severity;
     }
 
-    public function setSeverity(SeverityLevel $severity): static
+    public function setSeverity(?string $severity): static
     {
+        if (!in_array($severity, self::SEVERITY_LEVEL))
+            throw new \InvalidArgumentException("Invalid value passed!");
+
         $this->severity = $severity;
 
         return $this;
@@ -148,8 +160,11 @@ class Tasks
         return $this->status;
     }
 
-    public function setStatus(string $status): static
+    public function setStatus(?string $status): static
     {
+        if (!in_array($status, self::TASK_STATUS))
+            throw new \InvalidArgumentException("Invalid value passed!");
+
         $this->status = $status;
 
         return $this;

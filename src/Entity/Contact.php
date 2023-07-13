@@ -13,6 +13,8 @@ class Contact
 {
     use TimestampableEntity;
 
+    public const USER_TYPE = ['User', 'Company', 'Client'];
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -139,8 +141,11 @@ class Contact
         return $this->usertype;
     }
 
-    public function setUsertype(UserType $usertype): static
+    public function setUsertype(?string $usertype): static
     {
+        if (!in_array($usertype, self::USER_TYPE))
+            throw new \InvalidArgumentException("Invalid value passed!");
+
         $this->usertype = $usertype;
 
         return $this;
@@ -157,5 +162,4 @@ class Contact
 
         return $this;
     }
-
 }
