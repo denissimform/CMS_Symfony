@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\CompanySubscriptionRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Timestampable\Traits\TimestampableEntity;
 
 #[ORM\Entity(repositoryClass: CompanySubscriptionRepository::class)]
 class CompanySubscription
@@ -25,6 +26,8 @@ class CompanySubscription
     #[ORM\Column(length: 255)]
     private ?string $status = null;
     public const PLAN_STATUS = ["expired", "current", "upcoming"];
+
+    use TimestampableEntity;
 
     public function getId(): ?int
     {

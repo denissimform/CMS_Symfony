@@ -6,6 +6,7 @@ use App\Repository\SubscriptionRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Timestampable\Traits\TimestampableEntity;
 
 #[ORM\Entity(repositoryClass: SubscriptionRepository::class)]
 class Subscription
@@ -33,11 +34,16 @@ class Subscription
     #[ORM\Column]
     private ?int $price = null;
 
+    use TimestampableEntity;
+
     #[ORM\ManyToMany(targetEntity: Company::class, inversedBy: 'subscriptions')]
     private Collection $companyId;
 
     #[ORM\OneToMany(mappedBy: 'subscriptionId', targetEntity: CompanySubscription::class)]
     private Collection $companySubscriptions;
+
+    #[ORM\Column]
+    private ?bool $isActive = null;
 
     public function __construct()
     {
@@ -172,6 +178,18 @@ class Subscription
                 $companySubscription->setSubscriptionId(null);
             }
         }
+
+        return $this;
+    }
+
+    public function isIsActive(): ?bool
+    {
+        return $this->isActive;
+    }
+
+    public function setIsActive(bool $isActive): static
+    {
+        $this->isActive = $isActive;
 
         return $this;
     }
