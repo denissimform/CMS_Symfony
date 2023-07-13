@@ -9,15 +9,17 @@ use App\Repository\UserRepository;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\ArrayCollection;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
-use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[UniqueEntity(fields: ['email'], message: 'There is already an account with this email')]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     use TimestampableEntity;
+
+    public const USER_GENDER = ["Male", "Female", "Other"];
 
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -262,8 +264,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->gender;
     }
 
-    public function setGender(UserGender $gender): static
+    public function setGender(?string $gender): static
     {
+        if (!in_array($gender, self::USER_GENDER))
+            throw new \InvalidArgumentException("Invalid value passed!");
+
         $this->gender = $gender;
 
         return $this;

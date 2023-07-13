@@ -13,6 +13,8 @@ class Documents
 {
     use TimestampableEntity;
 
+    public const REFERENCE_TYPE = ['Task', 'Timeline', 'User'];
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -67,8 +69,11 @@ class Documents
         return $this->referenceType;
     }
 
-    public function setReferenceType(ReferenceType $referenceType): static
+    public function setReferenceType(?string $referenceType): static
     {
+        if (!in_array($referenceType, self::REFERENCE_TYPE))
+            throw new \InvalidArgumentException("Invalid value passed!");
+
         $this->referenceType = $referenceType;
 
         return $this;

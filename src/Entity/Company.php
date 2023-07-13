@@ -46,12 +46,20 @@ class Company
     #[ORM\OneToMany(mappedBy: 'companyId', targetEntity: TimeLine::class)]
     private Collection $timeLines;
 
+    #[ORM\ManyToMany(targetEntity: Subscription::class, mappedBy: 'companyId')]
+    private Collection $subscriptions;
+
+    #[ORM\OneToMany(mappedBy: 'companyId', targetEntity: CompanySubscription::class)]
+    private Collection $companySubscriptions;
+
     public function __construct()
     {
         $this->clients = new ArrayCollection();
         $this->departments = new ArrayCollection();
         $this->requests = new ArrayCollection();
         $this->timeLines = new ArrayCollection();
+        $this->subscriptions = new ArrayCollection();
+        $this->companySubscriptions = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -233,6 +241,63 @@ class Company
             // set the owning side to null (unless already changed)
             if ($timeLine->getCompanyId() === $this) {
                 $timeLine->setCompanyId(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Subscription>
+     */
+    public function getSubscriptions(): Collection
+    {
+        return $this->subscriptions;
+    }
+
+    public function addSubscription(Subscription $subscription): static
+    {
+        if (!$this->subscriptions->contains($subscription)) {
+            $this->subscriptions->add($subscription);
+            $subscription->addCompanyId($this);
+        }
+
+        return $this;
+    }
+
+    public function removeSubscription(Subscription $subscription): static
+    {
+        if ($this->subscriptions->removeElement($subscription)) {
+            $subscription->removeCompanyId($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, CompanySubscription>
+     */
+    public function getCompanySubscriptions(): Collection
+    {
+        return $this->companySubscriptions;
+    }
+
+    public function addCompanySubscription(CompanySubscription $companySubscription): static
+    {
+        if (!$this->companySubscriptions->contains($companySubscription)) {
+            $this->companySubscriptions->add($companySubscription);
+            $companySubscription->setCompanyId($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCompanySubscription(CompanySubscription $companySubscription): static
+    {
+        if ($this->companySubscriptions->removeElement($companySubscription)) {
+            // set the owning side to null (unless already changed)
+            if ($companySubscription->getCompanyId() === $this) {
+                $companySubscription->setCompanyId(null);
             }
         }
 

@@ -1,0 +1,20 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Create a new User{% endblock %}
+
+{% block body %}
+
+<div class="example-wrapper">
+
+    <h3>Create new User</h3>
+    
+    {{ form_start(userForm, { 'attr' : {'novalidate': 'novalidate'} }) }}
+
+        {{ form_widget(userForm) }}
+
+        <button type="submit" class="btn btn-primary">Create!</button>
+
+    {{ form_end(userForm) }}
+
+</div>
+{% endblock %}
