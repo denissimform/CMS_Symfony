@@ -50,7 +50,7 @@ final class CompanyFactory extends ModelFactory
         return [
             'name' => self::faker()->word(),
             'about' => self::faker()->text(1000),
-            'establishedAt' => \DateTimeImmutable::createFromMutable(self::faker()->dateTime()),
+            'establishedAt' => \DateTimeImmutable::createFromMutable(self::faker()->dateTime())
         ];
     }
 

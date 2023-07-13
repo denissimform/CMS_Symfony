@@ -22,8 +22,10 @@ security:
                 username_parameter: email
                 password_parameter: password
                 enable_csrf: true
-                default_target_path: app_main 
+                default_target_path: app_homepage
+            logout: true
 
+            login_throttling: true
             # activate different ways to authenticate
             # https://symfony.com/doc/current/security.html#the-firewall
 

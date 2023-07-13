@@ -8,3 +8,8 @@ body {
 table td {
     cursor: default !important;
 }
+
+.ts-control
+{
+    border: none;
+}

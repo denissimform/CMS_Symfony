@@ -15,6 +15,13 @@ use Symfony\Component\Routing\Annotation\Route;
 #[Route("/superadmin")]
 class SuperAdminController extends AbstractController
 {
+    // homepage route
+    #[Route("/", name: "app_sa_homepage")]
+    public function homepage(): Response
+    {
+        return $this->render("/superadmin/index.html.twig");
+    }
+
     // list out company 
     #[Route("/company", name: "app_sa_company_list")]
     public function companyList(CompanyRepository $companyRepository): Response
@@ -95,12 +102,5 @@ class SuperAdminController extends AbstractController
         }
 
         return $this->redirectToRoute("app_sa_company_list");
-    }
-
-    // homepage route
-    #[Route("/", name: "app_sa_homepage")]
-    public function homepage(): Response
-    {
-        return $this->render("/superadmin/index.html.twig");
     }
 }
