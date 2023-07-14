@@ -23,7 +23,8 @@ security:
                 password_parameter: password
                 enable_csrf: true
                 default_target_path: app_homepage
-            logout: true
+            logout:
+                target: /login
 
             login_throttling: true
             # activate different ways to authenticate
@@ -35,7 +36,7 @@ security:
     # Easy way to control access for large sections of your site
     # Note: Only the *first* access control that matches will be used
     access_control:
-        # - { path: ^/admin, roles: ROLE_ADMIN }
+        - { path: ^/superadmin, roles: ROLE_SUPER_ADMIN }
         # - { path: ^/profile, roles: ROLE_USER }
 
 when@test:

@@ -1,4 +1,5 @@
 import './bootstrap.js';
+import 'bootstrap';
 /*
  * Welcome to your app's main JavaScript file!
  *
@@ -8,6 +9,8 @@ import './bootstrap.js';
 
 // any CSS you import will output into a single css file (app.css in this case)
 const $ = require('jquery');
+
+require('bootstrap');
 
 import './js/index.js';
 
@@ -21,6 +24,9 @@ import "./libs/jquery/dist/jquery.min.js";
 import "./libs/bootstrap/dist/js/bootstrap.bundle.min.js";
 import "./js/sidebarmenu.js";
 import "./js/app.min.js";
-import "./libs/apexcharts/dist/apexcharts.min.js";
+// import "./libs/apexcharts/dist/apexcharts.min.js";
 import "./libs/simplebar/dist/simplebar.js";
 import "./js/dashboard.js";
+
+
+

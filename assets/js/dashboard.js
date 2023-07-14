@@ -1,5 +1,3 @@
-import ApexCharts from 'apexcharts';
-
 $(function () {
 
 

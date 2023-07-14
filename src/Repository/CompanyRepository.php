@@ -39,28 +39,37 @@ class CompanyRepository extends ServiceEntityRepository
         }
     }
 
-//    /**
-//     * @return Company[] Returns an array of Company objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('c')
-//            ->andWhere('c.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('c.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
+        // Chart Data
+        // public function getData(): array
+        // {
+        //     return $this->createQueryBuilder('u')
+        //         ->select('count(u.id) as Count', 'u.isActive')
+        //         ->groupBy('u.isActive')
+        //         ->getQuery()
+        //         ->getResult();
+        // }
 
-//    public function findOneBySomeField($value): ?Company
-//    {
-//        return $this->createQueryBuilder('c')
-//            ->andWhere('c.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
+    //    /**
+    //     * @return Company[] Returns an array of Company objects
+    //     */
+    // For Charts
+    // public function findByActiveStatus($val): array
+    // {
+    //     return $this->createQueryBuilder('c')
+    //         ->select('count(c.id)')
+    //         ->andWhere('c.isActive = :val')
+    //         ->setParameter('val', $val)
+    //         ->getQuery()
+    //         ->getResult();
+    // }
+
+    //    public function findOneBySomeField($value): ?Company
+    //    {
+    //        return $this->createQueryBuilder('c')
+    //            ->andWhere('c.exampleField = :val')
+    //            ->setParameter('val', $value)
+    //            ->getQuery()
+    //            ->getOneOrNullResult()
+    //        ;
+    //    }
 }
