@@ -54,7 +54,7 @@ class Tasks
     #[ORM\ManyToOne(inversedBy: 'tasks')]
     private ?User $userId = null;
 
-    #[ORM\ManyToOne(inversedBy: 'tasks')]
+    #[ORM\ManyToOne(targetEntity: User::class)]
     private ?User $createdBy = null;
 
     #[ORM\OneToMany(mappedBy: 'taskId', targetEntity: Request::class)]

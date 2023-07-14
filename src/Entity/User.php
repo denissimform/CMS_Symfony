@@ -2,7 +2,6 @@
 
 namespace App\Entity;
 
-use App\Enum\UserGender;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\UserRepository;
@@ -12,9 +11,11 @@ use Gedmo\Timestampable\Traits\TimestampableEntity;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[UniqueEntity(fields: ['email'], message: 'There is already an account with this email')]
+#[UniqueEntity(fields: ['username'], message: 'Username already exists.')]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     use TimestampableEntity;
@@ -38,17 +39,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private ?string $password = null;
 
-    #[ORM\Column]
-    private ?string $uuid = null;
-
     #[ORM\Column(length: 40)]
     private ?string $username = null;
 
     #[ORM\Column(length: 40)]
     private ?string $firstName = null;
-
-    #[ORM\Column(length: 40, nullable: true)]
-    private ?string $middleName = null;
 
     #[ORM\Column(length: 40)]
     private ?string $lastName = null;
@@ -60,22 +55,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?\DateTimeInterface $dob = null;
 
     #[ORM\Column]
-    private ?bool $isVerified = null;
+    private ?bool $isVerified = true;
 
     #[ORM\Column]
-    private ?bool $isActive = null;
-
-    #[ORM\OneToMany(mappedBy: 'createdBy', targetEntity: Company::class)]
-    private Collection $companies;
+    private ?bool $isActive = false;
 
     #[ORM\OneToMany(mappedBy: 'createdBy', targetEntity: Client::class)]
     private Collection $clients;
 
     #[ORM\OneToMany(mappedBy: 'createdBy', targetEntity: Department::class)]
     private Collection $departments;
-
-    // #[ORM\OneToMany(mappedBy: 'referenceId', targetEntity: Contact::class)]
-    // private Collection $contacts;
 
     #[ORM\OneToMany(mappedBy: 'createdBy', targetEntity: Project::class)]
     private Collection $projects;
@@ -110,12 +99,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'createdBy', targetEntity: Bills::class)]
     private Collection $bills;
 
+    #[ORM\ManyToOne(inversedBy: 'users')]
+    private ?Company $company = null;
+
     public function __construct()
     {
-        $this->companies = new ArrayCollection();
         $this->clients = new ArrayCollection();
         $this->departments = new ArrayCollection();
-        // $this->contacts = new ArrayCollection();
         $this->projects = new ArrayCollection();
         $this->skills = new ArrayCollection();
         $this->employeeSkills = new ArrayCollection();
@@ -175,6 +165,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
+    public function isAdmin(): bool
+    {
+        return in_array("ROLE_ADMIN", $this->roles);
+    }
+
+    public function isSuperAdmin(): bool
+    {
+        return in_array("ROLE_SUPER_ADMIN", $this->roles);
+    }
+
     /**
      * @see PasswordAuthenticatedUserInterface
      */
@@ -199,18 +199,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         // $this->plainPassword = null;
     }
 
-    public function getUuid(): ?string
-    {
-        return $this->uuid;
-    }
-
-    public function setUuid(string $uuid): static
-    {
-        $this->uuid = $uuid;
-
-        return $this;
-    }
-
     public function getUsername(): ?string
     {
         return $this->username;
@@ -231,18 +219,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setFirstname(string $firstName): static
     {
         $this->firstName = $firstName;
-
-        return $this;
-    }
-
-    public function getMiddleName(): ?string
-    {
-        return $this->middleName;
-    }
-
-    public function setMiddleName(?string $middleName): static
-    {
-        $this->middleName = $middleName;
 
         return $this;
     }
@@ -309,37 +285,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
         return $this;
     }
-
-    /**
-     * @return Collection<int, Company>
-     */
-    public function getCompanies(): Collection
-    {
-        return $this->companies;
-    }
-
-    public function addCompany(Company $company): static
-    {
-        if (!$this->companies->contains($company)) {
-            $this->companies->add($company);
-            $company->setCreatedBy($this);
-        }
-
-        return $this;
-    }
-
-    public function removeCompany(Company $company): static
-    {
-        if ($this->companies->removeElement($company)) {
-            // set the owning side to null (unless already changed)
-            if ($company->getCreatedBy() === $this) {
-                $company->setCreatedBy(null);
-            }
-        }
-
-        return $this;
-    }
-
+    
     /**
      * @return Collection<int, Client>
      */
@@ -756,6 +702,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
                 $bill->setCreatedBy(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getCompany(): ?Company
+    {
+        return $this->company;
+    }
+
+    public function setCompany(?Company $company): static
+    {
+        $this->company = $company;
 
         return $this;
     }

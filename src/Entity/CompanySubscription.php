@@ -15,10 +15,10 @@ class CompanySubscription
     private ?int $id = null;
 
     #[ORM\ManyToOne(inversedBy: 'companySubscriptions')]
-    private ?Company $companyId = null;
+    private ?Company $company = null;
 
     #[ORM\ManyToOne(inversedBy: 'companySubscriptions')]
-    private ?Subscription $subscriptionId = null;
+    private ?Subscription $subscription = null;
 
     #[ORM\Column]
     private ?\DateTimeImmutable $expiresAt = null;
@@ -34,26 +34,26 @@ class CompanySubscription
         return $this->id;
     }
 
-    public function getCompanyId(): ?Company
+    public function getcompany(): ?Company
     {
-        return $this->companyId;
+        return $this->company;
     }
 
-    public function setCompanyId(?Company $companyId): static
+    public function setcompany(?Company $company): static
     {
-        $this->companyId = $companyId;
+        $this->company = $company;
 
         return $this;
     }
 
-    public function getSubscriptionId(): ?Subscription
+    public function getsubscription(): ?Subscription
     {
-        return $this->subscriptionId;
+        return $this->subscription;
     }
 
-    public function setSubscriptionId(?Subscription $subscriptionId): static
+    public function setsubscription(?Subscription $subscription): static
     {
-        $this->subscriptionId = $subscriptionId;
+        $this->subscription = $subscription;
 
         return $this;
     }

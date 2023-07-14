@@ -3,10 +3,14 @@
         "@babel/core": "^7.17.0",
         "@babel/preset-env": "^7.16.0",
         "@hotwired/stimulus": "^3.0.0",
+        "@hotwired/turbo": "^7.0.1",
         "@symfony/stimulus-bridge": "^3.2.0",
+        "@symfony/ux-autocomplete": "file:vendor/symfony/ux-autocomplete/assets",
+        "@symfony/ux-turbo": "file:vendor/symfony/ux-turbo/assets",
         "@symfony/webpack-encore": "^4.0.0",
         "core-js": "^3.23.0",
         "regenerator-runtime": "^0.13.9",
+        "tom-select": "^2.2.2",
         "sass": "^1.63.6",
         "sass-loader": "^13.3.2",
         "webpack": "^5.74.0",
@@ -22,8 +26,14 @@
         "build": "encore production --progress"
     },
     "dependencies": {
-        "apexcharts": "^3.41.0",
         "bootstrap": "^5.3.0",
-        "jquery": "^3.7.0"
+        "datatables": "^1.10.18",
+        "datatables.net": "^1.13.5",
+        "datatables.net-dt": "^1.13.5",
+        "i": "^0.3.7",
+        "jquery": "^3.7.0",
+        "mdb-ui-kit": "^6.4.0",
+        "npm": "^9.8.0",
+        "apexcharts": "^3.41.0"
     }
 }
