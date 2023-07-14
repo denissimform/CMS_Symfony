@@ -52,8 +52,6 @@ final class UserFactory extends ModelFactory
             'email' => self::faker()->text(180),
             'firstName' => self::faker()->text(40),
             'gender' => self::faker()->text(),
-            'isActive' => self::faker()->boolean(),
-            'isVerified' => self::faker()->boolean(),
             'lastName' => self::faker()->text(40),
             'password' => self::faker()->text(),
             'roles' => [],

@@ -55,13 +55,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?\DateTimeInterface $dob = null;
 
     #[ORM\Column]
-    private ?bool $isVerified = false;
+    private ?bool $isVerified = true;
 
     #[ORM\Column]
     private ?bool $isActive = false;
-
-    #[ORM\OneToMany(mappedBy: 'createdBy', targetEntity: Company::class)]
-    private Collection $companies;
 
     #[ORM\OneToMany(mappedBy: 'createdBy', targetEntity: Client::class)]
     private Collection $clients;
@@ -107,7 +104,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function __construct()
     {
-        $this->companies = new ArrayCollection();
         $this->clients = new ArrayCollection();
         $this->departments = new ArrayCollection();
         $this->projects = new ArrayCollection();
@@ -167,6 +163,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->roles = $roles;
 
         return $this;
+    }
+
+    public function isAdmin(): bool
+    {
+        return in_array("ROLE_ADMIN", $this->roles);
+    }
+
+    public function isSuperAdmin(): bool
+    {
+        return in_array("ROLE_SUPER_ADMIN", $this->roles);
     }
 
     /**
@@ -279,37 +285,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
         return $this;
     }
-
-    /**
-     * @return Collection<int, Company>
-     */
-    public function getCompanies(): Collection
-    {
-        return $this->companies;
-    }
-
-    public function addCompany(Company $company): static
-    {
-        if (!$this->companies->contains($company)) {
-            $this->companies->add($company);
-            $company->setCreatedBy($this);
-        }
-
-        return $this;
-    }
-
-    public function removeCompany(Company $company): static
-    {
-        if ($this->companies->removeElement($company)) {
-            // set the owning side to null (unless already changed)
-            if ($company->getCreatedBy() === $this) {
-                $company->setCreatedBy(null);
-            }
-        }
-
-        return $this;
-    }
-
+    
     /**
      * @return Collection<int, Client>
      */

@@ -33,9 +33,6 @@ class Company
     #[ORM\Column]
     private ?bool $isActive = true;
 
-    #[ORM\ManyToOne(inversedBy: 'companies')]
-    private ?User $createdBy = null;
-
     #[ORM\OneToMany(mappedBy: 'companyId', targetEntity: Client::class)]
     private Collection $clients;
 
@@ -109,18 +106,6 @@ class Company
     public function setIsActive(?bool $isActive): static
     {
         $this->isActive = $isActive;
-
-        return $this;
-    }
-
-    public function getCreatedBy(): ?User
-    {
-        return $this->createdBy;
-    }
-
-    public function setCreatedBy(?User $createdBy): static
-    {
-        $this->createdBy = $createdBy;
 
         return $this;
     }

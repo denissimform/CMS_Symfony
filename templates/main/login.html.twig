@@ -1,4 +1,4 @@
-{% extends 'main/base.html.twig' %}
+{% extends 'main/index.html.twig' %}
 
 {% block title %}Login User
 {% endblock %}
@@ -42,7 +42,7 @@
 											<input class="form-check-input primary" type="checkbox" name="_remember_me" id="rememberMe"/>
 											<label class="form-check-label text-dark" for="rememberMe">
 												Remeber Me
-											</label>
+											</label> 
 										</div>
 										<a class="text-primary fw-bold" href="#">Forgot Password ?</a>
 									</div>
@@ -51,7 +51,7 @@
 
 									<div class="d-flex align-items-center justify-content-center">
 										<p class="fs-4 mb-0 fw-bold">New to Managex?</p>
-										<a class="text-primary fw-bold ms-2" href="{{ path('app_register') }}">Create an account</a>
+										<a class="text-primary fw-bold ms-2" href="{{ path('app_homepage') }}">Create an account</a>
 									</div>
 								</form>
 							</div>

@@ -2,22 +2,31 @@
 
 namespace App\Form;
 
+// use App\Entity\User;
+
 use App\Entity\User;
+use App\Repository\UserRepository;
+use App\Validator\UniqueEmail;
+use App\Validator\UniqueEmailValidator;
+use FOS\CKEditorBundle\Form\Type\CKEditorType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\BirthdayType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\IsTrue;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Regex;
+use Symfony\Component\Validator\Constraints\Unique;
 
-class RegisterFormType extends AbstractType
+class UserFormType extends AbstractType
 {
     // Registration Form Component
     public function buildForm(FormBuilderInterface $builder, array $options): void
@@ -27,7 +36,10 @@ class RegisterFormType extends AbstractType
                 'constraints' => [new NotBlank(message: 'Username cannot be blank.')],
             ])
             ->add('email', EmailType::class, [
-                'constraints' => [new NotBlank(message: 'Email cannot be blank.')],
+                'constraints' => [
+                    new NotBlank(message: 'Email cannot be blank.'),
+                    new UniqueEmail()
+                ],
             ])
             ->add('password', RepeatedType::class, [
                 'type' => PasswordType::class,
@@ -84,15 +96,30 @@ class RegisterFormType extends AbstractType
                     new IsTrue(message: 'Please agree to Terms & Conditions to move further.')
                 ]
             ])
-            ->add('company', CompanyAutocompleteField::class, [
-                'placeholder' => 'Select Company',
+            ->add('name', TextType::class, [
+                "constraints" => [
+                    new NotBlank(message: "Please enter a name"),
+                ]
+            ])
+            ->add('about', CKEditorType::class, [
+                "constraints" => [
+                    new NotBlank(message: "Please enter a description")
+                ]
+            ])
+            ->add('establishedAt', DateType::class, [
+                "constraints" => [
+                    new NotBlank(message: "Please enter a date"),
+                ],
+                "widget" => "single_text",
             ]);
+        // ->add('company', CompanyAutocompleteField::class);
     }
 
     public function configureOptions(OptionsResolver $resolver): void
     {
-        $resolver->setDefaults([
-            'data_class' => User::class,
-        ]);
+        // Hint: create one form for company and admin 
+        // $resolver->setDefaults([
+        //     'data_class' => User::class,
+        // ]);
     }
 }

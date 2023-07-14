@@ -10,7 +10,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use FOS\CKEditorBundle\Form\Type\CKEditorType;
 
-class CompanyType extends AbstractType
+class CompanyFormType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
