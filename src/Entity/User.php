@@ -46,9 +46,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Assert\Length(min: 5, minMessage: 'Minimum password length must be at least 5 characters')]
     private ?string $password = null;
     
-    #[ORM\Column]
-    private ?string $uuid = "null";
-    
     #[ORM\Column(length: 40)]
     #[Assert\NotBlank(message: 'You must provide a username')]
     #[Groups('user:dt:read')]
@@ -58,11 +55,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Assert\NotBlank(message: 'You must provide a first name')]
     #[Groups('user:dt:read')]
     private ?string $firstName = null;
-    
-    #[ORM\Column(length: 40, nullable: true)]
-    #[Assert\NotBlank(message: 'You must provide a middle name')]
-    private ?string $middleName = null;
-    
+
     #[ORM\Column(length: 40)]
     #[Assert\NotBlank(message: 'You must provide a last name')]
     #[Groups('user:dt:read')]
@@ -226,18 +219,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         // $this->plainPassword = null;
     }
 
-    public function getUuid(): ?string
-    {
-        return $this->uuid;
-    }
-
-    public function setUuid(string $uuid): static
-    {
-        $this->uuid = $uuid;
-
-        return $this;
-    }
-
     public function getUsername(): ?string
     {
         return $this->username;
@@ -258,18 +239,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setFirstname(string $firstName): static
     {
         $this->firstName = $firstName;
-
-        return $this;
-    }
-
-    public function getMiddleName(): ?string
-    {
-        return $this->middleName;
-    }
-
-    public function setMiddleName(?string $middleName): static
-    {
-        $this->middleName = $middleName;
 
         return $this;
     }

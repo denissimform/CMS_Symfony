@@ -24,6 +24,7 @@
         "build": "encore production --progress"
     },
     "dependencies": {
+        "bootstrap": "^5.3.0",
         "datatables.net-buttons-se": "^2.4.1",
         "datatables.net-responsive-se": "^2.5.0",
         "datatables.net-se": "^1.13.5",
