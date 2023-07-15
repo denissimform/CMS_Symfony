@@ -12,8 +12,10 @@ use Exception;
 use PharIo\Manifest\InvalidEmailException;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
@@ -78,7 +80,7 @@ class CompanyController extends AbstractController
 
                 return $this->redirectToRoute("app_login");
             }
-            
+
             return $this->render(
                 'company/register.html.twig',
                 ["adminForm" => $adminForm->createView()],
@@ -141,5 +143,63 @@ class CompanyController extends AbstractController
         $userAuthenticator->authenticateUser($user, $userCustomAuthenticator, $request);
 
         return $this->redirectToRoute("app_homepage");
+    }
+
+    #[Route("/company/resend-verify-email/", name: "app_company_resend_verify_email")]
+    public function resendVerifyEmail(Request $request, UserRepository $userRepository): Response
+    {
+        try {
+            // get verification email id from sesison
+            $email = $request->getSession()->get("verification_email");
+
+            // if not found then throw an error
+            if (!$email)
+                throw new NotFoundHttpException("Invalid request!");
+
+            $user = $userRepository->findOneBy(["email" => $email]);
+
+            // if user is not found then throw an error
+            if (null === $user)
+                throw new UserNotFoundException("User doesn't exist!");
+
+            // generate signature
+            $signature = $this->verifyEmail->generateSignature("app_compnay_verify_email", $user->getId(), $user->getEmail(), ["id" => $user->getId()]);
+
+            // send signature to the user mail id
+            if ($this->sendEmail($user->getEmail(), $user->getUsername(), $signature->getSignedUrl())) {
+                $this->addFlash("success", "Verification email has been sent on your email address.");
+            } else {
+                $this->addFlash("error", "Somthing went wrong during sent mail.");
+                throw new InvalidEmailException("Email send failed");
+            }
+        } catch (Exception $err) {
+            $this->addFlash("error", $err->getMessage());
+            throw new Exception($err->getMessage());
+        }
+
+        return $this->redirectToRoute("app_login");
+    }
+
+    #[Route("/company/resend-verification-email/", name: "app_company_resend_verification_email")]
+    public function resendVerificationEmail(Request $request, Security $security): Response
+    {
+        try {
+            // get verification email id from sesison
+            $email = $request->getSession()->get("verification_email");
+
+            // if not found then throw an error
+            if (!$email)
+                throw new NotFoundHttpException("Invalid request!");
+
+            // logout user manually
+            $security->logout(false);
+
+            // set agian email in session
+            $request->getSession()->set("verification_email", $email);
+
+            return $this->render("company/resend_verification_email.html.twig");
+        } catch (Exception $err) {
+            throw new Exception($err->getMessage());
+        }
     }
 }
