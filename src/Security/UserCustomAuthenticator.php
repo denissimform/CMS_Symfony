@@ -52,10 +52,10 @@ class UserCustomAuthenticator extends AbstractLoginFormAuthenticator
         /** @var User $user  */
         $user = $this->security->getUser();
 
-        if (!$user->isIsVerified()) {
-            $request->getSession()->set("verification_email", $user->getEmail());
-            return new RedirectResponse($this->urlGenerator->generate("app_company_resend_verification_email"));
-        }
+        // if (!$user->isIsVerified()) {
+        //     $request->getSession()->set("verification_email", $user->getEmail());
+        //     return new RedirectResponse($this->urlGenerator->generate("app_company_resend_verification_email"));
+        // }
 
         if ($targetPath = $this->getTargetPath($request->getSession(), $firewallName)) {
             return new RedirectResponse($targetPath);

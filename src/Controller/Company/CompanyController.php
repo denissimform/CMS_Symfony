@@ -185,17 +185,17 @@ class CompanyController extends AbstractController
     {
         try {
             // get verification email id from sesison
-            $email = $request->getSession()->get("verification_email");
+            // $email = $request->getSession()->get("verification_email");
 
-            // if not found then throw an error
-            if (!$email)
-                throw new NotFoundHttpException("Invalid request!");
+            // // if not found then throw an error
+            // if (!$email)
+            //     throw new NotFoundHttpException("Invalid request!");
 
-            // logout user manually
-            $security->logout(false);
+            // // logout user manually
+            // $security->logout(false);
 
-            // set agian email in session
-            $request->getSession()->set("verification_email", $email);
+            // // set agian email in session
+            // $request->getSession()->set("verification_email", $email);
 
             return $this->render("company/resend_verification_email.html.twig");
         } catch (Exception $err) {
