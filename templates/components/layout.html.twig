@@ -5,38 +5,49 @@
 		<br>
 	</div>
 
-	{% if flag is defined %}
-	<div class="col-lg-4 d-flex align-items-strech">
-		<div class="card w-100">
-			<div class="card-body">
-				<h4>Company</h4>
-				<div>{{ render_chart(companyChart) }}</div>
+	{% if flag == 'No data' %}
+		<div class="col-lg-4 d-flex align-items-strech">
+			<div class="card w-100">
+				<div class="card-body">
+					<h4>Company</h4>
+					<div>There is no statistics.</div>
+				</div>
+			</div>
+		</div>
+	{% else %}
+		{% if flag == 'Super Admin' %}
+			<div class="col-lg-4 d-flex align-items-strech">
+				<div class="card w-100">
+					<div class="card-body">
+						<h4>Company</h4>
+						<div>{{ render_chart(companyChart) }}</div>
+					</div>
+				</div>
+			</div>
+		{% endif %}
+		<div class="col-lg-4 d-flex align-items-strech">
+			<div class="card w-100">
+				<div class="card-body">
+					<h4>User</h4>
+					<div>{{ render_chart(userChart) }}</div>
+				</div>
+			</div>
+		</div>
+		<div class="col-lg-6 d-flex align-items-strech">
+			<div class="card w-100">
+				<div class="card-body">
+					<h4>Subscription</h4>
+					<div>{{ render_chart(subscriptionChart) }}</div>
+				</div>
+			</div>
+		</div>
+		<div class="col-lg-6 d-flex align-items-strech">
+			<div class="card w-100">
+				<div class="card-body">
+					<h4>User Growth</h4>
+					<div>{{ render_chart(userGrowthChart) }}</div>
+				</div>
 			</div>
 		</div>
 	</div>
-	{% endif %}
-	<div class="col-lg-4 d-flex align-items-strech">
-		<div class="card w-100">
-			<div class="card-body">
-				<h4>User</h4>
-				<div>{{ render_chart(userChart) }}</div>
-			</div>
-		</div>
-	</div>
-	<div class="col-lg-6 d-flex align-items-strech">
-		<div class="card w-100">
-			<div class="card-body">
-				<h4>Subscription</h4>
-				<div>{{ render_chart(subscriptionChart) }}</div>
-			</div>
-		</div>
-	</div>
-	<div class="col-lg-6 d-flex align-items-strech">
-		<div class="card w-100">
-			<div class="card-body">
-				<h4>User Growth</h4>
-				<div>{{ render_chart(userGrowthChart) }}</div>
-			</div>
-		</div>
-	</div>
-</div>
+{% endif %}

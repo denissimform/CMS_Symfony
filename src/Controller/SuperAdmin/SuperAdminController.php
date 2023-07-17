@@ -32,7 +32,7 @@ class SuperAdminController extends AbstractController
     public function homepage(): Response
     {
         $result = $this->CallProcedure('chartData', ['userGrowthData', 'pieChartData'], [-1]);
-        // dd($result['pieChartData'][0]);
+        // dd($result);
 
         $userGrowthData = $result['userGrowthData'];
         $pieChartData = $result['pieChartData'][0];
@@ -238,11 +238,43 @@ class SuperAdminController extends AbstractController
     #[Route('/company/{id}', name: 'app_sa_company_single')]
     public function singleCompany(Company $company): Response
     {
-        // dd($company);
+
+        $result = $this->CallProcedure('chartData', ['userGrowthData', 'pieChartData'], [$company->getId()]);
+
+        // dd($result);
+
+        $userGrowthData = $result['userGrowthData'];
+        $pieChartData = $result['pieChartData'][0];
+
+        $year = [];
+        $count = [];
+
+        foreach ($userGrowthData as $data) {
+            $year[] = $data->{'Year'};
+            $count[] = $data->{'Count'};
+        }
+
+        $userChart = $this->createPieChart(['Admin', 'BDA', 'Employees'], [$pieChartData->{'@cntAdmin'}, $pieChartData->{'@cntBda'},  ($pieChartData->{'@total'} - $pieChartData->{'@cntAdmin'} - $pieChartData->{'@cntBda'})]);
+
+        $subscriptionChart = $this->createBarChart();
+        $userGrowthChart = $this->createLineChart($year, $count);
+
+        $flag = '';
+
+        if(count($year) == 0)
+        {
+            $flag = 'No data';
+        }
+
+
         return $this->render(
             "/superadmin/company/single.html.twig",
             [
-                'company' => $company
+                'company' => $company,
+                'userChart' => $userChart,
+                'subscriptionChart' => $subscriptionChart,
+                'userGrowthChart' => $userGrowthChart,
+                'flag' => $flag
             ]
         );
     }
