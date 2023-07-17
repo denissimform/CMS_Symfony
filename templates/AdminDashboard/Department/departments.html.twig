@@ -27,7 +27,7 @@
 						<td>
 							<a href="{{ path('app_admin_department_update_status',{id:department.id}) }}">{{ department.isActive ? 'INACTIVE':'ACTIVE' }}</a>
 							{% if department.isActive %}
-								&nbsp;&nbsp;<a href="{{ path('app_admin_department_update',{id:department.id, flag:1}) }}">EDIT</a>
+								&nbsp;&nbsp;<a href="{{ path('app_admin_department_update',{id:department.id}) }}">EDIT</a>
 								&nbsp;&nbsp;<a href="{{ path('app_admin_department_delete',{id:department.id}) }}">DELETE</a>
 							{% endif %}
 						</td>

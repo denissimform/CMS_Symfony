@@ -7,8 +7,13 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 #[ORM\Entity(repositoryClass: SubscriptionRepository::class)]
+#[UniqueEntity(
+    fields: ['type'],
+    message: 'This type is already in use on subscription.',
+)]
 class Subscription
 {
     #[ORM\Id]
@@ -45,6 +50,7 @@ class Subscription
     #[ORM\Column]
     private ?bool $isActive = null;
 
+    public const PLAN_TYPE = ["silver", "gold", "premium"];
     public function __construct()
     {
         $this->companyId = new ArrayCollection();
@@ -63,6 +69,9 @@ class Subscription
 
     public function setType(string $type): static
     {
+        if (!in_array($type, self::PLAN_TYPE))
+            throw new \InvalidArgumentException("Invalid value passed!");
+
         $this->type = $type;
 
         return $this;

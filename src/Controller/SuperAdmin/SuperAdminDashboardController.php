@@ -2,11 +2,11 @@
 
 namespace App\Controller\SuperAdmin;
 
-use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractDashboardController;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-class SuperAdminDashboardController extends AbstractDashboardController
+class SuperAdminDashboardController extends AbstractController
 {
     #[Route('/superadmin/dashboard', name: 'app_super_admin')]
     public function index(): Response

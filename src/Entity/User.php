@@ -8,10 +8,11 @@ use App\Repository\UserRepository;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\ArrayCollection;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
+use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
-use Symfony\Component\Security\Core\User\UserInterface;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[UniqueEntity(fields: ['email'], message: 'There is already an account with this email')]
@@ -24,7 +25,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     #[Groups('user:dt:read')]
     private ?int $id = null;
-
+    public const GENDERS = [
+        'Male',
+        'Female',
+        'Other'
+    ];
     #[ORM\Column(length: 180, unique: true)]
     #[Assert\NotBlank(message: 'You must provide a valid email address')]
     private ?string $email = null;
@@ -285,7 +290,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->gender;
     }
 
-    public function setGender(UserGender $gender): static
+    public function setGender(String $gender): static
     {
         $this->gender = $gender;
 

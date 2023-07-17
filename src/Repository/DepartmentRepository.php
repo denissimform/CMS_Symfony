@@ -29,6 +29,35 @@ class DepartmentRepository extends ServiceEntityRepository
             $this->getEntityManager()->flush();
         }
     }
+    public function dynamicDataAjaxVise(int $limit, int $start, string $orderByField, string $orderDirection, string $searchBy): array
+    {
+        $queryBuilder = $this->createQueryBuilder('u')
+            ->orderBy("u.$orderByField", $orderDirection);
+
+        if ($searchBy){
+            return $queryBuilder->andWhere('u.name LIKE ?1 OR u.description LIKE ?1 OR u.isActive LIKE ?1 OR u.createdAt LIKE ?1 OR u.isDeleted LIKE ?1 OR u.updatedAt LIKE ?1')
+            ->setParameter(1, '%' . $searchBy . '%')
+            ->getQuery()
+            ->getResult();
+        }
+
+        return $queryBuilder->setMaxResults($limit)
+            ->setFirstResult($start)
+            ->andWhere('u.isDeleted = :val')
+            ->setParameter('val', false)
+            ->getQuery()
+            ->getResult();
+    }
+    public function getTotalUsersCount(): int
+    {
+        return count(
+            $this->createQueryBuilder('u')
+                ->andWhere('u.isDeleted = :val')
+                ->setParameter('val', false)
+                ->getQuery()
+                ->getResult()
+        );
+    }
 
     public function remove(Department $entity, bool $flush = false): void
     {
