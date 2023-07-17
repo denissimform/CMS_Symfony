@@ -33,12 +33,6 @@ class Subscription
     #[ORM\Column]
     private ?int $criteria_storage = null;
 
-    #[ORM\Column(length: 30)]
-    private ?string $duration = null;
-
-    #[ORM\Column]
-    private ?int $price = null;
-
     use TimestampableEntity;
 
     #[ORM\ManyToMany(targetEntity: Company::class, inversedBy: 'subscriptions')]
@@ -50,11 +44,15 @@ class Subscription
     #[ORM\Column]
     private ?bool $isActive = null;
 
+    #[ORM\OneToMany(mappedBy: 'subscriptionId', targetEntity: SubscriptionDuration::class)]
+    private Collection $subscriptionDurations;
+
     public const PLAN_TYPE = ["silver", "gold", "premium"];
     public function __construct()
     {
         $this->companyId = new ArrayCollection();
         $this->companySubscriptions = new ArrayCollection();
+        $this->subscriptionDurations = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -109,30 +107,6 @@ class Subscription
     public function setCriteriaStorage(int $criteria_storage): static
     {
         $this->criteria_storage = $criteria_storage;
-
-        return $this;
-    }
-
-    public function getDuration(): ?string
-    {
-        return $this->duration;
-    }
-
-    public function setDuration(string $duration): static
-    {
-        $this->duration = $duration;
-
-        return $this;
-    }
-
-    public function getPrice(): ?int
-    {
-        return $this->price;
-    }
-
-    public function setPrice(int $price): static
-    {
-        $this->price = $price;
 
         return $this;
     }
@@ -199,6 +173,36 @@ class Subscription
     public function setIsActive(bool $isActive): static
     {
         $this->isActive = $isActive;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, SubscriptionDuration>
+     */
+    public function getSubscriptionDurations(): Collection
+    {
+        return $this->subscriptionDurations;
+    }
+
+    public function addSubscriptionDuration(SubscriptionDuration $subscriptionDuration): static
+    {
+        if (!$this->subscriptionDurations->contains($subscriptionDuration)) {
+            $this->subscriptionDurations->add($subscriptionDuration);
+            $subscriptionDuration->setSubscriptionId($this);
+        }
+
+        return $this;
+    }
+
+    public function removeSubscriptionDuration(SubscriptionDuration $subscriptionDuration): static
+    {
+        if ($this->subscriptionDurations->removeElement($subscriptionDuration)) {
+            // set the owning side to null (unless already changed)
+            if ($subscriptionDuration->getSubscriptionId() === $this) {
+                $subscriptionDuration->setSubscriptionId(null);
+            }
+        }
 
         return $this;
     }
