@@ -63,7 +63,7 @@ class UserCustomAuthenticator extends AbstractLoginFormAuthenticator
                 case $user->isSuperAdmin():
                     return new RedirectResponse($this->urlGenerator->generate("app_sa_homepage"));
                 case $user->isAdmin():
-                    return new RedirectResponse($this->urlGenerator->generate("app_payment"));
+                    return new RedirectResponse($this->urlGenerator->generate("app_payment_homepage"));
                     // return new RedirectResponse($this->urlGenerator->generate("app_admin_homepage"));
                 default:
                     return new RedirectResponse($this->urlGenerator->generate("app_homepage"));

@@ -35,7 +35,7 @@ class Transaction
     private ?string $status = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    private ?string $order_id = null;
+    private ?string $orderId = null;
 
     public function getId(): ?int
     {
@@ -82,12 +82,12 @@ class Transaction
 
     public function getOrderId(): ?string
     {
-        return $this->order_id;
+        return $this->orderId;
     }
 
-    public function setOrderId(string $order_id): static
+    public function setOrderId(string $orderId): static
     {
-        $this->order_id = $order_id;
+        $this->orderId = $orderId;
 
         return $this;
     }

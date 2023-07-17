@@ -36,8 +36,8 @@ class Subscription
 
     use TimestampableEntity;
 
-    #[ORM\ManyToMany(targetEntity: Company::class, inversedBy: 'subscriptions')]
-    private Collection $companyId;
+    // #[ORM\ManyToMany(targetEntity: Company::class, inversedBy: 'subscriptions')]
+    // private Collection $companyId;
 
     #[ORM\OneToMany(mappedBy: 'subscriptionId', targetEntity: CompanySubscription::class)]
     private Collection $companySubscriptions;
@@ -50,7 +50,7 @@ class Subscription
 
     public function __construct()
     {
-        $this->companyId = new ArrayCollection();
+        // $this->companyId = new ArrayCollection();
         $this->companySubscriptions = new ArrayCollection();
         $this->transactions = new ArrayCollection();
     }
@@ -132,29 +132,29 @@ class Subscription
         return $this;
     }
 
-    /**
-     * @return Collection<int, Company>
-     */
-    public function getCompanyId(): Collection
-    {
-        return $this->companyId;
-    }
+    // /**
+    //  * @return Collection<int, Company>
+    //  */
+    // public function getCompanyId(): Collection
+    // {
+    //     return $this->companyId;
+    // }
 
-    public function addCompanyId(Company $companyId): static
-    {
-        if (!$this->companyId->contains($companyId)) {
-            $this->companyId->add($companyId);
-        }
+    // public function addCompanyId(Company $companyId): static
+    // {
+    //     if (!$this->companyId->contains($companyId)) {
+    //         $this->companyId->add($companyId);
+    //     }
 
-        return $this;
-    }
+    //     return $this;
+    // }
 
-    public function removeCompanyId(Company $companyId): static
-    {
-        $this->companyId->removeElement($companyId);
+    // public function removeCompanyId(Company $companyId): static
+    // {
+    //     $this->companyId->removeElement($companyId);
 
-        return $this;
-    }
+    //     return $this;
+    // }
 
     /**
      * @return Collection<int, CompanySubscription>
@@ -168,7 +168,7 @@ class Subscription
     {
         if (!$this->companySubscriptions->contains($companySubscription)) {
             $this->companySubscriptions->add($companySubscription);
-            $companySubscription->setSubscriptionId($this);
+            $companySubscription->setSubscription($this);
         }
 
         return $this;
@@ -178,8 +178,8 @@ class Subscription
     {
         if ($this->companySubscriptions->removeElement($companySubscription)) {
             // set the owning side to null (unless already changed)
-            if ($companySubscription->getSubscriptionId() === $this) {
-                $companySubscription->setSubscriptionId(null);
+            if ($companySubscription->getSubscription() === $this) {
+                $companySubscription->setSubscription(null);
             }
         }
 

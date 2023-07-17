@@ -83,6 +83,16 @@
         "symfony/polyfill-php81": "*"
     },
     "scripts": {
+        "sql": "php bin/console doctrine:query:sql",
+        "cache": "php bin/console cache:pool:clear cache.app",
+        "ecache": "php bin/console cache:clear",
+        "faker": "php bin/console doctrine:fixtures:load",
+        "migrate": "php bin/console make:migration",
+        "dmigrate": "php bin/console doctrine:migrations:migrate",
+        "migrated": [
+            "@migrate",
+            "php bin/console doctrine:migrations:migrate"
+        ],
         "auto-scripts": {
             "cache:clear": "symfony-cmd",
             "assets:install %PUBLIC_DIR%": "symfony-cmd",

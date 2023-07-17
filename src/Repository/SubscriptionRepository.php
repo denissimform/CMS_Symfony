@@ -42,7 +42,7 @@ class SubscriptionRepository extends ServiceEntityRepository
     /**
      * @return Subscription[] Returns an array of Subscription objects
      */
-    public function getGroupedSubscriptions(): array
+    public function getOrderedSubscriptions(): array
     {
         return $this->createQueryBuilder('s')
             ->orderBy('s.duration', 'ASC')

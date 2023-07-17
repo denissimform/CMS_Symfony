@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\CompanySubscription;
 use App\Entity\User;
 use Stripe\StripeClient;
 use App\Entity\Transaction;
@@ -18,9 +19,10 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 /**
  * @method User getUser()
  */
+#[Route('/payment', name: 'app_payment_')]
 class PaymentController extends AbstractController
 {
-    
+
     public function __construct(
         private $stripe_sk,
         private EntityManagerInterface $em,
@@ -28,32 +30,39 @@ class PaymentController extends AbstractController
     ) {
     }
 
-    #[Route('/payment', name: 'app_payment')]
+    #[Route('/', name: 'homepage')]
     public function index(SubscriptionRepository $subscriptionRepository): Response
     {
         return $this->render('payment/index.html.twig', [
-            'subscriptions' => $subscriptionRepository->getGroupedSubscriptions(),
+            'subscriptions' => $subscriptionRepository->getOrderedSubscriptions(),
         ]);
     }
 
-    #[Route('/payment/success', name: 'app_payment_success')]
-    public function success(Request $request): Response
+    #[Route('/response', name: 'response')]
+    public function success(Request $request, TransactionRepository $transactionRepository): Response
     {
-        return $this->render('payment/success.html.twig', [
-            'data' => $this->stripe_sk->checkout->sessions->retrieve(),
+        $orderId = $request->getSession()->get('order_id');
+        $stripe = new StripeClient($this->stripe_sk);
+
+        $paymentStatus = $stripe->checkout->sessions->retrieve($orderId)->payment_status;
+
+        switch ($paymentStatus) {
+            case 'paid':
+                $transactionRepository->updatePaymentStatus($orderId, Transaction::STATUS['COMPLETE']);
+                break;
+
+            case 'unpaid':
+                $transactionRepository->updatePaymentStatus($orderId, Transaction::STATUS['CANCEL']);
+                break;
+        }
+
+        return $this->render('payment/response.html.twig', [
+            'status' => $paymentStatus,
         ]);
     }
-
-    #[Route('/payment/cancel', name: 'app_payment_cancel')]
-    public function cancel(): Response
-    {
-        return $this->render('payment/cancel.html.twig', [
-            'controller_name' => 'PaymentController',
-        ]);
-    }
-
-    #[Route('/checkout/{id}', name: 'app_checkout')]
-    public function checkout(Subscription $subscription): Response
+    
+    #[Route('/checkout/{id}', name: 'checkout')]
+    public function checkout(Subscription $subscription, Request $request): Response
     {
         $stripe = new StripeClient($this->stripe_sk);
 
@@ -65,7 +74,7 @@ class PaymentController extends AbstractController
         $newTransaction->setStatus(Transaction::STATUS['INITIATED']);
         $this->em->persist($newTransaction);
         $this->em->flush();
-        
+
         // Generate checkout session for transaction
         $checkout_session = $stripe->checkout->sessions->create([
             'line_items' => [[
@@ -79,13 +88,15 @@ class PaymentController extends AbstractController
                 'quantity' => 1,
             ]],
             'mode' => 'payment',
-            'success_url' => $this->generateUrl('app_payment_success', [], UrlGeneratorInterface::ABSOLUTE_URL),
-            'cancel_url' => $this->generateUrl('app_payment_cancel', [], UrlGeneratorInterface::ABSOLUTE_URL),
+            'success_url' => $this->generateUrl('app_payment_response', [], UrlGeneratorInterface::ABSOLUTE_URL),
+            'cancel_url' => $this->generateUrl('app_payment_response', [], UrlGeneratorInterface::ABSOLUTE_URL),
         ]);
-        
+
         $newTransaction->setStatus(Transaction::STATUS['PENDING']);
         $newTransaction->setOrderId($checkout_session->id);
         $this->em->flush();
+
+        $request->getSession()->set('order_id', $newTransaction->getOrderId());
 
         return $this->redirect($checkout_session->url);
     }

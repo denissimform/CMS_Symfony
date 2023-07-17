@@ -9,6 +9,12 @@ use Gedmo\Timestampable\Traits\TimestampableEntity;
 #[ORM\Entity(repositoryClass: CompanySubscriptionRepository::class)]
 class CompanySubscription
 {
+    public const PLAN_STATUS = [
+        "EXPIRED" => "Expired",
+        "CURRENT" => "Current",
+        "UPCOMING" => "Upcoming"
+    ];
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -25,7 +31,6 @@ class CompanySubscription
 
     #[ORM\Column(length: 255)]
     private ?string $status = null;
-    public const PLAN_STATUS = ["expired", "current", "upcoming"];
 
     use TimestampableEntity;
 

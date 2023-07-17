@@ -1,0 +1,17 @@
+{% extends "base.html.twig" %}
+
+{% block title %}Pay Now
+{% endblock %}
+
+{% block body %}
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col-12">
+                Payment Gateway Response
+                {{paymentStatus|status_text}}
+                Please redirect to the homepage.
+                <a href="{{path('app_admin_homepage')}}">Homepage</a>
+            </div>
+        </div>
+    </div>
+{% endblock %}
