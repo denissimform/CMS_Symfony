@@ -76,7 +76,7 @@ class MainController extends AbstractController
     #[Route('/logout', name: 'app_logout')]
     public function logout(): Response
     {
-        throw new \Exception("You can't login again!");
+        throw new Exception("You can't login again!");
     }
 
     /** 
@@ -146,7 +146,7 @@ class MainController extends AbstractController
                 'confirmUrl' => $signature->getSignedUrl(),
             ];
 
-            // send signature to the user mail id
+            // send signature to the user mail id•••••••••
             if ($emailService->sendEmail($user->getEmail(), 'Email Verification', 'email/verify.html.twig', $context)) {
 
                 // clear session data

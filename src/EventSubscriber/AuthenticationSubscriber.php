@@ -10,7 +10,6 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
-use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 use Symfony\Component\Security\Http\Authenticator\Passport\Passport;
 use Symfony\Component\Security\Http\Event\CheckPassportEvent;
 use Symfony\Component\Security\Http\Event\LoginFailureEvent;
@@ -32,12 +31,13 @@ class AuthenticationSubscriber implements EventSubscriberInterface
 
         /** @var User $user */
         $user = $event->getPassport()->getUser();
+        
+        if (null === $user->isIsVerified()) {
+            throw new AccountNotVerifiedException();
+        }
+        
         if (!$user instanceof UserInterface) {
             throw new Exception("Unexpected user type!");
-        }
-
-        if (!$user->isIsVerified()) {
-            throw new AccountNotVerifiedException();
         }
     }
 
