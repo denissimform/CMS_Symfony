@@ -5,10 +5,7 @@
 body {
     font-family: 'Poppins', sans-serif !important;
 }
-i{
-    font-size: 17px;    
-}
-@import '~datatables.net-se/css/dataTables.semanticui.css';
+
 
 table td {
     cursor: default !important;
@@ -18,3 +15,7 @@ table td {
 {
     border: none;
 }
+i{
+    font-size: 17px;    
+}
+@import '~datatables.net-se/css/dataTables.semanticui.css';
