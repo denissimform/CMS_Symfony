@@ -8,6 +8,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: SubscriptionRepository::class)]
 #[UniqueEntity(
@@ -21,7 +22,8 @@ class Subscription
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, unique: true)]
+    #[Groups('transactions:dt:read', 'subscription:dt:read')]
     private ?string $type = null;
 
     #[ORM\Column]
@@ -35,9 +37,6 @@ class Subscription
 
     use TimestampableEntity;
 
-    #[ORM\ManyToMany(targetEntity: Company::class, inversedBy: 'subscriptions')]
-    private Collection $companyId;
-
     #[ORM\OneToMany(mappedBy: 'subscriptionId', targetEntity: CompanySubscription::class)]
     private Collection $companySubscriptions;
 
@@ -47,10 +46,9 @@ class Subscription
     #[ORM\OneToMany(mappedBy: 'subscriptionId', targetEntity: SubscriptionDuration::class)]
     private Collection $subscriptionDurations;
 
-    public const PLAN_TYPE = ["silver", "gold", "premium"];
+    // public const PLAN_TYPE = ["silver", "gold", "premium"];
     public function __construct()
     {
-        $this->companyId = new ArrayCollection();
         $this->companySubscriptions = new ArrayCollection();
         $this->subscriptionDurations = new ArrayCollection();
     }
@@ -67,8 +65,8 @@ class Subscription
 
     public function setType(string $type): static
     {
-        if (!in_array($type, self::PLAN_TYPE))
-            throw new \InvalidArgumentException("Invalid value passed!");
+        // if (!in_array($type, self::PLAN_TYPE))
+        //     throw new \InvalidArgumentException("Invalid value passed!");
 
         $this->type = $type;
 
@@ -111,29 +109,6 @@ class Subscription
         return $this;
     }
 
-    /**
-     * @return Collection<int, Company>
-     */
-    public function getCompanyId(): Collection
-    {
-        return $this->companyId;
-    }
-
-    public function addCompanyId(Company $companyId): static
-    {
-        if (!$this->companyId->contains($companyId)) {
-            $this->companyId->add($companyId);
-        }
-
-        return $this;
-    }
-
-    public function removeCompanyId(Company $companyId): static
-    {
-        $this->companyId->removeElement($companyId);
-
-        return $this;
-    }
 
     /**
      * @return Collection<int, CompanySubscription>

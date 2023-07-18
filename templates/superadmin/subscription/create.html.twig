@@ -1,0 +1,72 @@
+{% extends 'superadmin/index.html.twig' %}
+
+{% block title %}
+	Super Admin | Create Subscription Plan
+{% endblock %}
+
+{% block layout %}
+	<div class="container border p-5 mt-5">
+		<h1>Subscription</h1>
+
+		<div class="container">
+			{% if error is defined %}
+				<div class="alert alert-danger alert-dismissible">
+					{{ error }}
+				</div>
+			{% endif %}
+			{% if success is defined %}
+				<div class="alert alert-success alert-dismissible">
+					{{ success }}
+				</div>
+			{% endif %}
+
+			{{ form_start(form, { 'attr' : { 'novalidate':"novalidate", "class":"form" }}) }}
+
+			<div class="container">
+				<div class="row">
+					<div class="col-md-12">
+						{{ form_row(form.type, {
+				attr: {
+				'data-specific-type-url' : path('select_subscription_type'),
+				class: 'js-user-form-type'
+				}
+				}) }}
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-12">
+						<div class="js-custom-type-target">
+							{% if form.customType is defined %}
+								{{ form_row(form.customType) }}
+							{% endif %}
+						</div>
+					</div>
+				</div>
+				<br>
+				<div class="row">
+					<div class="col-md-4">
+						{{ form_row(form.criteria_dept) }}
+					</div>
+					<div class="col-md-4">
+						{{ form_row(form.criteria_user) }}
+					</div>
+					<div class="col-md-4">
+						{{ form_row(form.criteria_storage) }}
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-6">
+						{{ form_row(form.duration) }}
+					</div>
+					<div class="col-md-6">
+						{{ form_row(form.price) }}
+					</div>
+				</div>
+			</div>
+
+			<button type="submit" class="btn btn-success">Create</button>
+			{{ form_end(form) }}
+		</div>
+	</div>
+	<br>
+{% endblock %}

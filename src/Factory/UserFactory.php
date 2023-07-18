@@ -59,6 +59,7 @@ final class UserFactory extends ModelFactory
             'roles' => [],
             'updatedAt' => self::faker()->dateTime(),
             'username' => self::faker()->text(40),
+            'company' => CompanyFactory::random()
         ];
     }
 

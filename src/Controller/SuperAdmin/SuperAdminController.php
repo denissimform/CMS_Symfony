@@ -3,8 +3,14 @@
 namespace App\Controller\SuperAdmin;
 
 use App\Entity\Company;
+use App\Entity\Subscription;
+use App\Entity\SubscriptionDuration;
 use App\Form\CompanyType;
+use App\Form\SubscriptionType;
 use App\Repository\CompanyRepository;
+use App\Repository\SubscriptionDurationRepository;
+use App\Repository\SubscriptionRepository;
+use App\Repository\TransactionRepository;
 use App\Repository\UserRepository;
 use Doctrine\DBAL\Exception;
 use Doctrine\ORM\EntityManager;
@@ -14,9 +20,11 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\UX\Chartjs\Builder\ChartBuilderInterface;
 use Symfony\UX\Chartjs\Model\Chart;
 
+#[IsGranted('ROLE_SUPER_ADMIN')]
 #[Route("/superadmin")]
 class SuperAdminController extends AbstractController
 {
@@ -31,10 +39,11 @@ class SuperAdminController extends AbstractController
     #[Route("/", name: "app_sa_homepage")]
     public function homepage(): Response
     {
-        $result = $this->CallProcedure('chartData', ['userGrowthData', 'pieChartData'], [-1]);
+        $result = $this->CallProcedure('chartData', ['userGrowthData', 'subscriptionData','pieChartData'], [-1]);
         // dd($result);
 
         $userGrowthData = $result['userGrowthData'];
+        $subscriptionData = $result['subscriptionData'];
         $pieChartData = $result['pieChartData'][0];
 
         foreach ($userGrowthData as $data) {
@@ -42,12 +51,18 @@ class SuperAdminController extends AbstractController
             $count[] = $data->{'Count'};
         }
 
+        foreach ($subscriptionData as $data) {
+            $plan[] = $data->{'type'};
+            $sCount[] = $data->{'Count'};
+        }
+
+
         $companyChart = $this->createPieChart(['isActive', 'InActive'], [$pieChartData->{'@companyActive'}, $pieChartData->{'@companyInactive'}]);
 
         $userChart = $this->createPieChart(['Admin', 'BDA', 'Employees'], [$pieChartData->{'@cntAdmin'}, $pieChartData->{'@cntBda'},  ($pieChartData->{'@total'} - $pieChartData->{'@cntAdmin'} - $pieChartData->{'@cntBda'})]);
 
 
-        $subscriptionChart = $this->createBarChart();
+        $subscriptionChart = $this->createBarChart($plan, $sCount);
         $userGrowthChart = $this->createLineChart($year, $count);
 
         return $this->render("/superadmin/index.html.twig", [
@@ -90,7 +105,7 @@ class SuperAdminController extends AbstractController
         $chart = $this->chartBuilder->createChart(Chart::TYPE_BAR);
 
         $chart->setData([
-            'labels' => ['jhghyj', 'jgjhg'],
+            'labels' => $labels,
             'datasets' => [
                 [
                     'label' => 'Subscription Chart',
@@ -99,7 +114,7 @@ class SuperAdminController extends AbstractController
                         'rgb(54, 162, 235)',
                         'rgb(255, 205, 86)'
                     ],
-                    'data' => [65, 59, 80, 81, 56, 55, 40],
+                    'data' => $data,
                     'hoverOffset' => 4,
                     'borderWidth' => 1
                 ],
@@ -199,6 +214,7 @@ class SuperAdminController extends AbstractController
         );
     }
 
+    // Company Datatable
     #[Route('/company/datatable', name: 'app_sa_company_dt')]
     public function companyDatatable(Request $request, CompanyRepository $companyRepository): Response
     {
@@ -219,6 +235,7 @@ class SuperAdminController extends AbstractController
         return $this->json($response, context: ['groups' => 'company:dt:read']);
     }
 
+    // Company Delete
     #[Route('/company/delete/{id}', name: 'app_sa_company_delete')]
     public function toggleCompanyStatus(Company $company): Response
     {
@@ -239,30 +256,37 @@ class SuperAdminController extends AbstractController
     public function singleCompany(Company $company): Response
     {
 
-        $result = $this->CallProcedure('chartData', ['userGrowthData', 'pieChartData'], [$company->getId()]);
+        $result = $this->CallProcedure('chartData', ['userGrowthData', 'subscriptionData', 'pieChartData'], [$company->getId()]);
 
         // dd($result);
 
         $userGrowthData = $result['userGrowthData'];
+        $subscriptionData = $result['subscriptionData'];
         $pieChartData = $result['pieChartData'][0];
 
         $year = [];
         $count = [];
+        $plan = [];
+        $sCount = [];
 
         foreach ($userGrowthData as $data) {
             $year[] = $data->{'Year'};
             $count[] = $data->{'Count'};
         }
 
+        foreach ($subscriptionData as $data) {
+            $plan[] = $data->{'type'};
+            $sCount[] = $data->{'Count'};
+        }
+
         $userChart = $this->createPieChart(['Admin', 'BDA', 'Employees'], [$pieChartData->{'@cntAdmin'}, $pieChartData->{'@cntBda'},  ($pieChartData->{'@total'} - $pieChartData->{'@cntAdmin'} - $pieChartData->{'@cntBda'})]);
 
-        $subscriptionChart = $this->createBarChart();
+        $subscriptionChart = $this->createBarChart($plan, $count);
         $userGrowthChart = $this->createLineChart($year, $count);
 
         $flag = '';
 
-        if(count($year) == 0)
-        {
+        if (count($year) == 0) {
             $flag = 'No data';
         }
 
@@ -279,62 +303,258 @@ class SuperAdminController extends AbstractController
         );
     }
 
-    // register company 
-    #[Route("/company/create", name: "app_sa_company_create")]
-    public function registerCompany(Request $request, EntityManagerInterface $entityManager): Response
+    // Transaction Listing
+    #[Route("/transaction", name: "app_sa_transaction_list")]
+    public function transactionList(TransactionRepository $transactionRepository): Response
     {
-        $form = $this->createForm(CompanyType::class);
+        $transactions = $transactionRepository->findAll();
 
+        return $this->render(
+            "/superadmin/transaction/list.html.twig",
+            [
+                "transactions" => $transactions
+            ]
+        );
+    }
+
+    // Transaction Datatable
+    #[Route('/transaction/datatable', name: 'app_sa_transaction_dt')]
+    public function transactionDatatable(Request $request, TransactionRepository $transactionRepository): Response
+    {
+        $requestData = $request->query->all();
+        $orderByField = $requestData['columns'][$requestData['order'][0]['column']]['data'];
+        $orderDirection = $requestData['order'][0]['dir'];
+        $searchBy = $requestData['search']['value'] ?? null;
+
+        $transactions = $transactionRepository->dynamicDataAjaxVise($requestData['length'], $requestData['start'], $orderByField, $orderDirection, $searchBy);
+        $totalUsers = $transactionRepository->getTotalUsersCount();
+
+        $response = [
+            "data" => $transactions,
+            "recordsTotal" => $totalUsers,
+            "recordsFiltered" => $totalUsers
+        ];
+
+        return $this->json($response, context: ['groups' => 'transactions:dt:read']);
+    }
+
+    // Subscription Listing
+    #[Route("/subscription", name: "app_sa_subscription_list")]
+    public function subscriptionList(SubscriptionDurationRepository $subscriptionDurationRepository): Response
+    {
+        $subscription = $subscriptionDurationRepository->findAll();
+
+        return $this->render(
+            "/superadmin/subscription/list.html.twig",
+            [
+                "subscription" => $subscription
+            ]
+        );
+    }
+
+    // Subscription Datatable
+    #[Route('/subscription/datatable', name: 'app_sa_subscription_dt')]
+    public function subscriptionDatatable(Request $request, SubscriptionDurationRepository $subscriptionDurationRepository): Response
+    {
+        $requestData = $request->query->all();
+        $orderByField = $requestData['columns'][$requestData['order'][0]['column']]['data'];
+        $orderDirection = $requestData['order'][0]['dir'];
+        $searchBy = $requestData['search']['value'] ?? null;
+
+        $plans = $subscriptionDurationRepository->dynamicDataAjaxVise($requestData['length'], $requestData['start'], $orderByField, $orderDirection, $searchBy);
+
+
+        $totalUsers = $subscriptionDurationRepository->getTotalUsersCount();
+
+        $response = [
+            "data" => $plans,
+            "recordsTotal" => $totalUsers,
+            "recordsFiltered" => $totalUsers
+        ];
+
+        return $this->json($response, context: ['groups' => 'subscription:dt:read']);
+    }
+
+    // Subscrition Plan Delete
+    #[Route('/subscription/delete/{id}', name: 'app_sa_subscription_delete')]
+    public function toggleSubscriptionStatus(SubscriptionDuration $subscriptionDuration): Response
+    {
+        try {
+            $subscriptionDuration->setIsActive(!$subscriptionDuration->isIsActive());
+            $this->em->flush();
+        } catch (Exception $err) {
+            $this->addFlash("error", $err->getMessage());
+        }
+
+        $this->addFlash('success', 'Subscription Plan status changed successfully!');
+
+        return $this->redirectToRoute('app_sa_subscription_list');
+    }
+
+
+    // Subscription Create
+    #[Route('/subscription/create', name: 'app_subscription_create', methods: ['GET', 'POST'])]
+    public function createSubscription(Request $request, EntityManagerInterface $entityManager, SubscriptionRepository $subscriptionRepository): Response
+    {
+        $form = $this->createForm(SubscriptionType::class);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $formData = $form->getData();
-            $formData->setRoles(['ROLE_ADMIN']);
 
-            try {
-                $this->em->persist($formData);
-                $this->em->flush();
-            } catch (Exception $e) {
-                $this->addFlash('error', $e->getMessage());
+            $data = $form->getData();
+
+            if ($data['type'] == 'Other') {
+                $subscription = new Subscription();
+                $subscription->setType($data['customType']);
+                $subscription->setCriteriaDept($data['criteria_dept']);
+                $subscription->setCriteriaUser($data['criteria_user']);
+                $subscription->setCriteriaStorage($data['criteria_storage']);
+                $subscription->setIsActive(1);
+
+                $entityManager->persist($subscription);
+                $entityManager->flush();
+            } else {
+                $subscription = $subscriptionRepository->findBy(['id' => $data['subscription_id']])[0];
             }
 
-            return $this->redirectToRoute("app_sa_company_list");
+            $duration = new SubscriptionDuration();
+            $duration->setDuration($data['duration']);
+            $duration->setPrice($data['price']);
+            $duration->setIsActive(1);
+            $duration->setSubscriptionId($subscription);
+
+            $entityManager->persist($duration);
+            $entityManager->flush();
+
+            $this->addFlash('success', 'Subscription Plan created successfully!');
+
+            return $this->redirectToRoute('app_sa_subscription_list');
         }
 
         return $this->render(
-            "/superadmin/company/create.html.twig",
+            'superadmin/subscription/create.html.twig',
             [
-                "form" => $form->createView()
+                'form' => $form,
             ],
             new Response(null, $form->isSubmitted() ? ($form->isValid() ? 200 : 422) : 200)
         );
     }
 
-    // update company
-    #[Route("/company/{id}/edit", name: "app_sa_company_update")]
-    public function updateCompany(Request $request, Company $company, EntityManagerInterface $entityManager): Response
-    {
-        $form = $this->createForm(CompanyType::class, $company);
 
+    #[Route('/subscription/edit/{id}', name: 'app_subscription_edit')]
+    public function editSubscription(SubscriptionDuration $subscriptionDuration, Request $request) : Response
+    {
+
+        // $arr = ['New Helly'];
+
+        $form = $this->createForm(type: SubscriptionType::class, options: [
+            'customData' => 'New Helly'
+        ]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            /** @var Company $company */
-            $company = $form->getData();
-
-            $entityManager->flush();
-
-            return $this->redirectToRoute("app_sa_company_list");
         }
 
         return $this->render(
-            "/superadmin/company/update.html.twig",
+            'superadmin/subscription/create.html.twig',
             [
-                "form" => $form->createView()
+                'form' => $form,
             ],
             new Response(null, $form->isSubmitted() ? ($form->isValid() ? 200 : 422) : 200)
         );
+        // dd($subscriptionDuration);
     }
+
+
+    // AJAX call for SUbscription plan
+    #[Route('/subscription/type-select', name: 'select_subscription_type')]
+    public function getSubscriptionType(Request $request, SubscriptionRepository $subscriptionRepository): Response
+    {
+        $type = $request->query->get('type');
+
+        $criteria = [];
+        $criteria['Type'] = $type;
+        if ($type != 'Other') {
+
+            $data = $subscriptionRepository->findBy(['type' => $type]);
+            $criteria['id'] = $data[0]->getId();
+            $criteria['dept'] = $data[0]->getCriteriaDept();
+            $criteria['user'] = $data[0]->getCriteriaUser();
+            $criteria['storage'] = $data[0]->getCriteriaStorage();
+        }
+
+        $criteria = json_encode($criteria);
+
+        return new Response($criteria);
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+    // // register company 
+    // #[Route("/company/create", name: "app_sa_company_create")]
+    // public function registerCompany(Request $request, EntityManagerInterface $entityManager): Response
+    // {
+    //     $form = $this->createForm(CompanyType::class);
+
+    //     $form->handleRequest($request);
+
+    //     if ($form->isSubmitted() && $form->isValid()) {
+    //         $formData = $form->getData();
+    //         $formData->setRoles(['ROLE_ADMIN']);
+
+    //         try {
+    //             $this->em->persist($formData);
+    //             $this->em->flush();
+    //         } catch (Exception $e) {
+    //             $this->addFlash('error', $e->getMessage());
+    //         }
+
+    //         return $this->redirectToRoute("app_sa_company_list");
+    //     }
+
+    //     return $this->render(
+    //         "/superadmin/company/create.html.twig",
+    //         [
+    //             "form" => $form->createView()
+    //         ],
+    //         new Response(null, $form->isSubmitted() ? ($form->isValid() ? 200 : 422) : 200)
+    //     );
+    // }
+
+    // update company
+    // #[Route("/company/{id}/edit", name: "app_sa_company_update")]
+    // public function updateCompany(Request $request, Company $company, EntityManagerInterface $entityManager): Response
+    // {
+    //     $form = $this->createForm(CompanyType::class, $company);
+
+    //     $form->handleRequest($request);
+
+    //     if ($form->isSubmitted() && $form->isValid()) {
+    //         /** @var Company $company */
+    //         $company = $form->getData();
+
+    //         $entityManager->flush();
+
+    //         return $this->redirectToRoute("app_sa_company_list");
+    //     }
+
+    //     return $this->render(
+    //         "/superadmin/company/update.html.twig",
+    //         [
+    //             "form" => $form->createView()
+    //         ],
+    //         new Response(null, $form->isSubmitted() ? ($form->isValid() ? 200 : 422) : 200)
+    //     );
+    // }
 
     // #[Route('/admin/delete/{id}', name: 'app_sa_admin_delete')]
     // public function toggleAdminStatus(User $user): Response

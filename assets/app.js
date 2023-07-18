@@ -22,6 +22,7 @@ import "./js/sidebarmenu.js";
 import "./js/app.min.js";
 import "./libs/simplebar/dist/simplebar.js";
 import "./js/dashboard.js";
+import "./js/custom_type";
 
 import 'bootstrap';
 

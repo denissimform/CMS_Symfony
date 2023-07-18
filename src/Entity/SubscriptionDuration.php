@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\SubscriptionDurationRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: SubscriptionDurationRepository::class)]
 class SubscriptionDuration
@@ -12,18 +13,22 @@ class SubscriptionDuration
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups('subscription:dt:read')]
     private ?int $id = null;
 
-    #[ORM\Column(length: 30, nullable: true)]
-    private ?string $duration = null;
+    #[ORM\Column(nullable: true)]
+    #[Groups('subscription:dt:read')]
+    private ?int $duration = null;
 
     #[ORM\Column(nullable: true)]
+    #[Groups('subscription:dt:read')]
     private ?int $price = null;
 
     #[ORM\ManyToOne(inversedBy: 'subscriptionDurations')]
     private ?Subscription $subscriptionId = null;
 
     #[ORM\Column(nullable: true)]
+    #[Groups('subscription:dt:read')]
     private ?bool $isActive = null;
 
     use TimestampableEntity;
@@ -33,12 +38,12 @@ class SubscriptionDuration
         return $this->id;
     }
 
-    public function getDuration(): ?string
+    public function getDuration(): ?int
     {
         return $this->duration;
     }
 
-    public function setDuration(?string $duration): static
+    public function setDuration(?int $duration): static
     {
         $this->duration = $duration;
 

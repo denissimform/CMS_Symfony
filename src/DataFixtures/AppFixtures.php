@@ -4,6 +4,8 @@ namespace App\DataFixtures;
 
 use App\Entity\User;
 use App\Factory\CompanyFactory;
+use App\Factory\SubscriptionFactory;
+use App\Factory\TransactionFactory;
 use App\Factory\UserFactory;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
@@ -15,7 +17,7 @@ class AppFixtures extends Fixture
         // $product = new Product();
         // $manager->persist($product);
 
-
+        CompanyFactory::createMany(20);
         UserFactory::createOne([
             'email' => 'superadmin@gmail.com',
             'roles' => ['ROLE_SUPER_ADMIN']
@@ -27,7 +29,9 @@ class AppFixtures extends Fixture
             'roles' => ['ROLE_BDA']
         ]);
         UserFactory::createMany(10);
-        CompanyFactory::createMany(50);
+
+        SubscriptionFactory::createMany(6);
+        TransactionFactory::createMany(10);
 
         $manager->flush();
     }

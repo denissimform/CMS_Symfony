@@ -24,7 +24,7 @@ class Company
     private ?int $id = null;
 
     #[ORM\Column(length: 40)]
-    #[Groups('company:dt:read')]
+    #[Groups('company:dt:read', 'transactions:dt:read')]
     private ?string $name = null;
 
     #[ORM\Column(type: Types::TEXT)]

@@ -21,6 +21,45 @@ class SubscriptionDurationRepository extends ServiceEntityRepository
         parent::__construct($registry, SubscriptionDuration::class);
     }
 
+
+    public function dynamicDataAjaxVise(int $limit, int $start, string $orderByField, string $orderDirection, string $searchBy): array
+    {
+        $queryBuilder = $this->createQueryBuilder('u')
+            ->innerJoin('u.subscriptionId', 'subscription')
+            ->select(['u.id', 'u.duration', 'u.price', 'subscription.type', 'u.isActive', 'subscription.criteria_dept', 'subscription.criteria_user', 'subscription.criteria_storage']);
+
+           switch ($orderByField) {
+            case 'type':
+                $queryBuilder->orderBy("subscription.$orderByField", $orderDirection);
+                break; 
+            
+            default:
+                $queryBuilder->orderBy("u.$orderByField", $orderDirection);
+                break;
+           }   
+
+        if ($searchBy){
+            return $queryBuilder->andWhere('u.duration LIKE ?1 OR u.price LIKE ?1 OR subscription.type LIKE ?1')
+            ->setParameter(1, '%' . $searchBy . '%')
+            ->getQuery()
+            ->getResult();
+        }
+
+        return $queryBuilder->setMaxResults($limit)
+            ->setFirstResult($start)
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function getTotalUsersCount(): int
+    {
+        return count(
+            $this->createQueryBuilder('u')
+                ->getQuery()
+                ->getResult()
+        );
+    }
+
 //    /**
 //     * @return SubscriptionDuration[] Returns an array of SubscriptionDuration objects
 //     */

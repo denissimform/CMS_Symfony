@@ -1,36 +1,36 @@
 {% extends 'superadmin/index.html.twig' %}
 
 {% block stylesheets %}
-{{ parent() }}
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fomantic-ui/2.9.2/semantic.min.css">
+	{{ parent() }}
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fomantic-ui/2.9.2/semantic.min.css">
 {% endblock %}
 
 {% block title %}
-Super Admin |
-{{ company.name }}
+	Super Admin |
+	{{ company.name }}
 {% endblock %}
 
 {% block layout %}
-<div class="row">
-	<div class="col-12">
-		<h1>{{ company.name }}</h1>
-		<br>
-	</div>
-	<div class="col-lg-10 d-flex align-items-strech">
-		<div class="card w-100">
-			<div class="card-body">
-				<img src="{{ asset('logo.png') }}" alt="Company Logo" class="w-25">
-				<h3>About :
-				</h3>
-				<p>
-					{{ company.about }}</p>
-				<h4>Established At :
-					{{ company.establishedAt | ago }}
-					-
-					{{ company.establishedAt | date | trim(' 00:00', 'right') }}</h4>
+	<div class="row">
+		<div class="col-12">
+			<h1>{{ company.name }}</h1>
+			<br>
+		</div>
+		<div class="col-lg-10 d-flex align-items-strech">
+			<div class="card w-100">
+				<div class="card-body">
+					<img src="{{ asset('logo.png') }}" alt="Company Logo" class="w-25">
+					<h3>About :
+					</h3>
+					<p>
+						{{ company.about }}</p>
+					<h4>Established At :
+						{{ company.establishedAt | ago }}
+						-
+						{{ company.establishedAt | date | trim(' 00:00', 'right') }}</h4>
+				</div>
 			</div>
 		</div>
 	</div>
-</div>
-{{ parent() }}
+	{{ parent() }}
 {% endblock %}
