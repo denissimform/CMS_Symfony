@@ -13,9 +13,7 @@ const $ = require('jquery');
 import './js/index.js';
 
 // any CSS you import will output into a single css file (app.css in this case)
-
 import './styles/app.css';
-// import './styles/register.css';
 import './scss/styles.scss';
 
 import "./libs/jquery/dist/jquery.min.js";

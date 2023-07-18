@@ -2,7 +2,6 @@
 
 namespace App\Controller\SuperAdmin;
 
-
 use Exception;
 use App\Entity\User;
 use App\Form\RegistrationFormType;

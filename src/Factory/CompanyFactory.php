@@ -28,6 +28,7 @@ use Zenstruck\Foundry\RepositoryProxy;
  * @method static Company[]|Proxy[]                 randomRange(int $min, int $max, array $attributes = [])
  * @method static Company[]|Proxy[]                 randomSet(int $number, array $attributes = [])
  */
+
 final class CompanyFactory extends ModelFactory
 {
     /**

@@ -1,5 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins&display=swap');
 @import '~bootstrap';
+@import '~datatables.net-se/css/dataTables.semanticui.css';
 
 body {
     font-family: 'Poppins', sans-serif !important;
