@@ -36,10 +36,7 @@ class Subscription
 
     use TimestampableEntity;
 
-    // #[ORM\ManyToMany(targetEntity: Company::class, inversedBy: 'subscriptions')]
-    // private Collection $companyId;
-
-    #[ORM\OneToMany(mappedBy: 'subscriptionId', targetEntity: CompanySubscription::class)]
+    #[ORM\OneToMany(mappedBy: 'subscription', targetEntity: CompanySubscription::class)]
     private Collection $companySubscriptions;
 
     #[ORM\Column]
@@ -131,30 +128,6 @@ class Subscription
 
         return $this;
     }
-
-    // /**
-    //  * @return Collection<int, Company>
-    //  */
-    // public function getCompanyId(): Collection
-    // {
-    //     return $this->companyId;
-    // }
-
-    // public function addCompanyId(Company $companyId): static
-    // {
-    //     if (!$this->companyId->contains($companyId)) {
-    //         $this->companyId->add($companyId);
-    //     }
-
-    //     return $this;
-    // }
-
-    // public function removeCompanyId(Company $companyId): static
-    // {
-    //     $this->companyId->removeElement($companyId);
-
-    //     return $this;
-    // }
 
     /**
      * @return Collection<int, CompanySubscription>

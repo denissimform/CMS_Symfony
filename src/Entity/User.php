@@ -55,7 +55,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?\DateTimeInterface $dob = null;
 
     #[ORM\Column]
-    private ?bool $isVerified = true;
+    private ?bool $isVerified = false;
 
     #[ORM\Column]
     private ?bool $isActive = false;
@@ -165,6 +165,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
+    public function addRoles(array $roles): static
+    {
+        $this->roles = array_unique(array_merge($this->roles, $roles));
+
+        return $this;
+    }
+
     public function isAdmin(): bool
     {
         return in_array("ROLE_ADMIN", $this->roles);
@@ -235,6 +242,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
+    public function getFullName(): ?string
+    {
+        return $this->firstName . ' ' . $this->lastName;
+    }
+
     public function getGender(): ?string
     {
         return $this->gender;
@@ -285,7 +297,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
         return $this;
     }
-    
+
     /**
      * @return Collection<int, Client>
      */

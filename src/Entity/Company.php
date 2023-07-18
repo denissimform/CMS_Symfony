@@ -39,6 +39,9 @@ class Company
     #[ORM\OneToMany(mappedBy: 'companyId', targetEntity: Department::class)]
     private Collection $departments;
 
+    #[ORM\OneToMany(mappedBy: 'company', targetEntity: Transaction::class)]
+    private Collection $transactions;
+
     #[ORM\OneToMany(mappedBy: 'companyId', targetEntity: Request::class)]
     private Collection $requests;
 
@@ -48,6 +51,9 @@ class Company
     #[ORM\OneToMany(mappedBy: 'company', targetEntity: User::class)]
     private Collection $users;
 
+    #[ORM\OneToMany(mappedBy: 'company', targetEntity: CompanySubscription::class)]
+    private Collection $companySubscriptions;
+
     public function __construct()
     {
         $this->clients = new ArrayCollection();
@@ -55,6 +61,8 @@ class Company
         $this->requests = new ArrayCollection();
         $this->timeLines = new ArrayCollection();
         $this->users = new ArrayCollection();
+        $this->transactions = new ArrayCollection();
+        $this->companySubscriptions = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -244,16 +252,63 @@ class Company
             $this->users->add($user);
             $user->setCompany($this);
         }
+        return $this;
+    }
+    
+    /**
+     * @return Collection<int, CompanySubscription>
+     */
+    public function getCompanySubscriptions(): Collection
+    {
+        return $this->companySubscriptions;
+    }
+
+    public function addCompanySubscription(CompanySubscription $companySubscription): static
+    {
+        if (!$this->companySubscriptions->contains($companySubscription)) {
+            $this->companySubscriptions->add($companySubscription);
+            $companySubscription->setCompany($this);
+        }
 
         return $this;
     }
 
-    public function removeUser(User $user): static
+    public function removeCompanySubscription(CompanySubscription $companySubscription): static
     {
-        if ($this->users->removeElement($user)) {
+        if ($this->companySubscriptions->removeElement($companySubscription)) {
             // set the owning side to null (unless already changed)
-            if ($user->getCompany() === $this) {
-                $user->setCompany(null);
+            if ($companySubscription->getCompany() === $this) {
+                $companySubscription->setCompany(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, CompanySubscription>
+     */
+    public function getTransactions(): Collection
+    {
+        return $this->transactions;
+    }
+
+    public function addTransaction(Transaction $transaction): static
+    {
+        if (!$this->transactions->contains($transaction)) {
+            $this->transactions->add($transaction);
+            $transaction->setCompany($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTransaction(Transaction $transaction): static
+    {
+        if ($this->transactions->removeElement($transaction)) {
+            // set the owning side to null (unless already changed)
+            if ($transaction->getCompany() === $this) {
+                $transaction->setCompany(null);
             }
         }
 

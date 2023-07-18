@@ -23,7 +23,7 @@ class Transaction
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\ManyToOne(inversedBy: 'transactions')]
+    #[ORM\ManyToOne(targetEntity: Company::class, inversedBy: 'transactions')]
     #[ORM\JoinColumn(nullable: false)]
     private ?company $company = null;
 
@@ -36,6 +36,9 @@ class Transaction
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $orderId = null;
+
+    #[ORM\Column]
+    private ?int $amount = 0;
 
     public function getId(): ?int
     {
@@ -88,6 +91,18 @@ class Transaction
     public function setOrderId(string $orderId): static
     {
         $this->orderId = $orderId;
+
+        return $this;
+    }
+
+    public function getAmount(): ?int
+    {
+        return $this->amount;
+    }
+
+    public function setAmount(int $amount): static
+    {
+        $this->amount = $amount;
 
         return $this;
     }

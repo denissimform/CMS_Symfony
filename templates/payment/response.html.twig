@@ -5,12 +5,13 @@
 
 {% block body %}
     <div class="container mt-4">
-        <div class="row">
+    {% include "/components/flash_messages.html.twig" %}
+        <div class="row text-center">
             <div class="col-12">
-                Payment Gateway Response
-                {{paymentStatus|status_text}}
-                Please redirect to the homepage.
-                <a href="{{path('app_admin_homepage')}}">Homepage</a>
+                <h1> Payment Gateway Response </h1>
+                <br>
+                <h3 class='text-success fw-bolder'> {{status|status_text}} </h3>
+                Please redirect to the  <a href="{{path('app_admin_homepage')}}">homepage.</a>
             </div>
         </div>
     </div>

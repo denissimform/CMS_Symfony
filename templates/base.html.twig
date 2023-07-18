@@ -27,15 +27,23 @@
 				<!--  Sidebar End -->
 
 				<!--  Main wrapper -->
-				<div
-					class="container-fluid">
-					<!-- Flash messages Start -->
-					{% block flash %}{% endblock %}
-					<!-- Flash messages end -->
 
-					<!-- Layout Start -->
-					{% block layout %}{% endblock %}
-					<!-- Layout end -->
+				<div
+					class="body-wrapper">
+					<!--  Navbar Start -->
+					{% block navbar %}{% endblock %}
+					<!--  Navbar End -->
+
+
+					<div
+						class="container-fluid">
+						<!-- Flash messages Start -->
+						{% block flash %}{% endblock %}
+						<!-- Flash messages end -->
+
+						<!-- Layout Start -->
+						{% block layout %}{% endblock %}
+						<!-- Layout end -->
 
 						<!-- Footer Start -->
 						{% block footer %}{% endblock %}
