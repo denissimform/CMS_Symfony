@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controller\AdminDashboard\Department;
+namespace App\Controller\Admin\Department;
 
 use App\Entity\Department;
 use App\Form\DepartmentType;
@@ -31,7 +31,7 @@ class DepartmentController extends AbstractController
             return $this->redirectToRoute('app_admin_department');
         }
 
-        return $this->render('AdminDashboard/Department/create_department.html.twig',[
+        return $this->render('Admin/Department/create_department.html.twig',[
             'form' => $form->createView()
         ]);
     }
@@ -39,9 +39,9 @@ class DepartmentController extends AbstractController
     #[Route('', name: 'app_admin_department')]
     public function Departments(DepartmentRepository $departmentRepository): Response
     {
-        return $this->render('AdminDashboard/Department/index.html.twig');
+        return $this->render('Admin/Department/index.html.twig');
 
-        // return $this->render('AdminDashboard/Department/departments.html.twig',[
+        // return $this->render('Admin/Department/departments.html.twig',[
         //     'departments' => $departmentRepository->findBy([
         //         'isDeleted' => false
         //     ])
@@ -59,7 +59,7 @@ class DepartmentController extends AbstractController
 
             return $this->redirectToRoute('app_admin_department');
         }
-        return $this->render('AdminDashboard/Department/create_department.html.twig',[
+        return $this->render('Admin/Department/create_department.html.twig',[
             'form' => $form->createView()
         ]);
     }

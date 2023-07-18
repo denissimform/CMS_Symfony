@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controller\AdminDashboard\Subscription;
+namespace App\Controller\Admin\Subscription;
 
 use App\Entity\Subscription;
 use App\Form\SubscriptionType;
@@ -17,7 +17,7 @@ class SubscriptionController extends AbstractController
     #[Route('', name: 'app_admin_subscriptions')]
     public function Subscriptions(SubscriptionRepository $subscriptionRepository): Response
     {
-        return $this->render('AdminDashboard/Subscription/showsubscription.html.twig',[
+        return $this->render('Admin/Subscription/showsubscription.html.twig',[
             'gold' => $subscriptionRepository->findOneBy(['type'=>'gold']),
             'silver' => $subscriptionRepository->findOneBy(['type'=>'silver']),
             'premium' => $subscriptionRepository->findOneBy(['type'=>'premium']),
@@ -44,7 +44,7 @@ class SubscriptionController extends AbstractController
             return $this->redirectToRoute('app_admin_subscriptions');
         }
 
-        return $this->render('AdminDashboard/Subscription/update_subscription.html.twig',[
+        return $this->render('Admin/Subscription/update_subscription.html.twig',[
             'form' => $form->createView()
         ]);
     }

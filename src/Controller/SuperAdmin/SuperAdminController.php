@@ -23,7 +23,7 @@ class SuperAdminController extends AbstractController
     ) {
     }
     // homepage route
-    #[Route("/", name: "app_sa_admin_homepage")]
+    #[Route("", name: "app_sa_admin_homepage")]
     public function homepage(): Response
     {
         return $this->render('super_admin/admin/index.html.twig');

@@ -1,13 +1,7 @@
 {{ form_start(form, {'attr' : { 'novalidate': 'novalidate' }}) }}
 <div class="row mt-4">
 	<div class="col-lg-8">
-		{{ form_row(form.company) }}
-		{{ form_row(form.email) }}
-		{{ form_row(form.username) }}
-		{% if form.password is defined%}
-			{{ form_row(form.password) }}
-		{% endif %}
-		{{ form_widget(form) }}
+		{{ form_row(form.name) }}
 	</div>
 </div>
 <div class="row">

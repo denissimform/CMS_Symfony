@@ -39,8 +39,8 @@ export default class extends Controller {
                 {
                     data: 'isDeleted',
                     render: function (data, type, row) {
-                        return `<a href="/admin/dashboard/skills/delete/${row.id}" class="btn btn-success">Delete</a> 
-                        <a href="/admin/dashboard/skills/update/${row.id}" class="btn btn-primary">Update</a>`;
+                        return `<a href="${row.isActive ? '' : ('/admin/dashboard/skills/delete/' + row.id)}" class="btn btn-outline-success ${row.isActive ? 'disabled':''}"><i class='bx bxs-trash'></i></a> 
+                        <a href="${row.isActive ? '' : ('/admin/dashboard/skills/update/' + row.id)}" class="btn btn-outline-primary ${row.isActive ? 'disabled':''}"><i class='bx bxs-edit' ></i></a>`;
                     }
                 }
             ]

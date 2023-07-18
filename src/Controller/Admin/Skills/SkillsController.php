@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controller\AdminDashboard\Skills;
+namespace App\Controller\Admin\Skills;
 
 use App\Entity\Skills;
 use App\Form\SkillType;
@@ -33,7 +33,7 @@ class SkillsController extends AbstractController
             return $this->redirectToRoute('app_admin_skills');
         }
 
-        return $this->render('AdminDashboard/Skills/create_skill.html.twig',[
+        return $this->render('Admin/Skills/create_skill.html.twig',[
             'form' => $form->createView()
         ]);
     }
@@ -41,8 +41,8 @@ class SkillsController extends AbstractController
     #[Route('', name: 'app_admin_skills')]
     public function Skills(SkillsRepository $skillsRepository): Response
     {
-        return $this->render('AdminDashboard/Skills/index.html.twig');
-        // return $this->render('AdminDashboard/Skills/skills.html.twig',[
+        return $this->render('Admin/Skills/index.html.twig');
+        // return $this->render('Admin/Skills/skills.html.twig',[
         //     'skills' => $skillsRepository->findBy([
         //         'isDeleted' => false
         //     ]) 
@@ -60,7 +60,7 @@ class SkillsController extends AbstractController
 
             return $this->redirectToRoute('app_admin_skills');
         }
-        return $this->render('AdminDashboard/Skills/create_skill.html.twig',[
+        return $this->render('Admin/Skills/create_skill.html.twig',[
             'form' => $form->createView()
         ]);
     }
@@ -100,5 +100,15 @@ class SkillsController extends AbstractController
         ];
 
         return $this->json($response);
+    }
+
+    #[Route('/timeline', name: 'timeline')]
+    public function timeline(Request $request): Response
+    {
+        $form = $this->createForm(SkillType::class);
+        return $this->render('Admin/Timeline/timeline.html.twig',[
+            'form' => $form->createView()
+        ]);
+
     }
 }

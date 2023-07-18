@@ -1,16 +1,21 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}SuperAdmin | List
+{% block title %}Admin | Skills
 {% endblock %}
 
-{% block body %}
+{% block sidebar %}
+	{{ include('/components/adminsidebar.html.twig') }}
+{% endblock %}
+{% block navbar %}
+	{{ include('/components/navbar.html.twig') }}
+{% endblock %}
+
+
+{% block layout %}
 	<div class="container">
 		<div class="row mt-4 d-flex justify-content-between text-center">
-			<h3 class="col-lg-10">Admins</h3>
+			<h3 class="col-lg-10">SKILLS</h3>
 			<div class="col-lg-2 float-right">
-				<a href="{{ path('app_admin_skills_create') }}" class="btn btn-primary">
-					Add Data
-                </a>
 			</div>
 		</div>
 		<div class="row">
@@ -30,4 +35,8 @@
 				</table>
 			</div>
 		</div>
-	{% endblock %}
+	</div>
+{% endblock %}
+{% block footer %}
+	{{ include('/components/footer.html.twig') }}
+{% endblock %}
