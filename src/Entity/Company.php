@@ -8,8 +8,10 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 #[ORM\Entity(repositoryClass: CompanyRepository::class)]
+#[UniqueEntity(fields: ['name', 'isActive'], message: "This name is already in used!!")]
 class Company
 {
     use TimestampableEntity;
@@ -29,12 +31,9 @@ class Company
     private ?\DateTimeInterface $establishedAt = null;
 
     #[ORM\Column]
-    private ?bool $isActive = null;
+    private ?bool $isActive = true;
 
-    #[ORM\ManyToOne(inversedBy: 'companies')]
-    private ?User $createdBy = null;
-
-    #[ORM\OneToMany(mappedBy: 'comapnyId', targetEntity: Client::class)]
+    #[ORM\OneToMany(mappedBy: 'companyId', targetEntity: Client::class)]
     private Collection $clients;
 
     #[ORM\OneToMany(mappedBy: 'companyId', targetEntity: Department::class)]
@@ -45,6 +44,9 @@ class Company
 
     #[ORM\OneToMany(mappedBy: 'companyId', targetEntity: TimeLine::class)]
     private Collection $timeLines;
+
+    #[ORM\OneToMany(mappedBy: 'company', targetEntity: User::class)]
+    private Collection $users;
 
     #[ORM\ManyToMany(targetEntity: Subscription::class, mappedBy: 'companyId')]
     private Collection $subscriptions;
@@ -58,6 +60,7 @@ class Company
         $this->departments = new ArrayCollection();
         $this->requests = new ArrayCollection();
         $this->timeLines = new ArrayCollection();
+        $this->users = new ArrayCollection();
         $this->subscriptions = new ArrayCollection();
         $this->companySubscriptions = new ArrayCollection();
     }
@@ -72,7 +75,7 @@ class Company
         return $this->name;
     }
 
-    public function setName(string $name): static
+    public function setName(?string $name): static
     {
         $this->name = $name;
 
@@ -84,7 +87,7 @@ class Company
         return $this->about;
     }
 
-    public function setAbout(string $about): static
+    public function setAbout(?string $about): static
     {
         $this->about = $about;
 
@@ -96,7 +99,7 @@ class Company
         return $this->establishedAt;
     }
 
-    public function setEstablishedAt(\DateTimeInterface $establishedAt): static
+    public function setEstablishedAt(?\DateTimeInterface $establishedAt): static
     {
         $this->establishedAt = $establishedAt;
 
@@ -108,21 +111,9 @@ class Company
         return $this->isActive;
     }
 
-    public function setIsActive(bool $isActive): static
+    public function setIsActive(?bool $isActive): static
     {
         $this->isActive = $isActive;
-
-        return $this;
-    }
-
-    public function getCreatedBy(): ?User
-    {
-        return $this->createdBy;
-    }
-
-    public function setCreatedBy(?User $createdBy): static
-    {
-        $this->createdBy = $createdBy;
 
         return $this;
     }
@@ -248,6 +239,23 @@ class Company
     }
 
     /**
+     * @return Collection<int, User>
+     */
+    public function getUsers(): Collection
+    {
+        return $this->users;
+    }
+
+    public function addUser(User $user): static
+    {
+        if (!$this->users->contains($user)) {
+            $this->users->add($user);
+            $user->setCompany($this);
+        }
+        return $this;
+    }
+  
+    /**
      * @return Collection<int, Subscription>
      */
     public function getSubscriptions(): Collection
@@ -262,6 +270,17 @@ class Company
             $subscription->addCompanyId($this);
         }
 
+        return $this;
+    }
+
+    public function removeUser(User $user): static
+    {
+        if ($this->users->removeElement($user)) {
+            // set the owning side to null (unless already changed)
+            if ($user->getCompany() === $this) {
+                $user->setCompany(null);
+              }
+        }
         return $this;
     }
 

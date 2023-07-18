@@ -10,6 +10,12 @@
 		{% block stylesheets %}
 			{{ encore_entry_link_tags('app') }}
 		{% endblock %}
+
+		<!-- Javascript start -->
+		{% block javascripts %}
+			{{ encore_entry_script_tags('app') }}
+		{% endblock %}
+		<!-- Javascript end -->
 	</head>
 	<body>
 		<!--  Body Wrapper -->
@@ -28,6 +34,10 @@
 
 				<div
 					class="container-fluid">
+					<!-- Flash messages Start -->
+					{% block flash %}{% endblock %}
+					<!-- Flash messages end -->
+
 					<!-- Layout Start -->
 					{% block layout %}{% endblock %}
 					<!-- Layout end -->
@@ -40,8 +50,5 @@
 			<!--  Main End -->
 		</div>
 		<!--  Body End -->
-		{% block javascripts %}
-			{{ encore_entry_script_tags('app') }}
-		{% endblock %}
 	</body>
 </html>

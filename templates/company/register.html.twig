@@ -1,0 +1,79 @@
+{% extends '/company/index.html.twig' %}
+
+{% block title %}
+	Register Company
+{% endblock %}
+
+{% block body %}
+	<div class="page-wrapper" id="main-wrapper" data-layout="vertical" data-navbarbg="skin6" data-sidebartype="full" data-sidebar-position="fixed" data-header-position="fixed">
+		<div class="position-relative overflow-hidden radial-gradient min-vh-100 d-flex align-items-center justify-content-center">
+			<div class="d-flex align-items-center justify-content-center w-100">
+				<div class="row justify-content-center w-100">
+					<div class="col-6">
+						<div class="card mb-0">
+							<div class="card-body">
+								<a href="#" class="text-nowrap logo-img text-center d-block py-3 w-100">
+									<img src="{{ asset('logo.png') }}" width="180" alt="Logo">
+								</a>
+								{{ include('components/flash_messages.html.twig') }}
+								{{ form_start(adminForm, { attr: { "novalidate": true }}) }}
+								<h3 class="my-3">Company Details</h3>
+								<div class="row">
+									<div class="col-md-6">
+										{{ form_row(adminForm.name, {'attr': {'class' : 'form-control'}}) }}
+									</div>
+									<div class="col-md-6">
+										{{ form_row(adminForm.establishedAt, {'attr': {'class' : 'form-control'}}) }}
+									</div>
+									<div class="col-12">
+										{{ form_row(adminForm.about, {'attr': {'class' : 'form-control'}}) }}
+									</div>
+								</div>
+								<hr>
+								<h3 class="my-3">Admin Details</h3>
+								<div class="row">
+									<div class="col-md-6">
+										{{ form_row(adminForm.username, {'attr': {'class' : 'form-control'}}) }}
+									</div>
+									<div class="col-md-6">
+										{{ form_row(adminForm.email, {'attr': {'class' : 'form-control'}}) }}
+									</div>
+									<div class="col-md-6">
+										{{ form_row(adminForm.firstName, {'attr': {'class' : 'form-control'}}) }}
+									</div>
+									<div class="col-md-6">
+										{{ form_row(adminForm.lastName, {'attr': {'class' : 'form-control'}}) }}
+									</div>
+									<div class="col-md-6">
+										{{ form_row(adminForm.dob, {'attr': {'class' : 'form-control'}}) }}
+									</div>
+									{# <div class="col-md-6">{{ form_row(adminForm.company, {'attr': {'class' : 'form-control'}}) }}</div> #}
+									<div class="col-md-6">
+										{{ form_row(adminForm.gender, {'attr': {'class' : 'form-control'}}) }}
+									</div>
+									<div class="col-md-6">
+										{{ form_row(adminForm.password.first, {'attr': {'class' : 'form-control'}}) }}
+									</div>
+									<div class="col-md-6">
+										{{ form_row(adminForm.password.second, {'attr': {'class' : 'form-control'}}) }}
+									</div>
+									<br>
+									<div class="col-12">
+										{{ form_row(adminForm.agreeTerms) }}
+									</div>
+								</div>
+								<button class="btn btn-primary w-100 py-8 fs-4 mb-4 rounded-2" type="submit">Create</button>
+								{{ form_end(adminForm) }}
+
+								<div class="d-flex align-items-center justify-content-center">
+									<p class="fs-4 mb-0 fw-bold">Already have an Account?</p>
+									<a class="text-primary fw-bold ms-2" href="{{ path('app_login') }}">Sign In</a>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+{% endblock %}

@@ -10,7 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20230710115352 extends AbstractMigration
+final class Version20230714091853 extends AbstractMigration
 {
     public function getDescription(): string
     {
@@ -22,7 +22,7 @@ final class Version20230710115352 extends AbstractMigration
         // this up() migration is auto-generated, please modify it to your needs
         $this->addSql('CREATE TABLE bills (id INT AUTO_INCREMENT NOT NULL, project_id_id INT DEFAULT NULL, currency_id INT DEFAULT NULL, created_by_id INT DEFAULT NULL, is_active TINYINT(1) NOT NULL, amount INT NOT NULL, status VARCHAR(20) NOT NULL, created_at DATETIME NOT NULL, updated_at DATETIME NOT NULL, UNIQUE INDEX UNIQ_22775DD06C1197C9 (project_id_id), INDEX IDX_22775DD038248176 (currency_id), INDEX IDX_22775DD0B03A8386 (created_by_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
         $this->addSql('CREATE TABLE client (id INT AUTO_INCREMENT NOT NULL, company_id_id INT DEFAULT NULL, created_by_id INT DEFAULT NULL, name VARCHAR(40) NOT NULL, email VARCHAR(60) NOT NULL, about LONGTEXT NOT NULL, is_approved SMALLINT NOT NULL, created_at DATETIME NOT NULL, updated_at DATETIME NOT NULL, INDEX IDX_C744045538B53C32 (company_id_id), INDEX IDX_C7440455B03A8386 (created_by_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
-        $this->addSql('CREATE TABLE company (id INT AUTO_INCREMENT NOT NULL, created_by_id INT DEFAULT NULL, name VARCHAR(40) NOT NULL, about LONGTEXT NOT NULL, established_at DATE NOT NULL, is_active TINYINT(1) NOT NULL, created_at DATETIME NOT NULL, updated_at DATETIME NOT NULL, INDEX IDX_4FBF094FB03A8386 (created_by_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
+        $this->addSql('CREATE TABLE company (id INT AUTO_INCREMENT NOT NULL, name VARCHAR(40) NOT NULL, about LONGTEXT NOT NULL, established_at DATE NOT NULL, is_active TINYINT(1) NOT NULL, created_at DATETIME NOT NULL, updated_at DATETIME NOT NULL, PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
         $this->addSql('CREATE TABLE contact (id INT AUTO_INCREMENT NOT NULL, contact_no VARCHAR(10) NOT NULL, address VARCHAR(255) NOT NULL, city VARCHAR(90) NOT NULL, state VARCHAR(90) NOT NULL, pin_code VARCHAR(6) NOT NULL, country VARCHAR(90) NOT NULL, is_deleted TINYINT(1) NOT NULL, usertype VARCHAR(255) NOT NULL, reference_id INT NOT NULL, created_at DATETIME NOT NULL, updated_at DATETIME NOT NULL, PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
         $this->addSql('CREATE TABLE currency (id INT AUTO_INCREMENT NOT NULL, name VARCHAR(255) NOT NULL, code VARCHAR(20) NOT NULL, is_active TINYINT(1) NOT NULL, created_at DATETIME NOT NULL, updated_at DATETIME NOT NULL, PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
         $this->addSql('CREATE TABLE department (id INT AUTO_INCREMENT NOT NULL, company_id_id INT DEFAULT NULL, created_by_id INT DEFAULT NULL, name VARCHAR(20) NOT NULL, description LONGTEXT NOT NULL, is_deleted TINYINT(1) NOT NULL, is_active TINYINT(1) NOT NULL, created_at DATETIME NOT NULL, updated_at DATETIME NOT NULL, INDEX IDX_CD1DE18A38B53C32 (company_id_id), INDEX IDX_CD1DE18AB03A8386 (created_by_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
@@ -37,14 +37,13 @@ final class Version20230710115352 extends AbstractMigration
         $this->addSql('CREATE TABLE time_line (id INT AUTO_INCREMENT NOT NULL, client_id_id INT DEFAULT NULL, emp_id_id INT DEFAULT NULL, company_id_id INT DEFAULT NULL, mode_id INT DEFAULT NULL, subject VARCHAR(20) DEFAULT NULL, decription LONGTEXT NOT NULL, conclusion LONGTEXT NOT NULL, created_at DATETIME NOT NULL, updated_at DATETIME NOT NULL, INDEX IDX_7CA9BDDBDC2902E0 (client_id_id), INDEX IDX_7CA9BDDB13C5666C (emp_id_id), INDEX IDX_7CA9BDDB38B53C32 (company_id_id), INDEX IDX_7CA9BDDB77E5854A (mode_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
         $this->addSql('CREATE TABLE timeline_project (id INT AUTO_INCREMENT NOT NULL, timeline_id_id INT DEFAULT NULL, project_id_id INT DEFAULT NULL, INDEX IDX_1A99E79E5F2A1311 (timeline_id_id), INDEX IDX_1A99E79E6C1197C9 (project_id_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
         $this->addSql('CREATE TABLE timesheets (id INT AUTO_INCREMENT NOT NULL, user_id_id INT DEFAULT NULL, project_id_id INT DEFAULT NULL, task_id_id INT DEFAULT NULL, hours_worked TIME NOT NULL, is_active TINYINT(1) NOT NULL, created_at DATETIME NOT NULL, updated_at DATETIME NOT NULL, INDEX IDX_9AC77D2E9D86650F (user_id_id), INDEX IDX_9AC77D2E6C1197C9 (project_id_id), INDEX IDX_9AC77D2EB8E08577 (task_id_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
-        $this->addSql('CREATE TABLE user (id INT AUTO_INCREMENT NOT NULL, email VARCHAR(180) NOT NULL, `array` JSON NOT NULL, password VARCHAR(255) NOT NULL, uuid CHAR(36) NOT NULL COMMENT \'(DC2Type:guid)\', username VARCHAR(40) NOT NULL, first_name VARCHAR(40) NOT NULL, middle_name VARCHAR(40) DEFAULT NULL, last_name VARCHAR(40) NOT NULL, gender VARCHAR(255) NOT NULL, dob DATE NOT NULL, is_verified TINYINT(1) NOT NULL, is_active TINYINT(1) NOT NULL, created_at DATETIME NOT NULL, updated_at DATETIME NOT NULL, UNIQUE INDEX UNIQ_8D93D649E7927C74 (email), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
+        $this->addSql('CREATE TABLE user (id INT AUTO_INCREMENT NOT NULL, company_id INT DEFAULT NULL, email VARCHAR(180) NOT NULL, roles JSON NOT NULL, password VARCHAR(255) NOT NULL, username VARCHAR(40) NOT NULL, first_name VARCHAR(40) NOT NULL, last_name VARCHAR(40) NOT NULL, gender VARCHAR(255) NOT NULL, dob DATE NOT NULL, is_verified TINYINT(1) NOT NULL, is_active TINYINT(1) NOT NULL, created_at DATETIME NOT NULL, updated_at DATETIME NOT NULL, UNIQUE INDEX UNIQ_8D93D649E7927C74 (email), INDEX IDX_8D93D649979B1AD6 (company_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
         $this->addSql('CREATE TABLE messenger_messages (id BIGINT AUTO_INCREMENT NOT NULL, body LONGTEXT NOT NULL, headers LONGTEXT NOT NULL, queue_name VARCHAR(190) NOT NULL, created_at DATETIME NOT NULL COMMENT \'(DC2Type:datetime_immutable)\', available_at DATETIME NOT NULL COMMENT \'(DC2Type:datetime_immutable)\', delivered_at DATETIME DEFAULT NULL COMMENT \'(DC2Type:datetime_immutable)\', INDEX IDX_75EA56E0FB7336F0 (queue_name), INDEX IDX_75EA56E0E3BD61CE (available_at), INDEX IDX_75EA56E016BA31DB (delivered_at), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
         $this->addSql('ALTER TABLE bills ADD CONSTRAINT FK_22775DD06C1197C9 FOREIGN KEY (project_id_id) REFERENCES project (id)');
         $this->addSql('ALTER TABLE bills ADD CONSTRAINT FK_22775DD038248176 FOREIGN KEY (currency_id) REFERENCES currency (id)');
         $this->addSql('ALTER TABLE bills ADD CONSTRAINT FK_22775DD0B03A8386 FOREIGN KEY (created_by_id) REFERENCES user (id)');
         $this->addSql('ALTER TABLE client ADD CONSTRAINT FK_C744045538B53C32 FOREIGN KEY (company_id_id) REFERENCES company (id)');
         $this->addSql('ALTER TABLE client ADD CONSTRAINT FK_C7440455B03A8386 FOREIGN KEY (created_by_id) REFERENCES user (id)');
-        $this->addSql('ALTER TABLE company ADD CONSTRAINT FK_4FBF094FB03A8386 FOREIGN KEY (created_by_id) REFERENCES user (id)');
         $this->addSql('ALTER TABLE department ADD CONSTRAINT FK_CD1DE18A38B53C32 FOREIGN KEY (company_id_id) REFERENCES company (id)');
         $this->addSql('ALTER TABLE department ADD CONSTRAINT FK_CD1DE18AB03A8386 FOREIGN KEY (created_by_id) REFERENCES user (id)');
         $this->addSql('ALTER TABLE documents ADD CONSTRAINT FK_A2B07288E0A77E0E FOREIGN KEY (modes_of_conversation_id) REFERENCES modes_of_conversation (id)');
@@ -71,6 +70,7 @@ final class Version20230710115352 extends AbstractMigration
         $this->addSql('ALTER TABLE timesheets ADD CONSTRAINT FK_9AC77D2E9D86650F FOREIGN KEY (user_id_id) REFERENCES user (id)');
         $this->addSql('ALTER TABLE timesheets ADD CONSTRAINT FK_9AC77D2E6C1197C9 FOREIGN KEY (project_id_id) REFERENCES project (id)');
         $this->addSql('ALTER TABLE timesheets ADD CONSTRAINT FK_9AC77D2EB8E08577 FOREIGN KEY (task_id_id) REFERENCES tasks (id)');
+        $this->addSql('ALTER TABLE user ADD CONSTRAINT FK_8D93D649979B1AD6 FOREIGN KEY (company_id) REFERENCES company (id)');
     }
 
     public function down(Schema $schema): void
@@ -81,7 +81,6 @@ final class Version20230710115352 extends AbstractMigration
         $this->addSql('ALTER TABLE bills DROP FOREIGN KEY FK_22775DD0B03A8386');
         $this->addSql('ALTER TABLE client DROP FOREIGN KEY FK_C744045538B53C32');
         $this->addSql('ALTER TABLE client DROP FOREIGN KEY FK_C7440455B03A8386');
-        $this->addSql('ALTER TABLE company DROP FOREIGN KEY FK_4FBF094FB03A8386');
         $this->addSql('ALTER TABLE department DROP FOREIGN KEY FK_CD1DE18A38B53C32');
         $this->addSql('ALTER TABLE department DROP FOREIGN KEY FK_CD1DE18AB03A8386');
         $this->addSql('ALTER TABLE documents DROP FOREIGN KEY FK_A2B07288E0A77E0E');
@@ -108,6 +107,7 @@ final class Version20230710115352 extends AbstractMigration
         $this->addSql('ALTER TABLE timesheets DROP FOREIGN KEY FK_9AC77D2E9D86650F');
         $this->addSql('ALTER TABLE timesheets DROP FOREIGN KEY FK_9AC77D2E6C1197C9');
         $this->addSql('ALTER TABLE timesheets DROP FOREIGN KEY FK_9AC77D2EB8E08577');
+        $this->addSql('ALTER TABLE user DROP FOREIGN KEY FK_8D93D649979B1AD6');
         $this->addSql('DROP TABLE bills');
         $this->addSql('DROP TABLE client');
         $this->addSql('DROP TABLE company');
