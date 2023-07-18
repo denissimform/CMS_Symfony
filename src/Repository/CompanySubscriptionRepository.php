@@ -5,6 +5,9 @@ namespace App\Repository;
 use App\Entity\CompanySubscription;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Exception;
+use PDOException;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * @extends ServiceEntityRepository<CompanySubscription>
@@ -39,28 +42,13 @@ class CompanySubscriptionRepository extends ServiceEntityRepository
         }
     }
 
-//    /**
-//     * @return CompanySubscription[] Returns an array of CompanySubscription objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('c')
-//            ->andWhere('c.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('c.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
-
-//    public function findOneBySomeField($value): ?CompanySubscription
-//    {
-//        return $this->createQueryBuilder('c')
-//            ->andWhere('c.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
+    public function changeSubscriptionStatus()
+    {
+        try {
+            $sql = "UPDATE `company_subscription` SET `status` = :status  WHERE expires_at < current_timestamp()";
+            $this->getEntityManager()->getConnection()->executeQuery($sql, ["status" => "expired"]);
+        } catch (PDOException $err) {
+            throw new Exception($err->getMessage());
+        }
+    }
 }

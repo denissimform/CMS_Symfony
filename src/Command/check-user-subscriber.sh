@@ -1,0 +1,1 @@
+symfony console app:check-user-subscriber
