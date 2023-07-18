@@ -56,11 +56,9 @@ export default class extends Controller {
                         </div>
                     </div>
                 </div>
-                <a href="${row.isActive ? '' : ('/admin/dashboard/department/delete/' + row.id)}" class="btn btn-outline-success ${row.isActive ? 'disabled':''}"><i class='bx bxs-trash'></i></a> 
-                <a href="${row.isActive ? '' : ('/admin/dashboard/department/update/' + row.id)}" class="btn btn-outline-primary ${row.isActive ? 'disabled':''}"><i class='bx bxs-edit' ></i></a>`;
+                <a href="${row.isActive ? '' : ('/admin/dashboard/department/update/' + row.id)}" class="btn btn-outline-warning ${row.isActive ? 'disabled':''}"><i class='bx bxs-edit' ></i></a>`;
               
         };
-        console.log('Initializing');
         $('#' + this.element.id).DataTable({
             processing: true,
             serverSide: true,

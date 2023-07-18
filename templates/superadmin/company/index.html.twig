@@ -1,0 +1,80 @@
+{% extends 'superadmin/index.html.twig' %}
+
+{% block layout %}
+	<div class="container">
+		<h1 class="py-1">Companies List</h1>
+
+		<table class="table table-hover text-center">
+			<thead class="table-dark">
+				<tr>
+					<th>#</th>
+					<th>Name</th>
+					<th>About</th>
+					<th>Established At</th>
+					<th>Action</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for company in companies %}
+					<tr>
+						<td>{{ loop.index }}</td>
+						<td>{{ company.name }}</td>
+						<td>
+							<button type="button" class="btn btn-primary btn-sm w-50" data-bs-toggle="modal" data-bs-target="#aboutModal{{ loop.index }}">About</button>
+
+							<!-- Modal -->
+							<div class="modal fade text-start" id="aboutModal{{ loop.index }}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+								<div class="modal-dialog modal-lg">
+									<div class="modal-content">
+										<div class="modal-header">
+											<h1 class="modal-title fs-5" id="staticBackdropLabel">About
+												{{ company.name }}</h1>
+											<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+										</div>
+										<div class="modal-body">
+											{{ company.about | raw}}
+										</div>
+									</div>
+								</div>
+							</div>
+						</td>
+						<td>
+							{{ company.establishedAt | ago }}
+						</td>
+						<td>
+							<a href="{{ path('app_sa_company_update', { id: company.id }) }}" class="btn btn-warning btn-sm">Update</a>
+							<button data-bs-toggle="modal" data-bs-target="#deleteModal{{ loop.index }}" class="btn btn-danger btn-sm">Delete</a>
+						</td>
+
+						{#------------ delete modal ---------------#}
+						<div class="modal fade text-start" id="deleteModal{{ loop.index }}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+							<div class="modal-dialog modal-dialog-centered">
+								<div class="modal-content">
+									<div class="modal-header">
+										<h1 class="modal-title fs-5" id="staticBackdropLabel">Delete
+											{{ company.name }}</h1>
+										<button class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+									</div>
+									<div class="modal-body">
+										Are you sure you want to delete?
+									</div>
+									<div class="modal-footer">
+										<a href="{{ path('app_sa_company_delete', { id: company.id }) }}" class="btn btn-danger">Delete</a>
+									</div>
+								</div>
+							</div>
+						</div>
+					</tr>
+				</tr>
+			{% endfor %}
+
+			{% if companies|length <= 0 %}
+				<tr>
+					<td colspan="5">
+						No data found!!
+					</td>
+				</tr>
+			{% endif %}
+		</tbody>
+	</table>
+</div>{% endblock %}

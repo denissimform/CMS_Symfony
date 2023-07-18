@@ -3,6 +3,7 @@
 namespace App\Form;
 
 use App\Entity\Company;
+use App\Repository\CompanyRepository;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\UX\Autocomplete\Form\AsEntityAutocompleteField;
@@ -18,6 +19,11 @@ class CompanyAutocompleteField extends AbstractType
             'min_characters' => 2,
             'placeholder' => 'Choose a Company',
             'choice_label' => 'name',
+            'query_builder' => function (CompanyRepository $companyRepository) {
+                return $companyRepository->createQueryBuilder('company');
+            },
+            'autocomplete' =>true,
+            // 'security' => 'ROLE_SOMETHING',
         ]);
     }
 

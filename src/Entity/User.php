@@ -16,6 +16,7 @@ use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[UniqueEntity(fields: ['email'], message: 'There is already an account with this email')]
+#[UniqueEntity(fields: ['username'], message: 'Username already exists.')]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     use TimestampableEntity;
@@ -46,7 +47,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Assert\NotBlank(message: 'You must provide a password')]
     #[Assert\Length(min: 5, minMessage: 'Minimum password length must be at least 5 characters')]
     private ?string $password = null;
-    
+
     #[ORM\Column(length: 40)]
     #[Assert\NotBlank(message: 'You must provide a username')]
     #[Groups('user:dt:read')]
@@ -79,18 +80,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     #[Groups('user:dt:read')]
     private ?bool $isActive = true;
-    
-    #[ORM\OneToMany(mappedBy: 'createdBy', targetEntity: Company::class)]
-    private Collection $companies;
 
     #[ORM\OneToMany(mappedBy: 'createdBy', targetEntity: Client::class)]
     private Collection $clients;
 
     #[ORM\OneToMany(mappedBy: 'createdBy', targetEntity: Department::class)]
     private Collection $departments;
-
-    // #[ORM\OneToMany(mappedBy: 'referenceId', targetEntity: Contact::class)]
-    // private Collection $contacts;
 
     #[ORM\OneToMany(mappedBy: 'createdBy', targetEntity: Project::class)]
     private Collection $projects;
@@ -125,18 +120,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'createdBy', targetEntity: Bills::class)]
     private Collection $bills;
 
-    #[ORM\ManyToOne(inversedBy: 'employees')]
     #[ORM\JoinColumn(nullable: false)]
     #[Assert\NotBlank(message: 'You must specify the company name')]
     #[Groups('user:dt:read')]
+    #[ORM\ManyToOne(inversedBy: 'users')]
     private ?Company $company = null;
 
     public function __construct()
     {
-        $this->companies = new ArrayCollection();
         $this->clients = new ArrayCollection();
         $this->departments = new ArrayCollection();
-        // $this->contacts = new ArrayCollection();
         $this->projects = new ArrayCollection();
         $this->skills = new ArrayCollection();
         $this->employeeSkills = new ArrayCollection();
@@ -194,6 +187,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->roles = $roles;
 
         return $this;
+    }
+
+    public function isAdmin(): bool
+    {
+        return in_array("ROLE_ADMIN", $this->roles);
+    }
+
+    public function isSuperAdmin(): bool
+    {
+        return in_array("ROLE_SUPER_ADMIN", $this->roles);
     }
 
     /**
@@ -256,6 +259,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
+    public function getFullName(): ?string
+    {
+        return $this->firstName . ' ' . $this->lastName;
+    }
+
     public function getGender(): ?string
     {
         return $this->gender;
@@ -302,36 +310,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setIsActive(bool $isActive): static
     {
         $this->isActive = $isActive;
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, Company>
-     */
-    public function getCompanies(): Collection
-    {
-        return $this->companies;
-    }
-
-    public function addCompany(Company $company): static
-    {
-        if (!$this->companies->contains($company)) {
-            $this->companies->add($company);
-            $company->setCreatedBy($this);
-        }
-
-        return $this;
-    }
-
-    public function removeCompany(Company $company): static
-    {
-        if ($this->companies->removeElement($company)) {
-            // set the owning side to null (unless already changed)
-            if ($company->getCreatedBy() === $this) {
-                $company->setCreatedBy(null);
-            }
-        }
 
         return $this;
     }
