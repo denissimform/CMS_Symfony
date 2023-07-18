@@ -3,37 +3,66 @@
 namespace App\EventSubscriber;
 
 use App\Entity\User;
+use App\Security\AccountNotVerifiedException;
+use Exception;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\Event\ExceptionEvent;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Component\Routing\RouterInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
+use Symfony\Component\Security\Http\Authenticator\Passport\Passport;
 use Symfony\Component\Security\Http\Event\CheckPassportEvent;
+use Symfony\Component\Security\Http\Event\LoginFailureEvent;
 
 class AuthenticationSubscriber implements EventSubscriberInterface
 {
-    // public function __construct(private UrlGeneratorInterface $urlGenerator)
-    // {
-    // }
+    public function __construct(private RouterInterface $router, private Security $security)
+    {
+    }
 
-    // public function onCheckPassportEvent(CheckPassportEvent $event, ExceptionEvent $exceptionEvent, Request $request): void
+    // execute after check passport authentication
     public function onCheckPassportEvent(CheckPassportEvent $event): void
     {
+        $passport = $event->getPassport();
+
+        if (!$passport instanceof Passport) {
+            throw new Exception("Unexpected Passport instance");
+        }
+
         /** @var User $user */
         $user = $event->getPassport()->getUser();
-        dd($event->getPassport());
-        // if (false === $user->isIsVerified()) {
-        //     $request->getSession()->set("verification_email", $user->getEmail());
+        if (!$user instanceof UserInterface) {
+            throw new Exception("Unexpected user type!");
+        }
 
-        //     $urlGenerator = new UrlGeneratorInterface();
-        //     $exceptionEvent->setResponse(new RedirectResponse($urlGenerator->generate("app_company_resend_verification_email")));
-        // }
+        if (!$user->isIsVerified()) {
+            throw new AccountNotVerifiedException();
+        }
+    }
+
+    // On login failure event occur
+    public function onLoginFailureEvent(LoginFailureEvent $event)
+    {
+        if (!$event->getException() instanceof AccountNotVerifiedException) {
+            return;
+        }
+
+        // set email on session
+        $event->getRequest()->getSession()->set("verification_email", $event->getPassport()->getUser()->getUserIdentifier());
+
+        // create redirect response
+        $resposne = new RedirectResponse($this->router->generate("app_resend_verification_email"));
+
+        // set response headers
+        $event->setResponse($resposne);
     }
 
     public static function getSubscribedEvents(): array
     {
         return [
             CheckPassportEvent::class => ['onCheckPassportEvent', -1],
+            LoginFailureEvent::class => ['onLoginFailureEvent', -1]
         ];
     }
 }

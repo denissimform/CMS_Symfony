@@ -23,7 +23,7 @@
 		{{ include('/components/flash_messages.html.twig') }}
 			<div class="container text-center">
 				<div class="d-flex justify-content-center mt-5 pt-5">
-					<a href="#" class="btn btn-outline-primary mx-2">Register as Employee</a>
+					<a href="{{ path('app_user_register') }}" class="btn btn-outline-primary mx-2">Register as Employee</a>
 					<a href="{{ path('app_company_register') }}" class="btn btn-outline-danger mx-2">Register as company</a>
 				</div>
 				<a href="{{ path('app_login') }}" class="btn btn-outline-success mt-2 w-25">Login</a>

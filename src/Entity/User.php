@@ -55,7 +55,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?\DateTimeInterface $dob = null;
 
     #[ORM\Column]
-    private ?bool $isVerified = true;
+    private ?bool $isVerified = false;
 
     #[ORM\Column]
     private ?bool $isActive = false;
@@ -235,6 +235,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
+    public function getFullName(): ?string
+    {
+        return $this->firstName . ' ' . $this->lastName;
+    }
+
     public function getGender(): ?string
     {
         return $this->gender;
@@ -285,7 +290,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
         return $this;
     }
-    
+
     /**
      * @return Collection<int, Client>
      */

@@ -15,17 +15,7 @@
 									<img src="{{ asset('logo.png') }}" width="180" alt="Logo">
 								</a>
 								<form method="post">
-									{% if error %}
-										<div class="alert alert-danger">{{ error.messageKey | trans(error.messageData, 'security') }}</div>
-									{% endif %}
-
-									{% for flash in app.flashes('success') %}
-										<div class="alert alert-success">{{ flash }}</div>
-									{% endfor %}
-
-									{% for flash in app.flashes('error') %}
-										<div class="alert alert-danger">{{ flash }}</div>
-									{% endfor %}
+									{{ include('/components/flash_messages.html.twig') }}
 
 									<div class="mb-3">
 										<label for="inputEmail" class="form-label">Email</label>
@@ -44,7 +34,7 @@
 												Remeber Me
 											</label> 
 										</div>
-										<a class="text-primary fw-bold" href="#">Forgot Password ?</a>
+										<a class="text-primary fw-bold" href="{{ path('app_forgot_password') }}">Forgot Password ?</a>
 									</div>
 
 									<button class="btn btn-primary w-100 py-8 fs-4 mb-4 rounded-2" type="submit">Login</button>

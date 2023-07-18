@@ -1,3 +1,11 @@
+{% if (error is defined and error is not null) %}
+	<div class="alert alert-danger alert-dismissible rounded-0">
+		<strong>Error!</strong>
+		{{ error.messageKey|trans(error.messageData, 'security') }}
+		<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+	</div>
+{% endif %}
+
 {% for error in app.flashes("error") %}
 	<div class="alert alert-danger alert-dismissible rounded-0">
 		<strong>Error!</strong>
