@@ -1,0 +1,9 @@
+{% extends 'superadmin/index.html.twig' %}
+
+{% block layout %}
+	<div class="container border p-5 mt-5">
+		<h1>Company form</h1>
+
+		{{ include('/superadmin/company/_form.html.twig') }}
+	</div>
+{% endblock %}

@@ -1,0 +1,17 @@
+<div class="container">
+	{% if error is defined %}
+		<div class="alert alert-danger alert-dismissible">
+			{{ error }}
+		</div>
+	{% endif %}
+	{% if success is defined %}
+		<div class="alert alert-success alert-dismissible">
+			{{ success }}
+		</div>
+	{% endif %}
+
+	{{ form_start(form, { 'attr' : { 'novalidate':"novalidate", "class":"form" }}) }}
+	{{ form_widget(form) }}
+	<button type="submit" class="btn btn-success">Submit</button>
+	{{ form_end(form) }}
+</div>

@@ -4,6 +4,7 @@ namespace App\Factory;
 
 use App\Entity\Company;
 use App\Repository\CompanyRepository;
+use DateTimeImmutable;
 use Zenstruck\Foundry\ModelFactory;
 use Zenstruck\Foundry\Proxy;
 use Zenstruck\Foundry\RepositoryProxy;
@@ -27,6 +28,7 @@ use Zenstruck\Foundry\RepositoryProxy;
  * @method static Company[]|Proxy[]                 randomRange(int $min, int $max, array $attributes = [])
  * @method static Company[]|Proxy[]                 randomSet(int $number, array $attributes = [])
  */
+
 final class CompanyFactory extends ModelFactory
 {
     /**
@@ -47,12 +49,9 @@ final class CompanyFactory extends ModelFactory
     protected function getDefaults(): array
     {
         return [
-            'name' => self::faker()->name(),
-            'about' => self::faker()->text(),
-            'createdAt' => self::faker()->dateTime(),
-            'establishedAt' => self::faker()->dateTime(),
-            'isActive' => self::faker()->boolean(),
-            'updatedAt' => self::faker()->dateTime(),
+            'name' => self::faker()->word(),
+            'about' => self::faker()->text(1000),
+            'establishedAt' => \DateTimeImmutable::createFromMutable(self::faker()->dateTime())
         ];
     }
 
