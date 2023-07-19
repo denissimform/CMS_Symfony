@@ -24,6 +24,8 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\UX\Chartjs\Builder\ChartBuilderInterface;
 use Symfony\UX\Chartjs\Model\Chart;
 
+use function PHPUnit\Framework\isEmpty;
+
 #[IsGranted('ROLE_SUPER_ADMIN')]
 #[Route("/superadmin")]
 class SuperAdminController extends AbstractController
@@ -39,7 +41,7 @@ class SuperAdminController extends AbstractController
     #[Route("/", name: "app_sa_homepage")]
     public function homepage(): Response
     {
-        $result = $this->CallProcedure('chartData', ['userGrowthData', 'subscriptionData','pieChartData'], [-1]);
+        $result = $this->CallProcedure('chartData', ['userGrowthData', 'subscriptionData', 'pieChartData'], [-1]);
         // dd($result);
 
         $userGrowthData = $result['userGrowthData'];
@@ -442,7 +444,7 @@ class SuperAdminController extends AbstractController
 
 
     #[Route('/subscription/edit/{id}', name: 'app_subscription_edit')]
-    public function editSubscription(SubscriptionDuration $subscriptionDuration, Request $request) : Response
+    public function editSubscription(SubscriptionDuration $subscriptionDuration, Request $request): Response
     {
 
         // $arr = ['New Helly'];
@@ -471,16 +473,20 @@ class SuperAdminController extends AbstractController
     public function getSubscriptionType(Request $request, SubscriptionRepository $subscriptionRepository): Response
     {
         $type = $request->query->get('type');
-
+        
         $criteria = [];
         $criteria['Type'] = $type;
-        if ($type != 'Other') {
-
+        if ($type !== "" && $type != 'Other') {
+            // dd($type);
+            // dd($type);
             $data = $subscriptionRepository->findBy(['type' => $type]);
             $criteria['id'] = $data[0]->getId();
             $criteria['dept'] = $data[0]->getCriteriaDept();
             $criteria['user'] = $data[0]->getCriteriaUser();
             $criteria['storage'] = $data[0]->getCriteriaStorage();
+        }
+        if (empty($type)) {
+            $criteria['Type'] = 'Empty';
         }
 
         $criteria = json_encode($criteria);
