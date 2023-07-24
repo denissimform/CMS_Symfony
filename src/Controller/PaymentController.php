@@ -8,6 +8,7 @@ use Stripe\StripeClient;
 use App\Entity\Transaction;
 use App\Entity\Subscription;
 use Psr\Log\LoggerInterface;
+use App\Service\EmailService;
 use App\Service\UpdatePaymentStatus;
 use App\Service\UserSubscriptionChecker;
 use Doctrine\ORM\EntityManagerInterface;
@@ -45,7 +46,7 @@ class PaymentController extends AbstractController
     }
 
     #[Route('/response', name: 'response')]
-    public function success(Request $request, UpdatePaymentStatus $ups): Response
+    public function success(Request $request, UpdatePaymentStatus $ups, EmailService $emailService): Response
     {
         // get stored order id from the session
         $orderId = $request->getSession()->get('order_id');
@@ -56,6 +57,9 @@ class PaymentController extends AbstractController
             return $this->redirectToRoute('app_admin_homepage');
         }
 
+        // get current user object
+        $user = $this->getUser();
+
         // create instance of Stripe Object
         $stripe = new StripeClient($this->stripe_sk);
 
@@ -64,16 +68,40 @@ class PaymentController extends AbstractController
         $paymentStatus = $stripeObj->payment_status;
         $paymentAmount = $stripeObj->amount_subtotal / 100;
 
-        // update the payment status
+        $context = [
+            'username' => $user->getFullName(),
+            'status' => $paymentStatus
+        ];
+
+        // update the payment status and send the payment response through the mail
         switch ($paymentStatus) {
             case 'paid':
-                $ups->updateStatus($orderId, Transaction::STATUS['COMPLETE'], $paymentAmount);
+                $res = $ups->updateStatus($orderId, Transaction::STATUS['COMPLETE'], $paymentAmount);
+
+                if ($res)
+                    if ($emailService->sendEmail($user->getEmail(), 'Payment Status: Successful', 'email/payment-response.html.twig', $context))
+                        $this->addFlash("success", "Payment reponse has been sent on your email address.");
+                    else
+                        $this->addFlash('error', 'Mail could not be sent!');
+                else
+                    $this->addFlash('error', 'Your transaction status could not be updated.');
                 break;
 
             case 'unpaid':
-                $ups->updateStatus($orderId, Transaction::STATUS['CANCEL'], $paymentAmount);
+                $res = $ups->updateStatus($orderId, Transaction::STATUS['CANCEL'], $paymentAmount);
+
+                if ($res)
+                    if ($emailService->sendEmail($user->getEmail(), 'Payment Status: Unsuccessfull', 'email/payment-response.html.twig', $context))
+                        $this->addFlash("success", "Payment reponse has been sent on your email address.");
+                    else
+                        $this->addFlash('error', 'Mail could not be sent!');
+                else
+                    $this->addFlash('error', 'Your transaction status could not be updated.');
                 break;
         }
+        
+        // remove the order id from the session
+        $request->getSession()->remove('order_id'); 
 
         // render the response page
         return $this->render('payment/response.html.twig', [
@@ -87,9 +115,9 @@ class PaymentController extends AbstractController
         // get current logged in User and Company
         /** @var Company $company */
         $company = $this->getUser()->getCompany();
-        
+
         // check if user is already subscribed
-        if($usc->isAlreadySubscribed($company->getId())){
+        if ($usc->isAlreadySubscribed($company->getId())) {
             $this->addFlash('success', 'You have already subscribed to the plan');
             return $this->redirectToRoute('app_admin_homepage');
         }
@@ -114,7 +142,7 @@ class PaymentController extends AbstractController
         } catch (\Exception $e) {
             $this->logger->info(sprintf('Unable to persist new transaction. Error: %s', $e->getMessage()));
         }
-        
+
         // generate checkout session for transaction
         $checkout_session = $stripe->checkout->sessions->create([
             'line_items' => [[
@@ -131,7 +159,7 @@ class PaymentController extends AbstractController
             'success_url' => $this->generateUrl('app_payment_response', [], UrlGeneratorInterface::ABSOLUTE_URL),
             'cancel_url' => $this->generateUrl('app_payment_response', [], UrlGeneratorInterface::ABSOLUTE_URL),
         ]);
-        
+
         // update transaction status as the checkout session is created for the same
         $newTransaction->setStatus(Transaction::STATUS['PENDING']);
         $newTransaction->setOrderId($checkout_session->id);

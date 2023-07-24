@@ -3,21 +3,25 @@
 namespace App\Service;
 
 use Exception;
+use Psr\Log\LoggerInterface;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\Mailer\MailerInterface;
 
 class EmailService
 {
-    public function __construct(private MailerInterface $mailer, private $email_id)
-    {
+    public function __construct(
+        private MailerInterface $mailer,
+        private LoggerInterface $logger,
+        private $email_id
+    ) {
     }
 
     // Send send mail
-    public function sendEmail(string $toEmail, string $subject, string $htmlTemplatePath = null, array $context = []): mixed
+    public function sendEmail(string $toEmail, string $subject, string $htmlTemplatePath = null, array $context = []): bool
     {
         try {
             $email = (new TemplatedEmail())
-                ->from($this->email_id)
+                ->from("ManageX <$this->email_id>")
                 ->to($toEmail)
                 ->subject($subject)
                 ->htmlTemplate($htmlTemplatePath)
@@ -27,9 +31,8 @@ class EmailService
 
             return true;
         } catch (Exception $err) {
-            throw new \Exception($err->getMessage());
+            $this->logger->info('Error sending mail: ' . $err->getMessage());
+            return false;
         }
-
-        return false;
     }
 }
