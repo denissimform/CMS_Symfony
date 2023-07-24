@@ -28,9 +28,7 @@ class SubscriptionType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
 
-        $this->data = $options['customData'] ?? null;
-        // $choices = $this->choices;
-        // dd($choices);
+        $data = json_decode($options['customData'], 1) ?? null;
 
         $builder
             ->add('type', ChoiceType::class, [
@@ -41,7 +39,7 @@ class SubscriptionType extends AbstractType
                 'constraints' => [
                     new NotBlank(message: 'Please select Subscription Plan.')
                 ],
-                'data' => $this->setData()
+                'data' => $data['type'] ?? ''
             ])
             ->add('subscription_id', HiddenType::class)
             ->add('criteria_dept', IntegerType::class, [
@@ -68,6 +66,7 @@ class SubscriptionType extends AbstractType
                         notInRangeMessage: 'Duration must be between {{ min }} and {{ max }}.',
                     )
                 ],
+                'data' => $data['duration'] ?? 0
             ])
             ->add('price', IntegerType::class, [
                 'label' => 'Price',
@@ -81,23 +80,14 @@ class SubscriptionType extends AbstractType
                         notInRangeMessage: 'Price must be between {{ min }} and {{ max }}.',
                     )
                 ],
+                'data' => $data['price'] ?? 0
             ])
             ->add('customType', HiddenType::class);
-    }
-
-    public function setData()
-    {
-        if ($this->data != null) {
-            return $this->data;
-        }
-        return false;
     }
 
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            // 'data_class' => SubscriptionDuration::class,
-            'isEdit' => false,
             'customData' => null
         ]);
     }

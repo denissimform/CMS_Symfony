@@ -1,0 +1,51 @@
+<div class="container">
+
+	{{ form_start(form, { 'attr' : { 'novalidate':"novalidate", "class":"form" }}) }}
+	<div class="container" {{ stimulus_controller('customType')}}>
+		<div class="row">
+			<div class="col-md-12">
+				{{ form_row(form.type, {
+								attr: {
+									'data-specific-type-url' : path('select_subscription_type'),
+									'data-action' : 'customType#changeValue',
+									class: 'select_type'
+								}
+							}) 
+						}}
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-12">
+				<div id="custom_type">
+					{% if form.customType is defined %}
+						{{ form_row(form.customType) }}
+					{% endif %}
+				</div>
+			</div>
+		</div>
+		<br>
+		<div class="row">
+			<div class="col-md-4">
+				{{ form_row(form.criteria_dept) }}
+			</div>
+			<div class="col-md-4">
+				{{ form_row(form.criteria_user) }}
+			</div>
+			<div class="col-md-4">
+				{{ form_row(form.criteria_storage) }}
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-6">
+				{{ form_row(form.duration) }}
+			</div>
+			<div class="col-md-6">
+				{{ form_row(form.price) }}
+			</div>
+		</div>
+
+		<button type="submit" class="btn btn-success">Create</button>
+	</div>
+	{{ form_end(form) }}
+
+</div>

@@ -4,38 +4,36 @@
 	Super Admin | Create Subscription Plan
 {% endblock %}
 
+{% block metatags %}
+	<meta name="turbo-cache-control" content="no-preview">
+{% endblock %}
+
+
 {% block layout %}
 	<div class="container border p-5 mt-5">
 		<h1>Subscription</h1>
 
+			{# {% include "./_form.html.twig" %} #}
+
 		<div class="container">
-			{% if error is defined %}
-				<div class="alert alert-danger alert-dismissible">
-					{{ error }}
-				</div>
-			{% endif %}
-			{% if success is defined %}
-				<div class="alert alert-success alert-dismissible">
-					{{ success }}
-				</div>
-			{% endif %}
 
 			{{ form_start(form, { 'attr' : { 'novalidate':"novalidate", "class":"form" }}) }}
-
 			<div class="container" {{ stimulus_controller('customType')}}>
 				<div class="row">
 					<div class="col-md-12">
 						{{ form_row(form.type, {
-				attr: {
-				'data-specific-type-url' : path('select_subscription_type'),
-				class: 'js-user-form-type'
-				}
-				}) }}
+								attr: {
+									'data-specific-type-url' : path('select_subscription_type'),
+									'data-action' : 'customType#changeValue',
+									class: 'select_type'
+								}
+							}) 
+						}}
 					</div>
 				</div>
 				<div class="row">
 					<div class="col-md-12">
-						<div class="js-custom-type-target">
+						<div id="custom_type">
 							{% if form.customType is defined %}
 								{{ form_row(form.customType) }}
 							{% endif %}
@@ -62,16 +60,18 @@
 						{{ form_row(form.price) }}
 					</div>
 				</div>
-			</div>
 
-			<button type="submit" class="btn btn-success">Create</button>
+				<button type="submit" class="btn btn-success">Create</button>
+			</div>
 			{{ form_end(form) }}
+			
 		</div>
+
+		<br>
 	</div>
-	<br>
 {% endblock %}
 
 {# {% block customjavascript %}
-	<script src="https://code.jquery.com/jquery-3.7.0.js" integrity="sha256-JlqSTELeR4TLqP0OG9dxM7yDPqX1ox/HfgiSLBj8+kM=" crossorigin="anonymous"></script>
-	<script src="{{ asset('custom_type.js') }}" />
-{% endblock %} #}
+			<script src="https://code.jquery.com/jquery-3.7.0.js" integrity="sha256-JlqSTELeR4TLqP0OG9dxM7yDPqX1ox/HfgiSLBj8+kM=" crossorigin="anonymous"></script>
+			<script src="{{ asset('custom_type.js') }}" />
+		{% endblock %} #}

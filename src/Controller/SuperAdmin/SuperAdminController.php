@@ -152,7 +152,7 @@ class SuperAdminController extends AbstractController
     }
 
     // Calling Procedure
-    public function CallProcedure($procName, $keys = [], $parameters = [], $isExecute = false)
+    private function CallProcedure($procName, $keys = [], $parameters = [], $isExecute = false)
     {
 
         $pdo = $this->em->getConnection()->getNativeConnection();
@@ -414,7 +414,6 @@ class SuperAdminController extends AbstractController
                 $subscription->setIsActive(1);
 
                 $entityManager->persist($subscription);
-                $entityManager->flush();
             } else {
                 $subscription = $subscriptionRepository->findBy(['id' => $data['subscription_id']])[0];
             }
@@ -444,17 +443,53 @@ class SuperAdminController extends AbstractController
 
 
     #[Route('/subscription/edit/{id}', name: 'app_subscription_edit')]
-    public function editSubscription(SubscriptionDuration $subscriptionDuration, Request $request): Response
+    public function editSubscription(Request $request, int $id, SubscriptionDurationRepository $subscriptionDurationRepository, SubscriptionRepository $subscriptionRepository , EntityManagerInterface $entityManager): Response
     {
 
-        // $arr = ['New Helly'];
+        $plan = $subscriptionDurationRepository->find($id);
+        // dd($data);
+
+        $customArr = [];
+        $customArr['type'] = $plan->getSubscriptionId()->getType();
+        $customArr['duration'] = $plan->getDuration();
+        $customArr['price'] = $plan->getPrice();
+
+        $customData = json_encode($customArr);
 
         $form = $this->createForm(type: SubscriptionType::class, options: [
-            'customData' => 'New Helly'
+            'customData' => $customData
         ]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $data = $form->getData();
+
+            if ($data['type'] == 'Other') {
+                $subscription = new Subscription();
+                $subscription->setType($data['customType']);
+                $subscription->setCriteriaDept($data['criteria_dept']);
+                $subscription->setCriteriaUser($data['criteria_user']);
+                $subscription->setCriteriaStorage($data['criteria_storage']);
+                $subscription->setIsActive(1);
+
+                $entityManager->persist($subscription);
+                
+            } else {
+                $subscription = $subscriptionRepository->findBy(['id' => $data['subscription_id']])[0];
+            }
+
+            $duration = $plan;
+            $duration->setDuration($data['duration']);
+            $duration->setPrice($data['price']);
+            $duration->setIsActive(1);
+            $duration->setSubscriptionId($subscription);
+
+            $entityManager->persist($duration);
+            $entityManager->flush();
+
+            $this->addFlash('success', 'Subscription Plan edited successfully!');
+
+            return $this->redirectToRoute('app_sa_subscription_list');
         }
 
         return $this->render(
@@ -464,7 +499,6 @@ class SuperAdminController extends AbstractController
             ],
             new Response(null, $form->isSubmitted() ? ($form->isValid() ? 200 : 422) : 200)
         );
-        // dd($subscriptionDuration);
     }
 
 
@@ -473,7 +507,7 @@ class SuperAdminController extends AbstractController
     public function getSubscriptionType(Request $request, SubscriptionRepository $subscriptionRepository): Response
     {
         $type = $request->query->get('type');
-        
+
         $criteria = [];
         $criteria['Type'] = $type;
         if ($type !== "" && $type != 'Other') {
@@ -493,109 +527,4 @@ class SuperAdminController extends AbstractController
 
         return new Response($criteria);
     }
-
-
-
-
-
-
-
-
-
-
-
-
-    // // register company 
-    // #[Route("/company/create", name: "app_sa_company_create")]
-    // public function registerCompany(Request $request, EntityManagerInterface $entityManager): Response
-    // {
-    //     $form = $this->createForm(CompanyType::class);
-
-    //     $form->handleRequest($request);
-
-    //     if ($form->isSubmitted() && $form->isValid()) {
-    //         $formData = $form->getData();
-    //         $formData->setRoles(['ROLE_ADMIN']);
-
-    //         try {
-    //             $this->em->persist($formData);
-    //             $this->em->flush();
-    //         } catch (Exception $e) {
-    //             $this->addFlash('error', $e->getMessage());
-    //         }
-
-    //         return $this->redirectToRoute("app_sa_company_list");
-    //     }
-
-    //     return $this->render(
-    //         "/superadmin/company/create.html.twig",
-    //         [
-    //             "form" => $form->createView()
-    //         ],
-    //         new Response(null, $form->isSubmitted() ? ($form->isValid() ? 200 : 422) : 200)
-    //     );
-    // }
-
-    // update company
-    // #[Route("/company/{id}/edit", name: "app_sa_company_update")]
-    // public function updateCompany(Request $request, Company $company, EntityManagerInterface $entityManager): Response
-    // {
-    //     $form = $this->createForm(CompanyType::class, $company);
-
-    //     $form->handleRequest($request);
-
-    //     if ($form->isSubmitted() && $form->isValid()) {
-    //         /** @var Company $company */
-    //         $company = $form->getData();
-
-    //         $entityManager->flush();
-
-    //         return $this->redirectToRoute("app_sa_company_list");
-    //     }
-
-    //     return $this->render(
-    //         "/superadmin/company/update.html.twig",
-    //         [
-    //             "form" => $form->createView()
-    //         ],
-    //         new Response(null, $form->isSubmitted() ? ($form->isValid() ? 200 : 422) : 200)
-    //     );
-    // }
-
-    // #[Route('/admin/delete/{id}', name: 'app_sa_admin_delete')]
-    // public function toggleAdminStatus(User $user): Response
-    // {
-    //     try {
-    //         $company->setIsActive(false);
-    //         $entityManager->flush();
-    //         $this->addFlash("success", "Company deleted successfully!");
-    //     } catch (Exception $err) {
-    //         $this->addFlash("error", $err->getMessage());
-    //     }
-
-    //     $this->addFlash('success', 'User status changed successfully!');
-
-    //     return $this->redirectToRoute('app_sa_admin_homepage');
-    // }
-
-    // #[Route('/admin/datatable', name: 'app_sa_admin_dt')]
-    // public function adminDatatable(Request $request): Response
-    // {
-    //     $requestData = $request->query->all();
-
-    //     $orderByField = $requestData['columns'][$requestData['order'][0]['column']]['data'];
-    //     $orderDirection = $requestData['order'][0]['dir'];
-    //     $searchBy = $requestData['search']['value'] ?? null;
-
-    //     $users = $this->userRepository->dynamicDataAjaxVise($requestData['length'], $requestData['start'], $orderByField, $orderDirection, $searchBy);
-    //     $totalUsers = $this->userRepository->getTotalUsersCount();
-
-    //     $response = [
-    //         "data" => $users,
-    //         "recordsTotal" => $totalUsers,
-    //         "recordsFiltered" => $totalUsers
-    //     ];
-
-    //     return $this->json($response, context: ['groups' => 'user:dt:read']);
-    // }
 }

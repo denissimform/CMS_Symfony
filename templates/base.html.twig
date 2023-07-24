@@ -1,12 +1,14 @@
-<!DOCTYPE html>
 <html>
 	<head>
 		<meta charset="UTF-8">
+
+		{% block metatags %}{% endblock %}
+
 		<title>
 			{% block title %}Welcome!
 			{% endblock %}
 		</title>
-        <link rel="icon" href="{{ asset('favicon.png') }}">
+		<link rel="icon" href="{{ asset('favicon.png') }}">
 		{% block stylesheets %}
 			{{ encore_entry_link_tags('app') }}
 			<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fomantic-ui/2.9.2/semantic.min.css">
@@ -16,6 +18,7 @@
 			{{ encore_entry_script_tags('app') }}
 		{% endblock %}
 		<!-- Javascript end -->
+		{# {% block customjavascript %}{% endblock %} #}
 	</head>
 	<body>
 		<!--  Body Wrapper -->
@@ -43,13 +46,12 @@
 					<!-- Layout end -->
 
 					<!-- Footer Start -->
-					{% block footer %}{% endblock %}					
+					{% block footer %}{% endblock %}
 					<!-- Footer end -->
 				</div>
 			</div>
 			<!--  Main End -->
 		</div>
 		<!--  Body End -->
-		{% block customjavascript %}{% endblock %}
 	</body>
 </html>

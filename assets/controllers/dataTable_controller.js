@@ -1,7 +1,7 @@
 import { Controller } from '@hotwired/stimulus';
-import 'datatables.net-se';
-import 'datatables.net-buttons-se';
-import 'datatables.net-responsive-se';
+// import 'datatables.net-se';
+// import 'datatables.net-buttons-se';
+// import 'datatables.net-responsive-se';
 import $ from 'jquery';
 
 export default class extends Controller {
