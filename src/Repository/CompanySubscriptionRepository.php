@@ -46,7 +46,7 @@ class CompanySubscriptionRepository extends ServiceEntityRepository
     {
         try {
             $sql = "UPDATE `company_subscription` SET `status` = :status  WHERE expires_at < current_timestamp()";
-            $this->getEntityManager()->getConnection()->executeQuery($sql, ["status" => "expired"]);
+            $this->getEntityManager()->getConnection()->executeQuery($sql, ["status" => CompanySubscription::PLAN_STATUS['EXPIRED']]);
         } catch (PDOException $err) {
             throw new Exception($err->getMessage());
         }

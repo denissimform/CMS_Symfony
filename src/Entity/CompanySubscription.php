@@ -25,7 +25,10 @@ class CompanySubscription
 
     #[ORM\Column(length: 255)]
     private ?string $status = null;
-    public const PLAN_STATUS = ["expired", "current", "upcoming"];
+    public const PLAN_STATUS = [
+        "EXPIRED" => "expired", 
+        "CURRENT" => "current"
+    ];
 
     use TimestampableEntity;
 
