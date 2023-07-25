@@ -8,7 +8,6 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\NotBlank;
@@ -16,7 +15,7 @@ use Symfony\Component\Validator\Constraints\Range;
 
 class SubscriptionType extends AbstractType
 {
-    private $choices, $data;
+    private $choices;
 
     public function __construct(
         private SubscriptionRepository $subscriptionRepository,
@@ -35,6 +34,9 @@ class SubscriptionType extends AbstractType
                 'choices' => $this->choices,
                 'label' => 'Subscription Plan',
                 'placeholder' => 'Select Type',
+                'placeholder_attr' => [
+                    'disabled' => true,
+                ],
                 'required' => true,
                 'constraints' => [
                     new NotBlank(message: 'Please select Subscription Plan.')
@@ -45,14 +47,26 @@ class SubscriptionType extends AbstractType
             ->add('criteria_dept', IntegerType::class, [
                 'label' => 'Max Departments',
                 'required' => true,
+                'constraints' => [
+                    new NotBlank(message: 'This field should not be blank.'),
+                    new Range(min: 1)
+                ]
             ])
             ->add('criteria_user', IntegerType::class, [
                 'label' => 'Max User',
                 'required' => true,
+                'constraints' => [
+                    new NotBlank(message: 'This field should not be blank.'),
+                    new Range(min: 1)
+                ]
             ])
             ->add('criteria_storage', IntegerType::class, [
                 'label' => 'Max Storage',
                 'required' => true,
+                'constraints' => [
+                    new NotBlank(message: 'This field should not be blank.'),
+                    new Range(min: 1)
+                ]
             ])
             ->add('duration', IntegerType::class, [
                 'label' => 'Duration',

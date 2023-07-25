@@ -4,6 +4,7 @@ namespace App\DataFixtures;
 
 use App\Entity\User;
 use App\Factory\CompanyFactory;
+use App\Factory\SubscriptionDurationFactory;
 use App\Factory\SubscriptionFactory;
 use App\Factory\TransactionFactory;
 use App\Factory\UserFactory;
@@ -17,21 +18,27 @@ class AppFixtures extends Fixture
         // $product = new Product();
         // $manager->persist($product);
 
-        CompanyFactory::createMany(20);
-        UserFactory::createOne([
-            'email' => 'superadmin@gmail.com',
-            'roles' => ['ROLE_SUPER_ADMIN']
-        ]);
-        UserFactory::createMany(2, [
-            'roles' => ['ROLE_ADMIN']
-        ]);
-        UserFactory::createMany(3, [
-            'roles' => ['ROLE_BDA']
-        ]);
-        UserFactory::createMany(10);
+        // CompanyFactory::createMany(20);
+        // UserFactory::createOne([
+        //     'email' => 'superadmin@gmail.com',
+        //     'roles' => ['ROLE_SUPER_ADMIN']
+        // ]);
+        // UserFactory::createMany(2, [
+        //     'roles' => ['ROLE_ADMIN']
+        // ]);
+        // UserFactory::createMany(3, [
+        //     'roles' => ['ROLE_BDA']
+        // ]);
+        // UserFactory::createMany(10);
 
-        SubscriptionFactory::createMany(6);
-        TransactionFactory::createMany(10);
+        // SubscriptionFactory::createMany(6);
+        // TransactionFactory::createMany(10);
+        SubscriptionFactory::createMany(3);
+        SubscriptionDurationFactory::createMany(6, function () {
+            return [
+                'subscriptionId' => SubscriptionFactory::random()
+            ];
+        });
 
         $manager->flush();
     }

@@ -24,8 +24,6 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\UX\Chartjs\Builder\ChartBuilderInterface;
 use Symfony\UX\Chartjs\Model\Chart;
 
-use function PHPUnit\Framework\isEmpty;
-
 #[IsGranted('ROLE_SUPER_ADMIN')]
 #[Route("/superadmin")]
 class SuperAdminController extends AbstractController
@@ -42,7 +40,6 @@ class SuperAdminController extends AbstractController
     public function homepage(): Response
     {
         $result = $this->CallProcedure('chartData', ['userGrowthData', 'subscriptionData', 'pieChartData'], [-1]);
-        // dd($result);
 
         $userGrowthData = $result['userGrowthData'];
         $subscriptionData = $result['subscriptionData'];
@@ -411,17 +408,20 @@ class SuperAdminController extends AbstractController
                 $subscription->setCriteriaDept($data['criteria_dept']);
                 $subscription->setCriteriaUser($data['criteria_user']);
                 $subscription->setCriteriaStorage($data['criteria_storage']);
-                $subscription->setIsActive(1);
-
+                $subscription->setIsActive(true);
+                
                 $entityManager->persist($subscription);
             } else {
-                $subscription = $subscriptionRepository->findBy(['id' => $data['subscription_id']])[0];
+                $subscription = $subscriptionRepository->findOneBy(["id"=>$data['subscription_id']]);
+                $subscription->setCriteriaDept($data['criteria_dept']);
+                $subscription->setCriteriaUser($data['criteria_user']);
+                $subscription->setCriteriaStorage($data['criteria_storage']);
             }
 
             $duration = new SubscriptionDuration();
             $duration->setDuration($data['duration']);
             $duration->setPrice($data['price']);
-            $duration->setIsActive(1);
+            $duration->setIsActive(true);
             $duration->setSubscriptionId($subscription);
 
             $entityManager->persist($duration);
@@ -443,11 +443,10 @@ class SuperAdminController extends AbstractController
 
 
     #[Route('/subscription/edit/{id}', name: 'app_subscription_edit')]
-    public function editSubscription(Request $request, int $id, SubscriptionDurationRepository $subscriptionDurationRepository, SubscriptionRepository $subscriptionRepository , EntityManagerInterface $entityManager): Response
+    public function editSubscription(Request $request, int $id, SubscriptionDurationRepository $subscriptionDurationRepository, SubscriptionRepository $subscriptionRepository, EntityManagerInterface $entityManager): Response
     {
 
         $plan = $subscriptionDurationRepository->find($id);
-        // dd($data);
 
         $customArr = [];
         $customArr['type'] = $plan->getSubscriptionId()->getType();
@@ -473,9 +472,8 @@ class SuperAdminController extends AbstractController
                 $subscription->setIsActive(1);
 
                 $entityManager->persist($subscription);
-                
             } else {
-                $subscription = $subscriptionRepository->findBy(['id' => $data['subscription_id']])[0];
+                $subscription = $subscriptionRepository->findOneBy(["id"=>$data['subscription_id']]);
             }
 
             $duration = $plan;

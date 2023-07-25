@@ -1,91 +1,58 @@
 import { Controller } from "@hotwired/stimulus";
 import $ from "jquery";
 
-var $url = $(".select_type").data("specific-type-url");
-
 export default class extends Controller {
+  static values = {
+    url: String,
+  }
 
   connect() {
-    var type = $(".select_type").val();
-    console.log(type);
-    if(type.length != 0){
+    if ($("#subscription_type").val()) {
       this.ajaxCall();
     }
   }
 
-  changeValue(e) {
-    e.preventDefault();
+  changeValue() {
     this.ajaxCall();
   }
 
   ajaxCall() {
-    const dept = document.getElementById('subscription_criteria_dept');
-    const user = document.getElementById('subscription_criteria_user');
-    const storage = document.getElementById('subscription_criteria_storage');
-    const id = document.getElementById('subscription_subscription_id');
-
-    const selectedType = document.getElementsByClassName('select_type')[0].value;
-
-    const custom_type = document.getElementById('custom_type');
-
     $.ajax({
-      url: $url,
+      url: this.urlValue,
       data: {
-        type: selectedType,
+        type: $("#subscription_type").val(),
       },
       dataType: 'json',
-      success: function (html) {
-        console.log(html);
-
-        var json = html;
-
+      success: function (json) {
         if (json.Type == "Other") {
+          const inputTextField = $("<input>")
+            .attr({
+              "type": "text",
+              "id": "subscription_criteria_customType",
+              "name": "subscription[customType]",
+              "class": "form-control",
+              "placeholder": "Enter Custom Type",
+              "required": true,
+            });
 
-          var inputTextField = document.createElement("INPUT");
-          inputTextField.setAttribute("type", "text");
-          inputTextField.setAttribute("id", "subscription_criteria_customType");
-          inputTextField.setAttribute("name", "subscription[customType]");
-          inputTextField.setAttribute("class", "form-control");
+          $("#subscription_criteria_dept").attr({ 'value': 0 });
+          $("#subscription_criteria_user").attr({ 'value': 0 });
+          $("#subscription_criteria_storage").attr({ 'value': 0 });
+          $("#subscription_subscription_id").attr({ 'value': 0 });
 
-          inputTextField.setAttribute("required", "true");
-          inputTextField.setAttribute("placeholder", "Enter Custom Type");
-
-          dept.setAttribute('value', 0);
-          dept.removeAttribute('disabled');
-
-          user.setAttribute('value', 0);
-          user.removeAttribute('disabled');
-
-          storage.setAttribute('value', 0);
-          storage.removeAttribute('disabled');
-
-          id.setAttribute('value', 0);
-
-          custom_type.innerHTML = "";
-          custom_type.appendChild(inputTextField);
-          custom_type.setAttribute('class', '');
-
-          return;
-        } else if (json.Type == "Empty") {
-          return;
+          $("#custom_type").html("").append(inputTextField).attr({ "class": "" });
         } else {
+          $("#subscription_criteria_dept").attr({ 'value': json.dept });
+          $("#subscription_criteria_user").attr({ 'value': json.user });
+          $("#subscription_criteria_storage").attr({ 'value': json.storage });
+          $("#subscription_subscription_id").attr({ 'value': json.id });
 
-          dept.setAttribute('value', json.dept);
-          dept.setAttribute('disabled', 'true');
-
-          user.setAttribute('value', json.user);
-          user.setAttribute('disabled', 'true');
-
-          storage.setAttribute('value', json.storage);
-          storage.setAttribute('disabled', 'true');
-
-          id.setAttribute('value', json.id);
-
-          custom_type.setAttribute('class', 'd-none');
-
-          return;
+          $("#custom_type").attr({ 'class': 'd-none' });
         }
       },
+      error: function (err) {
+        console.error(err.responseText);
+      }
     });
   }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Factory;
 
+use App\Entity\Subscription;
 use App\Entity\SubscriptionDuration;
 use App\Repository\SubscriptionDurationRepository;
 use Zenstruck\Foundry\ModelFactory;
@@ -47,8 +48,10 @@ final class SubscriptionDurationFactory extends ModelFactory
     protected function getDefaults(): array
     {
         return [
-            'createdAt' => self::faker()->dateTime(),
-            'updatedAt' => self::faker()->dateTime(),
+            'duration' => self::faker()->randomElement([6, 12]),
+            'price' => self::faker()->randomNumber(3),
+            'isActive' => true,
+            'subscriptionId' => Subscription::class
         ];
     }
 

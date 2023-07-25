@@ -44,7 +44,7 @@ class SubscriptionRepository extends ServiceEntityRepository
         $query = $this->createQueryBuilder('s')
             ->select('s.type')
             ->andWhere('s.isActive = :val')
-            ->setParameter(':val', 1)
+            ->setParameter(':val', true)
             ->orderBy('s.id', 'ASC')
             ->getQuery()
             ->getResult();

@@ -2,12 +2,9 @@
 
 namespace App\Controller;
 
-use App\Entity\User;
 use App\Form\RegisterFormType;
-use App\Form\RegistrationFormType;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use Exception;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -16,13 +13,15 @@ use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
-use Symfony\UX\Chartjs\Builder\ChartBuilderInterface;
-use Symfony\UX\Chartjs\Model\Chart;
 use SymfonyCasts\Bundle\VerifyEmail\Exception\VerifyEmailExceptionInterface;
 use SymfonyCasts\Bundle\VerifyEmail\VerifyEmailHelperInterface;
 
 class MainController extends AbstractController
 {
+    public function __construct(private $email_id)
+    {
+    }
+
     #[Route('/', name: 'app_homepage')]
     public function index(): Response
     {
@@ -133,7 +132,7 @@ class MainController extends AbstractController
     {
 
         $email = (new TemplatedEmail())
-            ->from('denisshingala@gmail.com')
+            ->from($this->email_id)
             ->to($email)
             ->subject('Email Verification')
             ->htmlTemplate('email/verify.html.twig')
@@ -146,5 +145,4 @@ class MainController extends AbstractController
 
         return 1;
     }
-
 }

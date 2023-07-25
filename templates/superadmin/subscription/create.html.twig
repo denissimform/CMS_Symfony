@@ -13,22 +13,12 @@
 	<div class="container border p-5 mt-5">
 		<h1>Subscription</h1>
 
-			{# {% include "./_form.html.twig" %} #}
-
 		<div class="container">
-
 			{{ form_start(form, { 'attr' : { 'novalidate':"novalidate", "class":"form" }}) }}
-			<div class="container" {{ stimulus_controller('customType')}}>
+			<div class="container" {{ stimulus_controller('customType', { "url": path('select_subscription_type')} )}}>
 				<div class="row">
 					<div class="col-md-12">
-						{{ form_row(form.type, {
-								attr: {
-									'data-specific-type-url' : path('select_subscription_type'),
-									'data-action' : 'customType#changeValue',
-									class: 'select_type'
-								}
-							}) 
-						}}
+						{{ form_row(form.type, {'attr': {'class':'select_type'}|merge(stimulus_action('customType', 'changeValue').toArray())}) }}
 					</div>
 				</div>
 				<div class="row">
@@ -64,14 +54,9 @@
 				<button type="submit" class="btn btn-success">Create</button>
 			</div>
 			{{ form_end(form) }}
-			
+
 		</div>
 
 		<br>
 	</div>
 {% endblock %}
-
-{# {% block customjavascript %}
-			<script src="https://code.jquery.com/jquery-3.7.0.js" integrity="sha256-JlqSTELeR4TLqP0OG9dxM7yDPqX1ox/HfgiSLBj8+kM=" crossorigin="anonymous"></script>
-			<script src="{{ asset('custom_type.js') }}" />
-		{% endblock %} #}

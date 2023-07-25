@@ -1,13 +1,13 @@
 <div class="container">
 
 	{{ form_start(form, { 'attr' : { 'novalidate':"novalidate", "class":"form" }}) }}
-	<div class="container" {{ stimulus_controller('customType')}}>
+	<div class="container" {{ stimulus_controller('customType', attr: { "url": path('select_subscription_type')} )}}>
 		<div class="row">
 			<div class="col-md-12">
 				{{ form_row(form.type, {
 								attr: {
-									'data-specific-type-url' : path('select_subscription_type'),
-									'data-action' : 'customType#changeValue',
+									stimulus_action('customType', 'changeValue').toArray(),
+									stimulus_target('customType', 'selectedType').toArray(),
 									class: 'select_type'
 								}
 							}) 

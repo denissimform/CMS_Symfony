@@ -47,13 +47,11 @@ final class SubscriptionFactory extends ModelFactory
     protected function getDefaults(): array
     {
         return [
-            'createdAt' => self::faker()->dateTime(),
             'criteria_dept' => self::faker()->randomNumber(),
             'criteria_storage' => self::faker()->randomNumber(),
             'criteria_user' => self::faker()->randomNumber(),
             'isActive' => self::faker()->boolean(),
             'type' => self::faker()->text(10),
-            'updatedAt' => self::faker()->dateTime(),
         ];
     }
 
