@@ -1,0 +1,44 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Admin | Department
+{% endblock %}
+
+{% block sidebar %}
+	{{ include('/admin/components/adminsidebar.html.twig') }}
+{% endblock %}
+{% block navbar %}
+	{{ include('/components/navbar.html.twig') }}
+{% endblock %}
+
+{% block layout %}
+	<div class="container-fluid">
+		<div class="container-fluid">
+			<div class="card">
+				<div class="card-body">
+					<h5 class="card-title fw-semibold mb-4 text-center">DEPARTMENT</h5>
+					<div class="card">
+						<div class="card-body">
+							<table id="department_dt" class="ui celled table text-center align-middle" {{ stimulus_controller('department', { url: path('app_admin_department_dt') } ) }}>
+								<thead>
+									<tr>
+										<th>Name</th>
+										<th>CreateAt</th>
+										<th>UpdatedAt</th>
+										<th>isActive</th>
+										<th>Action
+										</th>
+									</tr>
+								</thead>
+								<tbody></tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+{% endblock %}
+{% block footer %}
+	{{ include('/components/footer.html.twig') }}
+{% endblock %}

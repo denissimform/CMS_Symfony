@@ -64,6 +64,7 @@ final class UserFactory extends ModelFactory
             'roles' => ['ROLE_ADMIN'],
             'updatedAt' => self::faker()->dateTime(),
             'username' => self::faker()->userName(),
+            'isApproved' => self::faker()->boolean()
         ];
     }
 

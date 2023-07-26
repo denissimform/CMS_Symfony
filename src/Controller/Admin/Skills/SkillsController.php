@@ -33,7 +33,7 @@ class SkillsController extends AbstractController
             return $this->redirectToRoute('app_admin_skills');
         }
 
-        return $this->render('Admin/Skills/create_skill.html.twig',[
+        return $this->render('admin/skills/create_skill.html.twig',[
             'form' => $form->createView()
         ]);
     }
@@ -41,8 +41,8 @@ class SkillsController extends AbstractController
     #[Route('', name: 'app_admin_skills')]
     public function Skills(SkillsRepository $skillsRepository): Response
     {
-        return $this->render('Admin/Skills/index.html.twig');
-        // return $this->render('Admin/Skills/skills.html.twig',[
+        return $this->render('admin/skills/index.html.twig');
+        // return $this->render('admin/skills/skills.html.twig',[
         //     'skills' => $skillsRepository->findBy([
         //         'isDeleted' => false
         //     ]) 
@@ -60,7 +60,7 @@ class SkillsController extends AbstractController
 
             return $this->redirectToRoute('app_admin_skills');
         }
-        return $this->render('Admin/Skills/create_skill.html.twig',[
+        return $this->render('admin/skills/create_skill.html.twig',[
             'form' => $form->createView()
         ]);
     }

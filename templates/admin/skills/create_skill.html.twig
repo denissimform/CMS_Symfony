@@ -1,0 +1,38 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Admin | Skills
+{% endblock %}
+
+{% block sidebar %}
+	{{ include('/admin/components/adminsidebar.html.twig') }}
+{% endblock %}
+{% block navbar %}
+	{{ include('/components/navbar.html.twig') }}
+{% endblock %}
+
+{% block layout %}
+	<div class="container-fluid">
+		<div class="container-fluid">
+			<div class="card">
+				<div class="card-body">
+					<h5 class="card-title fw-semibold mb-4 text-center">Create New Skill</h5>
+					<div class="card">
+						<div class="card-body">
+							{{ form_start(form, {
+								'method': 'POST',
+							}) }}
+								<div class="mb-3">
+									{{ form_row(form.name, {'attr': {'class' : 'form-control'}}) }}
+								</div>
+								<button type="submit" class="btn btn-primary">Submit</button>
+							{{ form_end(form) }}
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+{% endblock %}
+{% block footer %}
+	{{ include('/components/footer.html.twig') }}
+{% endblock %}

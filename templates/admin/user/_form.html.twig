@@ -1,0 +1,17 @@
+{{ form_start(form, {'attr' : { 'novalidate': 'novalidate' }}) }}
+<div class="row mt-4">
+	<div class="col-lg-8">
+		{{ form_row(form.name) }}
+	</div>
+</div>
+<div class="row">
+	<div class='d-flex justify-content-between col-2'>
+		<button type="submit" class="btn btn-dark">
+			Submit
+		</button>
+		<a class="btn btn-danger" href="{{path('app_sa_admin_homepage')}}">
+			Cancel
+		</a>
+	</div>
+</div>
+{{form_end(form)}}

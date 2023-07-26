@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Entity\Company;
 use App\Entity\Department;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -29,31 +30,38 @@ class DepartmentRepository extends ServiceEntityRepository
             $this->getEntityManager()->flush();
         }
     }
-    public function dynamicDataAjaxVise(int $limit, int $start, string $orderByField, string $orderDirection, string $searchBy): array
+    public function dynamicDataAjaxVise(int $limit, int $start, string $orderByField, string $orderDirection, string $searchBy, Company $company): array
     {
         $queryBuilder = $this->createQueryBuilder('u')
+            ->select('u.id, u.name, u.createdAt, u.updatedAt, u.description, u.isActive, u.isDeleted')
             ->orderBy("u.$orderByField", $orderDirection);
+            
 
         if ($searchBy){
-            return $queryBuilder->andWhere('u.name LIKE ?1 OR u.description LIKE ?1 OR u.isActive LIKE ?1 OR u.createdAt LIKE ?1 OR u.isDeleted LIKE ?1 OR u.updatedAt LIKE ?1')
+            return $queryBuilder->andWhere('u.name LIKE ?1 OR u.description LIKE ?1 OR u.isActive LIKE ?1 OR u.createdAt LIKE ?1 OR u.updatedAt LIKE ?1')
             ->setParameter(1, '%' . $searchBy . '%')
             ->getQuery()
             ->getResult();
         }
 
-        return $queryBuilder->setMaxResults($limit)
-            ->setFirstResult($start)
+        return $queryBuilder
+            ->andWhere('u.companyId = :c')
+            ->setParameter('c', $company)
+            ->setMaxResults($limit)
+            ->setFirstResult($start) 
             ->andWhere('u.isDeleted = :val')
             ->setParameter('val', false)
             ->getQuery()
             ->getResult();
     }
-    public function getTotalUsersCount(): int
+    public function getTotalUsersCount(Company $company): int
     {
         return count(
             $this->createQueryBuilder('u')
                 ->andWhere('u.isDeleted = :val')
                 ->setParameter('val', false)
+                ->andWhere('u.companyId = :c')
+                ->setParameter('c', $company)
                 ->getQuery()
                 ->getResult()
         );

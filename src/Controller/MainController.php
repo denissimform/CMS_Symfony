@@ -26,7 +26,10 @@ use SymfonyCasts\Bundle\VerifyEmail\VerifyEmailHelperInterface;
 
 class MainController extends AbstractController
 {
-    public function __construct(private VerifyEmailHelperInterface $verifyEmail, private EntityManagerInterface $entityManager)
+    public function __construct(
+        private VerifyEmailHelperInterface $verifyEmail, 
+        private EntityManagerInterface $entityManager
+    )
     {
     }
 
@@ -85,7 +88,12 @@ class MainController extends AbstractController
      * @return Response
      */
     #[Route("/verify-email", name: "app_verify_email")]
-    public function verifyAdminEmail(Request $request, UserRepository $userRepository, UserAuthenticatorInterface $userAuthenticator, UserCustomAuthenticator $userCustomAuthenticator): Response
+    public function verifyAdminEmail(
+        Request $request, 
+        UserRepository $userRepository, 
+        UserAuthenticatorInterface $userAuthenticator, 
+        UserCustomAuthenticator $userCustomAuthenticator
+    ): Response
     {
         try {
             $user = $userRepository->find($request->query->get('id'));
@@ -122,7 +130,11 @@ class MainController extends AbstractController
      * @return Response
      */
     #[Route("/resend-verify-email", name: "app_resend_verify_email")]
-    public function resendVerifyEmail(Request $request, UserRepository $userRepository, EmailService $emailService): Response
+    public function resendVerifyEmail(
+        Request $request, 
+        UserRepository $userRepository, 
+        EmailService $emailService
+    ): Response
     {
         try {
             // get verification email id from sesison
@@ -191,11 +203,22 @@ class MainController extends AbstractController
      * @return Response
      */
     #[Route("/verify-forgot-password", name: "app_verify_forgot_password_email")]
-    public function verifyForgotPassword(Request $request, UserRepository $userRepository, UserPasswordHasherInterface $passwordHasher, UserAuthenticatorInterface $userAuthenticator, UserCustomAuthenticator $userCustomAuthenticator): Response
+    public function verifyForgotPassword(
+        Request $request, 
+        UserRepository $userRepository, 
+        UserPasswordHasherInterface $passwordHasher, 
+        UserAuthenticatorInterface $userAuthenticator, 
+        UserCustomAuthenticator $userCustomAuthenticator
+    ): Response
     {
         try {
             // validate uri
-            if (null === $request->query->get('token') || null === $request->query->get('signature') || null === $request->query->get('token') || null === $request->query->get('id')) {
+            if (
+                null === $request->query->get('token') || 
+                null === $request->query->get('signature') || 
+                null === $request->query->get('token') || 
+                null === $request->query->get('id')
+            ) {
                 throw new NotAcceptableHttpException("Invalid request!");
             }
 
@@ -256,7 +279,12 @@ class MainController extends AbstractController
                 $user = $userRepository->findOneBy(["email" => $form['email']->getData()]);
 
                 // get signature
-                $signature = $this->verifyEmail->generateSignature("app_verify_forgot_password_email", $user->getId(), $user->getEmail(), ["id" => $user->getId()]);
+                $signature = $this->verifyEmail->generateSignature(
+                    "app_verify_forgot_password_email", 
+                    $user->getId(), 
+                    $user->getEmail(), 
+                    ["id" => $user->getId()]
+                );
 
                 // create context
                 $context = ["confirmUrl" => $signature->getSignedUrl(), "username" => $user->getFullName()];
