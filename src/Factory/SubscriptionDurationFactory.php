@@ -50,8 +50,8 @@ final class SubscriptionDurationFactory extends ModelFactory
         return [
             'duration' => self::faker()->randomElement([6, 12]),
             'price' => self::faker()->randomNumber(3),
-            'isActive' => true,
-            'subscriptionId' => Subscription::class
+            'isActive' => self::faker()->boolean(),
+            'subscriptionId' => SubscriptionFactory::random()
         ];
     }
 

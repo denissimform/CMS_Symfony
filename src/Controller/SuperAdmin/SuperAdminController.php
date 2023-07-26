@@ -5,24 +5,19 @@ namespace App\Controller\SuperAdmin;
 use App\Entity\Company;
 use App\Entity\Subscription;
 use App\Entity\SubscriptionDuration;
-use App\Form\CompanyType;
 use App\Form\SubscriptionType;
 use App\Repository\CompanyRepository;
 use App\Repository\SubscriptionDurationRepository;
 use App\Repository\SubscriptionRepository;
 use App\Repository\TransactionRepository;
-use App\Repository\UserRepository;
+use App\Service\ChartService;
 use Doctrine\DBAL\Exception;
-use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\Query\ResultSetMapping;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
-use Symfony\UX\Chartjs\Builder\ChartBuilderInterface;
-use Symfony\UX\Chartjs\Model\Chart;
 
 #[IsGranted('ROLE_SUPER_ADMIN')]
 #[Route("/superadmin")]
@@ -30,7 +25,7 @@ class SuperAdminController extends AbstractController
 {
 
     public function __construct(
-        private ChartBuilderInterface $chartBuilder,
+        private ChartService $chartService,
         private EntityManagerInterface $em
     ) {
     }
@@ -39,13 +34,47 @@ class SuperAdminController extends AbstractController
     #[Route("/", name: "app_sa_homepage")]
     public function homepage(): Response
     {
-        $result = $this->CallProcedure('chartData', ['userGrowthData', 'subscriptionData', 'pieChartData'], [-1]);
+        $result = $this->CallProcedure('chartData', ['yearlyRevenue', 'monthlyBudget', 'topCompanies', 'companyGrowthData', 'subscriptionData', 'pieChartData'], [-1]);
 
-        $userGrowthData = $result['userGrowthData'];
+        $topCompanies = $result['topCompanies'];
+
+        // dd($result); 
+
+        $monthBudget = $result['monthlyBudget'][0]->{'Amount'} ?? 0;
+
+        $currentDate = date('Y-m-d');
+
+        $currentYear = date('Y');
+        $prevYear = date('Y') - 1;
+
+        $yearBudget = 0; 
+        $prevYearBudget = 0;
+        $growthRate = 0;
+        foreach ($result['yearlyRevenue'] as $data) {
+            $amount[] = $data->{'Amount'};
+            $year[] = $data->{'Year'};
+
+            if($currentYear == $data->{'Year'}){
+                $yearBudget = $data->{'Amount'};
+            }
+
+            if($prevYear == $data->{'Year'}){
+                $prevYearBudget = $data->{'Amount'};
+            }
+        }
+
+        if($prevYearBudget != 0){
+            $growthRate = (($yearBudget - $prevYearBudget)/$prevYearBudget) * 100 ;
+        }
+
+        $yearBudgetChart = $this->chartService->createDonutChart($year, $amount);
+
+        $companyGrowthData = $result['companyGrowthData'];
         $subscriptionData = $result['subscriptionData'];
         $pieChartData = $result['pieChartData'][0];
 
-        foreach ($userGrowthData as $data) {
+        $year = [];
+        foreach ($companyGrowthData as $data) {
             $year[] = $data->{'Year'};
             $count[] = $data->{'Count'};
         }
@@ -56,97 +85,29 @@ class SuperAdminController extends AbstractController
         }
 
 
-        $companyChart = $this->createPieChart(['isActive', 'InActive'], [$pieChartData->{'@companyActive'}, $pieChartData->{'@companyInactive'}]);
+        $companyChart = $this->chartService->createPieChart(['isActive', 'InActive'], [$pieChartData->{'@companyActive'}, $pieChartData->{'@companyInactive'}]);
 
-        $userChart = $this->createPieChart(['Admin', 'BDA', 'Employees'], [$pieChartData->{'@cntAdmin'}, $pieChartData->{'@cntBda'},  ($pieChartData->{'@total'} - $pieChartData->{'@cntAdmin'} - $pieChartData->{'@cntBda'})]);
+        $userChart = $this->chartService->createPieChart(['Admin', 'BDA', 'Employees'], [$pieChartData->{'@cntAdmin'}, $pieChartData->{'@cntBda'},  ($pieChartData->{'@total'} - $pieChartData->{'@cntAdmin'} - $pieChartData->{'@cntBda'})]);
 
-
-        $subscriptionChart = $this->createBarChart($plan, $sCount);
-        $userGrowthChart = $this->createLineChart($year, $count);
+        $subscriptionChart = $this->chartService->createPolarChart($plan, $sCount);
+        $companyGrowthChart = $this->chartService->createLineChart($year, $count);
 
         return $this->render("/superadmin/index.html.twig", [
+            'yearBudgetChart' => $yearBudgetChart,
+            'yearBudget' => number_format($yearBudget),
+            'growthRate' => number_format($growthRate, 2),
+            'monthBudget' => $monthBudget,
+            'date' => $currentDate,
+            'topCompanies' => $topCompanies,
             'companyChart' => $companyChart,
             'userChart' => $userChart,
             'subscriptionChart' => $subscriptionChart,
-            'userGrowthChart' => $userGrowthChart,
+            'companyGrowthChart' => $companyGrowthChart,
             "flag" => 'Super Admin'
         ]);
     }
 
-    // Create PIE CHart
-    #[Route('/create/chart/pie', name: "app_pie_chart")]
-    public function createPieChart(array $labels, array $data)
-    {
-        $chart = $this->chartBuilder->createChart(Chart::TYPE_PIE);
 
-        $chart->setData([
-            'labels' => $labels,
-            'datasets' => [
-                [
-                    'backgroundColor' => [
-                        'rgb(255, 99, 132)',
-                        'rgb(54, 162, 235)',
-                        'rgb(255, 205, 86)'
-                    ],
-                    'data' => $data,
-                    'hoverOffset' => 4
-                ],
-            ],
-        ]);
-
-        return $chart;
-    }
-
-    // Create Bar CHart -- Remaining
-    #[Route('/create/chart/bar', name: "app_bar_chart")]
-    public function createBarChart(array $labels = [], array $data = [])
-    {
-        $chart = $this->chartBuilder->createChart(Chart::TYPE_BAR);
-
-        $chart->setData([
-            'labels' => $labels,
-            'datasets' => [
-                [
-                    'label' => 'Subscription Chart',
-                    'backgroundColor' => [
-                        'rgb(255, 99, 132)',
-                        'rgb(54, 162, 235)',
-                        'rgb(255, 205, 86)'
-                    ],
-                    'data' => $data,
-                    'hoverOffset' => 4,
-                    'borderWidth' => 1
-                ],
-            ],
-        ]);
-
-        return $chart;
-    }
-
-    // Line Chart - User Growth
-    #[Route('/create/chart/line', name: "app_line_chart")]
-    public function createLineChart(array $labels, array $data)
-    {
-        $chart = $this->chartBuilder->createChart(Chart::TYPE_LINE);
-
-        $chart->setData([
-            'labels' => $labels,
-            'datasets' => [
-                [
-                    'label' => 'User',
-                    'data' => $data,
-                    'fill' => false,
-                    'borderColor' => 'rgb(75, 192, 192)',
-                    'tension' => 0.1,
-
-                    'hoverOffset' => 4,
-                    'borderWidth' => 1
-                ],
-            ],
-        ]);
-
-        return $chart;
-    }
 
     // Calling Procedure
     private function CallProcedure($procName, $keys = [], $parameters = [], $isExecute = false)
@@ -278,10 +239,10 @@ class SuperAdminController extends AbstractController
             $sCount[] = $data->{'Count'};
         }
 
-        $userChart = $this->createPieChart(['Admin', 'BDA', 'Employees'], [$pieChartData->{'@cntAdmin'}, $pieChartData->{'@cntBda'},  ($pieChartData->{'@total'} - $pieChartData->{'@cntAdmin'} - $pieChartData->{'@cntBda'})]);
+        $userChart = $this->chartService->createPieChart(['Admin', 'BDA', 'Employees'], [$pieChartData->{'@cntAdmin'}, $pieChartData->{'@cntBda'},  ($pieChartData->{'@total'} - $pieChartData->{'@cntAdmin'} - $pieChartData->{'@cntBda'})]);
 
-        $subscriptionChart = $this->createBarChart($plan, $count);
-        $userGrowthChart = $this->createLineChart($year, $count);
+        $subscriptionChart = $this->chartService->createPolarChart($plan, $count);
+        $userGrowthChart = $this->chartService->createLineChart($year, $count);
 
         $flag = '';
 
@@ -509,9 +470,9 @@ class SuperAdminController extends AbstractController
         $criteria = [];
         $criteria['Type'] = $type;
         if ($type !== "" && $type != 'Other') {
-            // dd($type);
-            // dd($type);
-            $data = $subscriptionRepository->findBy(['type' => $type]);
+            $data = $subscriptionRepository->findBy([
+                'type' => $type
+            ]);
             $criteria['id'] = $data[0]->getId();
             $criteria['dept'] = $data[0]->getCriteriaDept();
             $criteria['user'] = $data[0]->getCriteriaUser();

@@ -53,6 +53,7 @@ final class DepartmentFactory extends ModelFactory
             'isDeleted' => self::faker()->boolean(),
             'name' => self::faker()->text(20),
             'updatedAt' => self::faker()->dateTime(),
+            'companyId' => CompanyFactory::random()
         ];
     }
 

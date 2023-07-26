@@ -10,6 +10,22 @@ export default class extends Controller {
   };
 
   initialize() {
+    $("#table_div").html(`
+        <table id="subscription_dt" class="ui celled table text-center align-middle w-100" {{ stimulus_controller('subscriptionTable', { url: path('app_sa_subscription_dt') } ) }}>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Subscription Type</th>
+                <th>Duration</th>
+                <th>Price</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    `);
+
     $("#" + this.element.id).DataTable({
       processing: true,
       serverSide: true,
@@ -47,11 +63,15 @@ export default class extends Controller {
           },
         },
         {
-          "mData": "id",
-          "mRender": function (data) {
-              return "<a class='btn btn-primary' href='/superadmin/subscription/edit/" + data + "'>Edit</a>";
-          }
-        }
+          mData: "id",
+          mRender: function (data) {
+            return (
+              "<a class='btn btn-primary' href='/superadmin/subscription/edit/" +
+              data +
+              "'>Edit</a>"
+            );
+          },
+        },
       ],
     });
   }

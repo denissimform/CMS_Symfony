@@ -61,7 +61,8 @@ final class TransactionFactory extends ModelFactory
             'status' => self::STATUS[array_rand(self::STATUS)],
             'subscription' => SubscriptionFactory::random(),
             'updatedAt' => self::faker()->dateTime(),
-            'orderId' => self::faker()->randomNumber()
+            'orderId' => self::faker()->randomNumber(),
+            'amount' => self::faker()->numberBetween(100, 2000)
         ];
     }
 

@@ -29,6 +29,9 @@ use Zenstruck\Foundry\RepositoryProxy;
  */
 final class CompanySubscriptionFactory extends ModelFactory
 {
+
+
+    public const PLAN_STATUS = ["expired", "current", "upcoming"];
     /**
      * @see https://symfony.com/bundles/ZenstruckFoundryBundle/current/index.html#factories-as-services
      *
@@ -49,8 +52,10 @@ final class CompanySubscriptionFactory extends ModelFactory
         return [
             'createdAt' => self::faker()->dateTime(),
             'expiresAt' => \DateTimeImmutable::createFromMutable(self::faker()->dateTime()),
-            'status' => self::faker()->text(255),
+            'status' => "current",
             'updatedAt' => self::faker()->dateTime(),
+            'companyId' => CompanyFactory::random(),
+            'subscriptionId' => SubscriptionFactory::random()
         ];
     }
 

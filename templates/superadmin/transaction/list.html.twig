@@ -15,8 +15,8 @@
 			<h2>Transactions</h2>
 			<br>
 		</div>
-		<div class="col-lg-12">
-			<table id="company_dt" class="ui celled table text-center align-middle w-100" {{ stimulus_controller('transactionTable', { url: path('app_sa_transaction_dt') } ) }}>
+		<div class="col-lg-12" id="table_div">
+			<table id="transaction_dt" class="ui celled table text-center align-middle w-100" {{ stimulus_controller('transactionTable', { url: path('app_sa_transaction_dt') } ) }}>
 				<thead>
 					<tr>
 						<th>ID</th>

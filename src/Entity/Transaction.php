@@ -41,6 +41,9 @@ class Transaction
     #[Groups('transactions:dt:read')]
     private ?string $orderId = null;
 
+    #[ORM\Column]
+    private ?int $amount = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -92,6 +95,18 @@ class Transaction
     public function setOrderId(string $orderId): static
     {
         $this->orderId = $orderId;
+
+        return $this;
+    }
+
+    public function getAmount(): ?int
+    {
+        return $this->amount;
+    }
+
+    public function setAmount(int $amount): static
+    {
+        $this->amount = $amount;
 
         return $this;
     }

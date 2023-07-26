@@ -47,9 +47,9 @@ final class SubscriptionFactory extends ModelFactory
     protected function getDefaults(): array
     {
         return [
-            'criteria_dept' => self::faker()->randomNumber(),
-            'criteria_storage' => self::faker()->randomNumber(),
-            'criteria_user' => self::faker()->randomNumber(),
+            'criteria_dept' => self::faker()->numberBetween(1, 12),
+            'criteria_storage' => self::faker()->numberBetween(100, 1000),
+            'criteria_user' => self::faker()->numberBetween(100, 200),
             'isActive' => self::faker()->boolean(),
             'type' => self::faker()->text(10),
         ];
