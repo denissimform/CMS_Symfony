@@ -23,7 +23,7 @@ class EmployeeSkills
     #[ORM\Column(type: Types::STRING)]
     private ?string $level = null;
 
-    #[ORM\ManyToOne(inversedBy: 'employeeSkills')]
+    #[ORM\ManyToOne()]
     private ?Skills $skillId = null;
 
     public function getId(): ?int

@@ -7,6 +7,7 @@ use App\Repository\SkillsRepository;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\ArrayCollection;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: SkillsRepository::class)]
 class Skills
@@ -19,23 +20,27 @@ class Skills
     private ?int $id = null;
 
     #[ORM\Column(length: 40)]
+    #[Groups('skills:dt:read')]
     private ?string $name = null;
-
+    
     #[ORM\Column]
+    #[Groups('skills:dt:read')]
     private ?bool $isActive = false;
-
+    
     #[ORM\Column]
+    #[Groups('skills:dt:read')]
     private ?bool $isDeleted = false;
-
+    
     #[ORM\ManyToOne(inversedBy: 'skills')]
+    #[Groups('skills:dt:read')]
     private ?User $createdBy = null;
 
-    #[ORM\OneToMany(mappedBy: 'skillId', targetEntity: EmployeeSkills::class)]
-    private Collection $employeeSkills;
+    // #[ORM\OneToMany(mappedBy: 'skillId', targetEntity: EmployeeSkills::class)]
+    // private Collection $employeeSkills;
 
     public function __construct()
     {
-        $this->employeeSkills = new ArrayCollection();
+        // $this->employeeSkills = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -91,33 +96,33 @@ class Skills
         return $this;
     }
 
-    /**
-     * @return Collection<int, EmployeeSkills>
-     */
-    public function getEmployeeSkills(): Collection
-    {
-        return $this->employeeSkills;
-    }
+    // /**
+    //  * @return Collection<int, EmployeeSkills>
+    //  */
+    // public function getEmployeeSkills(): Collection
+    // {
+    //     return $this->employeeSkills;
+    // }
 
-    public function addEmployeeSkill(EmployeeSkills $employeeSkill): static
-    {
-        if (!$this->employeeSkills->contains($employeeSkill)) {
-            $this->employeeSkills->add($employeeSkill);
-            $employeeSkill->setSkillId($this);
-        }
+    // public function addEmployeeSkill(EmployeeSkills $employeeSkill): static
+    // {
+    //     if (!$this->employeeSkills->contains($employeeSkill)) {
+    //         $this->employeeSkills->add($employeeSkill);
+    //         $employeeSkill->setSkillId($this);
+    //     }
 
-        return $this;
-    }
+    //     return $this;
+    // }
 
-    public function removeEmployeeSkill(EmployeeSkills $employeeSkill): static
-    {
-        if ($this->employeeSkills->removeElement($employeeSkill)) {
-            // set the owning side to null (unless already changed)
-            if ($employeeSkill->getSkillId() === $this) {
-                $employeeSkill->setSkillId(null);
-            }
-        }
+    // public function removeEmployeeSkill(EmployeeSkills $employeeSkill): static
+    // {
+    //     if ($this->employeeSkills->removeElement($employeeSkill)) {
+    //         // set the owning side to null (unless already changed)
+    //         if ($employeeSkill->getSkillId() === $this) {
+    //             $employeeSkill->setSkillId(null);
+    //         }
+    //     }
 
-        return $this;
-    }
+    //     return $this;
+    // }
 }

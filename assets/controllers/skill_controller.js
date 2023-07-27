@@ -10,7 +10,7 @@ export default class extends Controller {
     }
 
     initialize() {
-        console.log('Initializing' + this.element.id + this.urlValue);
+        console.log('Initializing ' + this.element.id + this.urlValue);
         $('#' + this.element.id).DataTable({
             processing: true,
             serverSide: true,

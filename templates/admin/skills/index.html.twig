@@ -1,15 +1,4 @@
-{% extends 'base.html.twig' %}
-
-{% block title %}Admin | Skills
-{% endblock %}
-
-{% block sidebar %}
-	{{ include('/Admin/components/adminsidebar.html.twig') }}
-{% endblock %}
-{% block navbar %}
-	{{ include('/components/navbar.html.twig') }}
-{% endblock %}
-
+{% extends 'admin/homepage.html.twig' %}
 
 {% block layout %}
 	<div class="container">
@@ -36,7 +25,4 @@
 			</div>
 		</div>
 	</div>
-{% endblock %}
-{% block footer %}
-	{{ include('/components/footer.html.twig') }}
 {% endblock %}

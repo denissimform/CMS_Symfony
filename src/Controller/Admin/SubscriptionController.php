@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controller\Admin\Subscription;
+namespace App\Controller\Admin;
 
 use App\Entity\Subscription;
 use App\Form\SubscriptionType;
@@ -11,7 +11,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-#[Route('/admin/dashboard/subscriptions')]
+#[Route('/admin/subscriptions')]
 class SubscriptionController extends AbstractController
 {
     #[Route('', name: 'app_admin_subscriptions')]
