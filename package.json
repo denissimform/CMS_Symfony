@@ -10,9 +10,9 @@
         "@symfony/webpack-encore": "^4.0.0",
         "core-js": "^3.23.0",
         "regenerator-runtime": "^0.13.9",
-        "tom-select": "^2.2.2",
         "sass": "^1.63.6",
         "sass-loader": "^13.3.2",
+        "tom-select": "^2.2.2",
         "webpack": "^5.74.0",
         "webpack-cli": "^4.10.0",
         "webpack-notifier": "^1.15.0"
@@ -26,17 +26,16 @@
         "build": "encore production --progress"
     },
     "dependencies": {
+        "apexcharts": "^3.41.0",
         "bootstrap": "^5.3.0",
-        "datatables.net-buttons-se": "^2.4.1",
-        "datatables.net-responsive-se": "^2.5.0",
-        "datatables.net-se": "^1.13.5",
         "datatables": "^1.10.18",
         "datatables.net": "^1.13.5",
+        "datatables.net-buttons-se": "^2.4.1",
         "datatables.net-dt": "^1.13.5",
+        "datatables.net-responsive-se": "^2.5.0",
+        "datatables.net-se": "^1.13.5",
         "i": "^0.3.7",
         "jquery": "^3.7.0",
-        "mdb-ui-kit": "^6.4.0",
-        "npm": "^9.8.0",
-        "apexcharts": "^3.41.0"
+        "npm": "^9.8.0"
     }
 }

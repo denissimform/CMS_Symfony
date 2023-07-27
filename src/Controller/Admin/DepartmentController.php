@@ -2,7 +2,9 @@
 
 namespace App\Controller\Admin;
 
+use App\Controller\BaseController;
 use App\Entity\Department;
+use App\Entity\Company;
 use App\Form\DepartmentType;
 use App\Repository\DepartmentRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -45,7 +47,7 @@ class DepartmentController extends AbstractController
             return $this->redirectToRoute('app_admin_department');
         }
 
-        return $this->render('admin/department/create_department.html.twig', [
+        return $this->render('admin/department/create_department.html.twig',[
             'form' => $form->createView()
         ]);
     }
@@ -61,7 +63,13 @@ class DepartmentController extends AbstractController
 
             return $this->redirectToRoute('app_admin_department');
         }
-        return $this->render('admin/department/create_department.html.twig', [
+        try{
+            $this->denyAccessUnlessGranted('EDIT',$department);
+        }
+        catch(\Exception $e) {
+            return $this->redirectToRoute('app_admin_department');
+        }   
+        return $this->render('admin/department/create_department.html.twig',[
             'form' => $form->createView()
         ]);
     }
@@ -69,7 +77,11 @@ class DepartmentController extends AbstractController
     #[Route('/updateStatus/{id}', name: 'app_admin_department_update_status')]
     public function DepartmentUpdateStatus(EntityManagerInterface $entityManagerInterface, Department $department): Response
     {
-        $department->setIsActive($department->isIsActive() ^ true);
+        if($this->denyAccessUnlessGranted('EDIT',$department)){
+        return $this->redirectToRoute('app_admin_department');
+
+        }
+        $department->setIsActive($department->isIsActive()^true);
         $entityManagerInterface->flush();
         return $this->redirectToRoute('app_admin_department');
     }
@@ -86,14 +98,15 @@ class DepartmentController extends AbstractController
     #[Route('/datatable', name: 'app_admin_department_dt')]
     public function adminDatatable(Request $request): Response
     {
+        $company = $this->getUser()->getCompany();
         $requestData = $request->query->all();
 
         $orderByField = $requestData['columns'][$requestData['order'][0]['column']]['data'];
         $orderDirection = $requestData['order'][0]['dir'];
         $searchBy = $requestData['search']['value'] ?? null;
 
-        $departments = $this->departmentRepository->dynamicDataAjaxVise($requestData['length'], $requestData['start'], $orderByField, $orderDirection, $searchBy);
-        $totalUsers = $this->departmentRepository->getTotalUsersCount();
+        $departments = $this->departmentRepository->dynamicDataAjaxVise($requestData['length'], $requestData['start'], $orderByField, $orderDirection, $searchBy, $company);
+        $totalUsers = $this->departmentRepository->getTotalUsersCount($company);
 
         $response = [
             "data" => $departments,

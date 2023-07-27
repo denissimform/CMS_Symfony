@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Entity\Company;
 use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -56,16 +57,18 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         $this->save($user, true);
     }
 
-    public function dynamicDataAjaxVise(int $limit, int $start, string $orderByField, string $orderDirection, string $searchBy): array
+    public function dynamicDataAjaxVise(int $limit, int $start, string $orderByField, string $orderDirection, string $searchBy, Company $company): array
     {
         $queryBuilder = $this->createQueryBuilder('u')
-            ->orderBy("u.$orderByField", $orderDirection);
+            ->orderBy("u.$orderByField", $orderDirection)
+            ->andWhere('u.company = :c')
+            ->setParameter('c', $company);
 
         if ($searchBy){
-            return $queryBuilder->andWhere('u.username LIKE ?1 OR u.gender LIKE ?1 OR u.dob LIKE ?1 OR u.isVerified LIKE ?1 OR u.isActive LIKE ?1')
-            ->setParameter(1, '%' . $searchBy . '%')
-            ->getQuery()
-            ->getResult();
+            return $queryBuilder->andWhere('u.username LIKE ?1 OR u.gender LIKE ?1 OR u.dob LIKE ?1 OR u.isVerified LIKE ?1 OR u.isActive LIKE ?1 ')
+                ->setParameter(1, '%' . $searchBy . '%')
+                ->getQuery()
+                ->getResult();
         }
 
         if ($orderByField === 'company.name') {
@@ -80,13 +83,42 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
             ->getResult();
     }
 
-    public function getTotalUsersCount(): int
+    public function getTotalUsersCount(Company $company): int
     {
         return count(
             $this->createQueryBuilder('u')
+                ->andWhere('u.company = :c')
+                ->setParameter('c', $company)
                 ->getQuery()
                 ->getResult()
         );
+    }
+
+    public function dynamicDataApproveUser(int $limit, int $start, string $orderByField, string $orderDirection, string $searchBy, Company $company): array
+    {
+        $queryBuilder = $this->createQueryBuilder('u')
+            ->select('u.id, u.gender, u.email, u.username, u.firstName, u.lastName, u.dob, u.isActive, u.isApproved, u.isVerified')
+            ->orderBy("u.$orderByField", $orderDirection)
+            ->andWhere('u.company = :c')
+            ->setParameter('c', $company);
+
+        if ($searchBy){
+            return $queryBuilder->andWhere('u.username LIKE ?1 OR u.gender LIKE ?1 OR u.dob LIKE ?1 OR u.isApproved LIKE ?1 OR u.isActive LIKE ?1 ')
+                ->setParameter(1, '%' . $searchBy . '%')
+                ->getQuery()
+                ->getResult();
+        }
+
+        if ($orderByField === 'company.name') {
+            $queryBuilder->innerJoin('u.company', 'company')
+                ->orderBy($orderByField, $orderDirection)
+                ->addSelect('company');
+        }
+
+        return $queryBuilder->setMaxResults($limit)
+            ->setFirstResult($start)
+            ->getQuery()
+            ->getResult();
     }
     // public function blockUser($id)
     // {

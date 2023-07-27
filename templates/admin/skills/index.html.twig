@@ -1,6 +1,33 @@
 {% extends 'admin/homepage.html.twig' %}
 
 {% block layout %}
+	<div class="container-fluid">
+		<div class="container-fluid">
+			<div class="card">
+				<div class="card-body">
+					<h5 class="card-title fw-semibold mb-4 text-center">SKILLS</h5>
+					<div class="card">
+						<div class="card-body">
+							<table id="skill_dt" class="ui celled table text-center align-middle" {{ stimulus_controller('skill', { url: path('app_admin_skill_dt') } ) }}>
+								<thead>
+									<tr>
+										<th>Name</th>
+										<th>CreateAt</th>
+										<th>UpdatedAt</th>
+										<th>isActive</th>
+										<th>Action	</th>
+									</tr>
+								</thead>
+								<tbody>
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+{# 
 	<div class="container">
 		<div class="row mt-4 d-flex justify-content-between text-center">
 			<h3 class="col-lg-10">SKILLS</h3>

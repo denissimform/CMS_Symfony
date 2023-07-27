@@ -1,23 +1,22 @@
 <?php
 
-namespace App\Controller\SuperAdmin;
+namespace App\Controller\Admin\User;
 
+use App\Controller\BaseController;
 use Exception;
 use App\Entity\User;
-use App\Form\RegistrationFormType;
 use App\Repository\UserRepository;
 use App\Form\AdminRegistrationType;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Entity\Company;
 use App\Form\CompanyType;
 use App\Repository\CompanyRepository;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-#[Route("/superadmin")]
-class SuperAdminController extends AbstractController
+#[Route("/admin")]
+class UserController extends BaseController
 {
     public function __construct(
         private UserRepository $userRepository,
@@ -25,16 +24,22 @@ class SuperAdminController extends AbstractController
     ) {
     }
     // homepage route
-    #[Route("", name: "app_sa_admin_homepage")]
+    #[Route("/users", name: "app_admin_users")]
     public function homepage(): Response
     {
-        return $this->render('super_admin/admin/index.html.twig');
+        return $this->render('admin/user/index.html.twig');
     }
 
-    #[Route('/admin/create', name: 'app_sa_admin_create')]
+    #[Route("/approveUsers", name: "app_admin_approve_users")]
+    public function ApprovedUser(): Response
+    {
+        return $this->render('admin/user/approveuser.html.twig');
+    }
+
+    #[Route('/create', name: 'app_admin_users_create')]
     public function createAdmin(Request $request): Response
     {
-        $form  = $this->createForm(AdminRegistrationType::class, options: [
+        $form = $this->createForm(AdminRegistrationType::class, options: [
             'include_created_at' => false
         ]);
         $form->handleRequest($request);
@@ -42,7 +47,7 @@ class SuperAdminController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $formData = $form->getData();
             $formData->setRoles(['ROLE_ADMIN']);
-            
+
             try {
                 $this->em->persist($formData);
                 $this->em->flush();
@@ -54,15 +59,15 @@ class SuperAdminController extends AbstractController
             return $this->redirectToRoute('app_sa_admin_homepage');
         }
 
-        return $this->render('super_admin/admin/create.html.twig', [
+        return $this->render('admin/user/create.html.twig', [
             'form' => $form->createView(),
         ], new Response(null, $form->isSubmitted() ? ($form->isValid() ? 200 : 422) : 200));
     }
 
-    #[Route('/admin/edit/{id}', name: 'app_sa_admin_edit')]
+    #[Route('/edit/{id}', name: 'app_admin_users_update')]
     public function updateAdmin(User $user, Request $request): Response
     {
-        $form  = $this->createForm(AdminRegistrationType::class, $user, options: [
+        $form = $this->createForm(AdminRegistrationType::class, $user, options: [
             'include_created_at' => true
         ]);
         $form->handleRequest($request);
@@ -80,11 +85,20 @@ class SuperAdminController extends AbstractController
             return $this->redirectToRoute('app_sa_admin_homepage');
         }
 
-        return $this->render('super_admin/admin/edit.html.twig', [
+        return $this->render('admin/user/edit.html.twig', [
             'form' => $form->createView(),
         ], new Response(null, $form->isSubmitted() ? ($form->isValid() ? 200 : 422) : 200));
     }
-    #[Route('/admin/delete/{id}', name: 'app_sa_admin_delete')]
+
+    #[Route('/approve/{id}', name: 'app_admin_approve_user')]
+    public function ApproveUser(User $user,EntityManagerInterface $entityManagerInterface): Response
+    {
+        $user->setIsApproved($user->isIsApproved() ^ true);
+        $entityManagerInterface->flush();
+        return $this->redirectToRoute('app_admin_approve_users');
+    }
+
+    #[Route('/delete/{id}', name: 'app_admin_users_delete')]
     public function toggleAdminStatus(User $user): Response
     {
         try {
@@ -99,18 +113,20 @@ class SuperAdminController extends AbstractController
         return $this->redirectToRoute('app_sa_admin_homepage');
     }
 
-    #[Route('/admin/datatable', name: 'app_sa_admin_dt')]
+    #[Route('/datatable', name: 'app_admin_users_datatable')]
     public function adminDatatable(Request $request): Response
     {
+        $user = $this->getUser();
+        $company = $user->getCompany();
         $requestData = $request->query->all();
 
         $orderByField = $requestData['columns'][$requestData['order'][0]['column']]['data'];
         $orderDirection = $requestData['order'][0]['dir'];
         $searchBy = $requestData['search']['value'] ?? null;
 
-        $users = $this->userRepository->dynamicDataAjaxVise($requestData['length'], $requestData['start'], $orderByField, $orderDirection, $searchBy);
-        $totalUsers = $this->userRepository->getTotalUsersCount();
-        
+        $users = $this->userRepository->dynamicDataAjaxVise($requestData['length'], $requestData['start'], $orderByField, $orderDirection, $searchBy, $company);
+        $totalUsers = $this->userRepository->getTotalUsersCount($company);
+
         $response = [
             "data" => $users,
             "recordsTotal" => $totalUsers,
@@ -118,6 +134,28 @@ class SuperAdminController extends AbstractController
         ];
 
         return $this->json($response, context: ['groups' => 'user:dt:read']);
+    }
+
+    #[Route('/ApproveUserdatatable', name: 'app_admin_approve_users_datatable')]
+    public function adminApproveUser(Request $request): Response
+    {
+        $user = $this->getUser();
+        $company = $user->getCompany();
+        $requestData = $request->query->all();
+
+        $orderByField = $requestData['columns'][$requestData['order'][0]['column']]['data'];
+        $orderDirection = $requestData['order'][0]['dir'];
+        $searchBy = $requestData['search']['value'] ?? null;
+
+        $users = $this->userRepository->dynamicDataApproveUser($requestData['length'], $requestData['start'], $orderByField, $orderDirection, $searchBy, $company);
+        $totalUsers = $this->userRepository->getTotalUsersCount($company);
+        $response = [
+            "data" => $users,
+            "recordsTotal" => $totalUsers,
+            "recordsFiltered" => $totalUsers
+        ];
+
+        return $this->json($response);
     }
 
     // list out company 

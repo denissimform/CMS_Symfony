@@ -8,8 +8,9 @@ export default class extends Controller {
     static values = {
         url: String
     }
-
     initialize() {
+        console.log('here')
+
         const htmlContent = (data, type, row) => {
             return `
                 <!-- Button trigger modal -->
@@ -18,7 +19,8 @@ export default class extends Controller {
                 </button>
 
                 <!-- Modal -->
-                <div class="modal fade" id="staticBackdrop-${row.id}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                <div class="modal fade" id="staticBackdrop-${row.id}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" 
+                    aria-labelledby="staticBackdropLabel" aria-hidden="true">
                     <div class="modal-dialog">
                         <div class="modal-content">
                             <div class="modal-header">
@@ -64,18 +66,17 @@ export default class extends Controller {
             'ajax': this.urlValue,
             columns: [
                 { data: 'username' },
-                { data: 'company.name' },
                 {
-                    data: 'isVerified',
+                    data: 'isApproved',
                     render: function (data) {
                         return data ? "<span class='text-success'> Yes </span>" : "<span class='text-danger'> No </span>";
                     }
                 },
                 {
-                    data: 'isActive',
+                    data: 'isApproved',
                     render: function (data, type, row) {
-                        return data ? `<a href="/superadmin/admin/delete/${row.id}" class="btn btn-outline-success">Active</a>`
-                            : `<a href="/superadmin/admin/delete/${row.id}" class="btn btn-outline-danger">In Active</a>`;
+                        return data ? `<a href="/admin/approve/${row.id}" class="btn btn-outline-danger">Approved</a>`
+                            : `<a href="/admin/approve/${row.id}" class="btn btn-outline-success">Approve</a>`;
                     }
                 },
                 {

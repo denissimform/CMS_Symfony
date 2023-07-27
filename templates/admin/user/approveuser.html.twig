@@ -1,0 +1,49 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Admin | List
+{% endblock %}
+
+{% block sidebar %}
+	{{ include('/admin/components/adminsidebar.html.twig') }}
+{% endblock %}
+{% block navbar %}
+	{{ include('/components/navbar.html.twig') }}
+{% endblock %}
+
+{% block layout %}
+	<div class="container-fluid">
+		<div class="container-fluid">
+			<div class="card">
+				<div class="card-body">
+					<h5 class="card-title fw-semibold mb-4 text-center">ALL USER</h5>
+					<div class="col-lg-2 float-right">
+						<a href="{{ path('app_admin_users_create') }}" class="btn btn-primary">
+							Add Data
+						</a>
+					</div>
+					<div class="card">
+						<div class="card-body">
+							<table id="admin_dt" class="ui celled table text-center align-middle" {{ stimulus_controller('approveUser', { url: path('app_admin_approve_users_datatable') } ) }}>
+								<thead>
+									<tr>
+										<th>Username</th>
+										<th>Is Approved</th>
+										<th>Status</th>
+										<th>Actions</th>
+									</tr>
+								</thead>
+								<tbody></tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+{% endblock %}
+
+
+{% block footer %}
+	{{ include('/components/footer.html.twig') }}
+{% endblock %}

@@ -27,9 +27,8 @@ class EmailService
 
             return true;
         } catch (Exception $err) {
-            throw new \Exception($err->getMessage());
+            throw new Exception($err->getMessage());
         }
 
-        return false;
     }
 }
