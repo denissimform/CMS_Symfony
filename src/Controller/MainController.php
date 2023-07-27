@@ -6,7 +6,7 @@ use Exception;
 use App\Entity\User;
 use App\Form\ForgotPasswordFormType;
 use App\Form\ResetPasswordFormType;
-use App\Services\EmailService;
+use App\Service\EmailService;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Security\UserCustomAuthenticator;

@@ -3,11 +3,8 @@
 namespace App\Repository;
 
 use App\Entity\CompanySubscription;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
-use Exception;
-use PDOException;
-use Symfony\Component\HttpFoundation\Response;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 
 /**
  * @extends ServiceEntityRepository<CompanySubscription>
@@ -42,13 +39,30 @@ class CompanySubscriptionRepository extends ServiceEntityRepository
         }
     }
 
-    public function changeSubscriptionStatus()
+    public function getSubscriptionExpiredCompanies(): mixed
     {
-        try {
-            $sql = "UPDATE `company_subscription` SET `status` = :status  WHERE expires_at < current_timestamp()";
-            $this->getEntityManager()->getConnection()->executeQuery($sql, ["status" => CompanySubscription::PLAN_STATUS['EXPIRED']]);
-        } catch (PDOException $err) {
-            throw new Exception($err->getMessage());
-        }
+        return $this->createQueryBuilder('cs')
+            ->where('cs.status = :status')
+            ->andWhere('cs.expiresAt < :currentTime')
+            ->setParameters([
+                'status' => CompanySubscription::PLAN_STATUS['CURRENT'],
+                'currentTime' => date('Y-m-d H:i:s')
+            ])
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function changeSubscriptionStatus(): bool
+    {
+        return $this->createQueryBuilder('cs')
+            ->update()
+            ->set('cs.status', ':status')
+            ->where('cs.expiresAt < :currentTime')
+            ->setParameters([
+                'status' => CompanySubscription::PLAN_STATUS['EXPIRED'],
+                'currentTime' => date('Y-m-d H:i:s')
+            ])
+            ->getQuery()
+            ->execute();
     }
 }

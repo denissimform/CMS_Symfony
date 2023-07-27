@@ -2,16 +2,16 @@
 
 namespace App\Command;
 
-use App\Repository\CompanySubscriptionRepository;
-use App\Repository\SubscriptionRepository;
-use App\Repository\UserRepository;
 use Exception;
 use Psr\Log\LoggerInterface;
-use Symfony\Component\Console\Attribute\AsCommand;
+use App\Entity\CompanySubscription;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Command\Command;
+use App\Repository\CompanySubscriptionRepository;
+use Symfony\Component\Console\Style\SymfonyStyle;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Style\SymfonyStyle;
 
 #[AsCommand(
     name: 'app:check-user-subscriber',
@@ -20,8 +20,8 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 class CheckUserSubscriberCommand extends Command
 {
     public function __construct(
-        private UserRepository $userRepository,
         private CompanySubscriptionRepository $companySubscriptionRepository,
+        private EntityManagerInterface $em,
         private LoggerInterface $logger
     ) {
         parent::__construct();
@@ -31,13 +31,26 @@ class CheckUserSubscriberCommand extends Command
     {
         try {
             $io = new SymfonyStyle($input, $output);
-            $this->companySubscriptionRepository->changeSubscriptionStatus();
-            $io->success('Successfully changed subscription status.');
 
+            $companies = $this->companySubscriptionRepository->getSubscriptionExpiredCompanies();
+            
+            if (!$companies) {
+                $io->success('No expired subscription found to update!');
+                return Command::SUCCESS;
+            }
+            
+            /** @var CompanySubscription $company */
+            foreach ($companies as $company) {
+                $company->setStatus(CompanySubscription::PLAN_STATUS['EXPIRED']);
+                $this->em->persist($company);
+            }
+
+            $this->em->flush();
+            $io->success('Successfully changed expired subscription status!');
             return Command::SUCCESS;
         } catch (Exception $err) {
-            $this->logger->info("Error " . $err->getMessage() . " at line " . $err->getLine());
-            $io->error('While changing subscription status!');
+            $this->logger->info("Error " . $err->getMessage() . " at line " . $err->getLine() . ": " . $err->getFile());
+            $io->error('Could not change the subscription status!');
             return Command::FAILURE;
         }
     }

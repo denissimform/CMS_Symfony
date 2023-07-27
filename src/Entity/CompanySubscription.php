@@ -9,54 +9,55 @@ use Gedmo\Timestampable\Traits\TimestampableEntity;
 #[ORM\Entity(repositoryClass: CompanySubscriptionRepository::class)]
 class CompanySubscription
 {
+    public const PLAN_STATUS = [
+        "EXPIRED" => "Expired",
+        "CURRENT" => "Current"
+    ];
+    
+    use TimestampableEntity;
+    
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
 
     #[ORM\ManyToOne(inversedBy: 'companySubscriptions')]
-    private ?Company $companyId = null;
+    private ?Company $company = null;
 
     #[ORM\ManyToOne(inversedBy: 'companySubscriptions')]
-    private ?Subscription $subscriptionId = null;
+    private ?Subscription $subscription = null;
 
     #[ORM\Column]
     private ?\DateTimeImmutable $expiresAt = null;
 
     #[ORM\Column(length: 255)]
     private ?string $status = null;
-    public const PLAN_STATUS = [
-        "EXPIRED" => "expired", 
-        "CURRENT" => "current"
-    ];
-
-    use TimestampableEntity;
 
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getCompanyId(): ?Company
+    public function getCompany(): ?Company
     {
-        return $this->companyId;
+        return $this->company;
     }
 
-    public function setCompanyId(?Company $companyId): static
+    public function setCompany(?Company $company): static
     {
-        $this->companyId = $companyId;
+        $this->company = $company;
 
         return $this;
     }
 
-    public function getSubscriptionId(): ?Subscription
+    public function getSubscription(): ?Subscription
     {
-        return $this->subscriptionId;
+        return $this->subscription;
     }
 
-    public function setSubscriptionId(?Subscription $subscriptionId): static
+    public function setSubscription(?Subscription $subscription): static
     {
-        $this->subscriptionId = $subscriptionId;
+        $this->subscription = $subscription;
 
         return $this;
     }

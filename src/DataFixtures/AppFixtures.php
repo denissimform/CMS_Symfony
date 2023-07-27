@@ -2,12 +2,13 @@
 
 namespace App\DataFixtures;
 
-use App\Entity\Subscription;
+use App\Entity\User;
+use App\Factory\UserFactory;
 use App\Factory\CompanyFactory;
+use Doctrine\Persistence\ObjectManager;
 use App\Factory\CompanySubscriptionFactory;
 use App\Factory\SubscriptionFactory;
 use Doctrine\Bundle\FixturesBundle\Fixture;
-use Doctrine\Persistence\ObjectManager;
 
 class AppFixtures extends Fixture
 {
@@ -22,6 +23,17 @@ class AppFixtures extends Fixture
                 "subscriptionId" => SubscriptionFactory::random()
             ];
         });
+        SubscriptionFactory::createMany(6);
+        // CompanyFactory::createMany(10);
+        // UserFactory::createMany(10);
+        // UserFactory::createOne(
+        //     [
+        //         'roles' => ['ROLE_ADMIN'],
+        //         'username' => 'admin',
+        //         'password' => 'admin',
+        //         'email' => 'admin',
+        //     ]
+        // );
 
         $manager->flush();
     }

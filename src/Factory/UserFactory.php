@@ -47,16 +47,18 @@ final class UserFactory extends ModelFactory
     protected function getDefaults(): array
     {
         return [
-            'createdAt' => self::faker()->dateTime(),
             'dob' => self::faker()->dateTime(),
             'email' => self::faker()->text(180),
-            'firstName' => self::faker()->text(40),
-            'gender' => self::faker()->text(),
-            'lastName' => self::faker()->text(40),
-            'password' => self::faker()->text(),
+            'firstName' => self::faker()->firstName(40),
+            'gender' => self::faker()->randomElement(['Male', 'Female', 'Other']),
+            'isActive' => self::faker()->boolean(),
+            'isVerified' => self::faker()->boolean(),
+            'lastName' => self::faker()->lastName(40),
+            'password' => self::faker()->password(),
             'roles' => [],
-            'updatedAt' => self::faker()->dateTime(),
-            'username' => self::faker()->text(40),
+            'username' => self::faker()->userName(40),
+            'uuid' => self::faker()->text(),
+            'company' => CompanyFactory::random()
         ];
     }
 

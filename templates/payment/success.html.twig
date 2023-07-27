@@ -1,0 +1,9 @@
+{% extends "base.html.twig" %}
+{% block layout %}
+{# 
+    <pre>
+        {{ dump(status) }}
+    </pre> #}
+
+    {{status|status_text}}
+{% endblock %}

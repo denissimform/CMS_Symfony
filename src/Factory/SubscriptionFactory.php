@@ -11,21 +11,21 @@ use Zenstruck\Foundry\RepositoryProxy;
 /**
  * @extends ModelFactory<Subscription>
  *
- * @method        Subscription|Proxy create(array|callable $attributes = [])
- * @method static Subscription|Proxy createOne(array $attributes = [])
- * @method static Subscription|Proxy find(object|array|mixed $criteria)
- * @method static Subscription|Proxy findOrCreate(array $attributes)
- * @method static Subscription|Proxy first(string $sortedField = 'id')
- * @method static Subscription|Proxy last(string $sortedField = 'id')
- * @method static Subscription|Proxy random(array $attributes = [])
- * @method static Subscription|Proxy randomOrCreate(array $attributes = [])
+ * @method        Subscription|Proxy                     create(array|callable $attributes = [])
+ * @method static Subscription|Proxy                     createOne(array $attributes = [])
+ * @method static Subscription|Proxy                     find(object|array|mixed $criteria)
+ * @method static Subscription|Proxy                     findOrCreate(array $attributes)
+ * @method static Subscription|Proxy                     first(string $sortedField = 'id')
+ * @method static Subscription|Proxy                     last(string $sortedField = 'id')
+ * @method static Subscription|Proxy                     random(array $attributes = [])
+ * @method static Subscription|Proxy                     randomOrCreate(array $attributes = [])
  * @method static SubscriptionRepository|RepositoryProxy repository()
- * @method static Subscription[]|Proxy[] all()
- * @method static Subscription[]|Proxy[] createMany(int $number, array|callable $attributes = [])
- * @method static Subscription[]|Proxy[] createSequence(iterable|callable $sequence)
- * @method static Subscription[]|Proxy[] findBy(array $attributes)
- * @method static Subscription[]|Proxy[] randomRange(int $min, int $max, array $attributes = [])
- * @method static Subscription[]|Proxy[] randomSet(int $number, array $attributes = [])
+ * @method static Subscription[]|Proxy[]                 all()
+ * @method static Subscription[]|Proxy[]                 createMany(int $number, array|callable $attributes = [])
+ * @method static Subscription[]|Proxy[]                 createSequence(iterable|callable $sequence)
+ * @method static Subscription[]|Proxy[]                 findBy(array $attributes)
+ * @method static Subscription[]|Proxy[]                 randomRange(int $min, int $max, array $attributes = [])
+ * @method static Subscription[]|Proxy[]                 randomSet(int $number, array $attributes = [])
  */
 final class SubscriptionFactory extends ModelFactory
 {
@@ -47,13 +47,13 @@ final class SubscriptionFactory extends ModelFactory
     protected function getDefaults(): array
     {
         return [
-            'criteria_dept' => 11,
-            'criteria_storage' => 12,
-            'criteria_user' => 12,
-            "isActive" => true,
-            'duration' => self::faker()->randomNumber(1),
-            'price' => self::faker()->numberBetween(100, 200),
-            'type' => self::faker()->randomElement(['silver', 'gold', 'premium']),
+            'criteriaDept' => self::faker()->numberBetween(1, 100),
+            'criteriaStorage' => self::faker()->numberBetween(1, 10),
+            'criteriaUser' => self::faker()->numberBetween(10, 200),
+            'duration' => self::faker()->randomElement([6, 12]),
+            'isActive' => true,
+            'price' => self::faker()->randomNumber(),
+            'type' => self::faker()->randomElement(['Gold', 'Premium', 'Silver']),
         ];
     }
 

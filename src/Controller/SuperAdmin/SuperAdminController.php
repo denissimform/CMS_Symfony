@@ -3,22 +3,25 @@
 namespace App\Controller\SuperAdmin;
 
 use App\Entity\Company;
+use App\Entity\CompanySubscription;
 use App\Form\CompanyType;
-use App\Repository\CompanyRepository;
 use Doctrine\DBAL\Exception;
+use App\Repository\CompanyRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 #[Route("/superadmin")]
 class SuperAdminController extends AbstractController
 {
     // homepage route
-    #[Route("/", name: "app_sa_homepage")]
-    public function homepage(): Response
+    #[Route("/{id}", name: "app_sa_homepage")]
+    public function homepage(CompanySubscription $cs, EntityManagerInterface $em): Response
     {
+        $cs->setStatus(CompanySubscription::PLAN_STATUS['EXPIRED']);
+        $em->flush();
         return $this->render("/superadmin/index.html.twig");
     }
 

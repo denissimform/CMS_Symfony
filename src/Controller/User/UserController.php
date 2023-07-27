@@ -4,7 +4,7 @@ namespace App\Controller\User;
 
 use App\Entity\User;
 use App\Form\EmployeeFormType;
-use App\Services\EmailService;
+use App\Service\EmailService;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use PharIo\Manifest\InvalidEmailException;

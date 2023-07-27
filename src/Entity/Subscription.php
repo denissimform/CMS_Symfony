@@ -20,13 +20,13 @@ class Subscription
     private ?string $type = null;
 
     #[ORM\Column]
-    private ?int $criteria_dept = null;
+    private ?int $criteriaDept = null;
 
     #[ORM\Column]
-    private ?int $criteria_user = null;
+    private ?int $criteriaUser = null;
 
     #[ORM\Column]
-    private ?int $criteria_storage = null;
+    private ?int $criteriaStorage = null;
 
     #[ORM\Column(length: 30)]
     private ?string $duration = null;
@@ -36,19 +36,20 @@ class Subscription
 
     use TimestampableEntity;
 
-    #[ORM\ManyToMany(targetEntity: Company::class, inversedBy: 'subscriptions')]
-    private Collection $companyId;
-
-    #[ORM\OneToMany(mappedBy: 'subscriptionId', targetEntity: CompanySubscription::class)]
+    #[ORM\OneToMany(mappedBy: 'subscription', targetEntity: CompanySubscription::class)]
     private Collection $companySubscriptions;
 
     #[ORM\Column]
     private ?bool $isActive = null;
 
+    #[ORM\OneToMany(mappedBy: 'subscription', targetEntity: Transaction::class)]
+    private Collection $transactions;
+
     public function __construct()
     {
-        $this->companyId = new ArrayCollection();
+        // $this->companyId = new ArrayCollection();
         $this->companySubscriptions = new ArrayCollection();
+        $this->transactions = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -70,36 +71,36 @@ class Subscription
 
     public function getCriteriaDept(): ?int
     {
-        return $this->criteria_dept;
+        return $this->criteriaDept;
     }
 
     public function setCriteriaDept(int $criteria_dept): static
     {
-        $this->criteria_dept = $criteria_dept;
+        $this->criteriaDept = $criteria_dept;
 
         return $this;
     }
 
     public function getCriteriaUser(): ?int
     {
-        return $this->criteria_user;
+        return $this->criteriaUser;
     }
 
-    public function setCriteriaUser(int $criteria_user): static
+    public function setCriteriaUser(int $criteriaUser): static
     {
-        $this->criteria_user = $criteria_user;
+        $this->criteriaUser = $criteriaUser;
 
         return $this;
     }
 
     public function getCriteriaStorage(): ?int
     {
-        return $this->criteria_storage;
+        return $this->criteriaStorage;
     }
 
-    public function setCriteriaStorage(int $criteria_storage): static
+    public function setCriteriaStorage(int $criteriaStorage): static
     {
-        $this->criteria_storage = $criteria_storage;
+        $this->criteriaStorage = $criteriaStorage;
 
         return $this;
     }
@@ -129,30 +130,6 @@ class Subscription
     }
 
     /**
-     * @return Collection<int, Company>
-     */
-    public function getCompanyId(): Collection
-    {
-        return $this->companyId;
-    }
-
-    public function addCompanyId(Company $companyId): static
-    {
-        if (!$this->companyId->contains($companyId)) {
-            $this->companyId->add($companyId);
-        }
-
-        return $this;
-    }
-
-    public function removeCompanyId(Company $companyId): static
-    {
-        $this->companyId->removeElement($companyId);
-
-        return $this;
-    }
-
-    /**
      * @return Collection<int, CompanySubscription>
      */
     public function getCompanySubscriptions(): Collection
@@ -164,7 +141,7 @@ class Subscription
     {
         if (!$this->companySubscriptions->contains($companySubscription)) {
             $this->companySubscriptions->add($companySubscription);
-            $companySubscription->setSubscriptionId($this);
+            $companySubscription->setSubscription($this);
         }
 
         return $this;
@@ -174,8 +151,8 @@ class Subscription
     {
         if ($this->companySubscriptions->removeElement($companySubscription)) {
             // set the owning side to null (unless already changed)
-            if ($companySubscription->getSubscriptionId() === $this) {
-                $companySubscription->setSubscriptionId(null);
+            if ($companySubscription->getSubscription() === $this) {
+                $companySubscription->setSubscription(null);
             }
         }
 
@@ -190,6 +167,36 @@ class Subscription
     public function setIsActive(bool $isActive): static
     {
         $this->isActive = $isActive;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Transaction>
+     */
+    public function getTransactions(): Collection
+    {
+        return $this->transactions;
+    }
+
+    public function addTransaction(Transaction $transaction): static
+    {
+        if (!$this->transactions->contains($transaction)) {
+            $this->transactions->add($transaction);
+            $transaction->setSubscription($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTransaction(Transaction $transaction): static
+    {
+        if ($this->transactions->removeElement($transaction)) {
+            // set the owning side to null (unless already changed)
+            if ($transaction->getSubscription() === $this) {
+                $transaction->setSubscription(null);
+            }
+        }
 
         return $this;
     }

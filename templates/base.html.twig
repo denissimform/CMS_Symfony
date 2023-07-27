@@ -18,37 +18,41 @@
 		<!-- Javascript end -->
 	</head>
 	<body>
-		<!--  Body Wrapper -->
-		<div
-			class="page-wrapper" id="main-wrapper" data-layout="vertical" data-navbarbg="skin6" data-sidebartype="full" data-sidebar-position="fixed" data-header-position="fixed">
-			<!--  Sidebar Wrapper -->
-			{% block sidebar %}{% endblock %}
-			<!--  Sidebar End -->
-
-			<!--  Main wrapper -->
+		{% block body %}
+			<!--  Body Wrapper -->
 			<div
-				class="body-wrapper">
-				<!--  Navbar Start -->
-				{% block navbar %}{% endblock %}
-				<!--  Navbar End -->
+				class="page-wrapper" id="main-wrapper" data-layout="vertical" data-navbarbg="skin6" data-sidebartype="full" data-sidebar-position="fixed" data-header-position="fixed">
+				<!--  Sidebar Wrapper -->
+				{% block sidebar %}{% endblock %}
+				<!--  Sidebar End -->
+
+				<!--  Main wrapper -->
 
 				<div
-					class="container-fluid">
-					<!-- Flash messages Start -->
-					{% block flash %}{% endblock %}
-					<!-- Flash messages end -->
+					class="body-wrapper">
+					<!--  Navbar Start -->
+					{% block navbar %}{% endblock %}
+					<!--  Navbar End -->
 
-					<!-- Layout Start -->
-					{% block layout %}{% endblock %}
-					<!-- Layout end -->
 
-					<!-- Footer Start -->
-					{% block footer %}{% endblock %}
-					<!-- Footer end -->
+					<div
+						class="container-fluid">
+						<!-- Flash messages Start -->
+						{% block flash %}{% endblock %}
+						<!-- Flash messages end -->
+
+						<!-- Layout Start -->
+						{% block layout %}{% endblock %}
+						<!-- Layout end -->
+
+						<!-- Footer Start -->
+						{% block footer %}{% endblock %}
+						<!-- Footer end -->
+					</div>
 				</div>
+				<!--  Main End -->
 			</div>
-			<!--  Main End -->
-		</div>
+		{% endblock %}
 		<!--  Body End -->
 	</body>
 </html>

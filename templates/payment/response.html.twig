@@ -1,0 +1,18 @@
+{% extends "base.html.twig" %}
+
+{% block title %}Pay Now
+{% endblock %}
+
+{% block body %}
+    <div class="container mt-4">
+    {% include "/components/flash_messages.html.twig" %}
+        <div class="row text-center">
+            <div class="col-12">
+                <h1> Payment Gateway Response </h1>
+                <br>
+                <h3 class='text-success fw-bolder'> {{status|status_text}} </h3>
+                Please redirect to the  <a href="{{path('app_admin_homepage')}}">homepage.</a>
+            </div>
+        </div>
+    </div>
+{% endblock %}

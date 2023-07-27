@@ -1,0 +1,60 @@
+{% extends "base.html.twig" %}
+
+{% block title %}Pay Now
+{% endblock %}
+
+{% block body %}
+	<section>
+		<div class="container">
+			{% include "/components/flash_messages.html.twig" %}
+			<!-- FOR DEMO PURPOSE -->
+			<header class="text-center mb-5 text-white">
+				<div class="row">
+					<div class="col-lg-7 mt-4 mx-auto">
+						<h1>Subscribe now to use all features!!</h1>
+					</div>
+				</div>
+			</header>
+			<!-- END -->
+			<div class="row text-center align-items-end">
+				{% for subscription in subscriptions %}
+					<!-- Pricing Table-->
+					<div class="col-lg-4 mb-5 mb-lg-2">
+						<div class="bg-white p-5 rounded-lg shadow">
+							<h1 class="h6 text-uppercase font-weight-bold mb-4">{{ subscription.type}}</h1>
+							<h2 class="h1 font-weight-bold">₹
+								{{ subscription.price }}<span class="text-small font-weight-normal ml-2">/
+									{{subscription.duration}}
+									month</span>
+							</h2>
+							<div class="custom-separator my-4 mx-auto bg-primary"></div>
+							<ul class="list-unstyled my-5 text-small text-left">
+								<li class="mb-3">
+									<i class="fa fa-check mr-2 text-primary"></i>
+									{{ subscription.criteriaDept }}
+									Departments
+								</li>
+								<li class="mb-3">
+									<i class="fa fa-check mr-2 text-primary"></i>
+									{{ subscription.criteriaUser }}
+									Users
+								</li>
+								<li class="mb-3">
+									<i class="fa fa-check mr-2 text-primary"></i>
+									{{ subscription.criteriaStorage }}TB Storage
+								</li>
+							</ul>
+							<a href="{{path('app_payment_checkout', {id: subscription.id})}}" target="_blank" class="btn btn-primary btn-block p-2 px-3 shadow rounded-pill">Subscribe Now!</a>
+						</div>
+					</div>
+					<!-- END -->
+				{% endfor %}
+			</div>
+		</div>
+	</section>
+
+{% endblock %}
+
+{% block footer %}
+	{% include "/components/footer.html.twig" %}
+{% endblock %}

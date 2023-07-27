@@ -2,29 +2,37 @@
 
 namespace App\Controller\Company;
 
+use Exception;
 use App\Entity\User;
 use App\Entity\Company;
 use App\Form\CompanyFormType;
-use App\Services\EmailService;
+use App\Service\EmailService;
 use Doctrine\ORM\EntityManagerInterface;
-use Exception;
 use PharIo\Manifest\InvalidEmailException;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Mailer\MailerInterface;
-use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use SymfonyCasts\Bundle\VerifyEmail\VerifyEmailHelperInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class CompanyController extends AbstractController
 {
-    public function __construct(private VerifyEmailHelperInterface $verifyEmail, private $email_id, private MailerInterface $mailer)
-    {
+    public function __construct(
+        private VerifyEmailHelperInterface $verifyEmail,
+        private $email_id,
+        private MailerInterface $mailer
+    ) {
     }
 
     #[Route("/company/register", name: "app_company_register")]
-    public function registerCompany(Request $request, EntityManagerInterface $entityManager, UserPasswordHasherInterface $passwordHasher, EmailService $emailService): Response
+    public function registerCompany(
+        Request $request,
+        EntityManagerInterface $entityManager,
+        UserPasswordHasherInterface $passwordHasher,
+        EmailService $emailService
+    ): Response 
     {
         try {
 

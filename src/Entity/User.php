@@ -165,6 +165,22 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
+    public function removeRole(string $role): static
+    {
+        if (($key = array_search($role, $this->roles)) !== false) {
+            unset($this->roles[$key]);
+        }        
+
+        return $this;
+    }
+
+    public function addRoles(array $roles): static
+    {
+        $this->roles = array_unique(array_merge($this->roles, $roles));
+
+        return $this;
+    }
+
     public function isAdmin(): bool
     {
         return in_array("ROLE_ADMIN", $this->roles);
